@@ -152,6 +152,19 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
   - `Neck1…3`
 - **Attachments:** `Mouth` y `Saddle`.
 
+### Huevos y registros v4 (contrato T34 → T30)
+
+Los módulos nuevos son independientes del compañero v3 y no modifican su modelo ni los datos del jugador:
+- `Config.Eggs`: `Rarities`, `Mutations`, `Eggs` (listas), constantes de suerte/gigante, avisos y ritmos de revelado.
+- `Config.Species`: lista de 19 especies v4 con `Id`, `Name`, `Rarity`, `Biome`, `Kind`, `BaseGold`, `Color`, `Accent`, `Myth`. Para buscar por Id, usar `EggOdds.GetSpecies`; no confundir con los índices de evolución de `Config.Dragons` v3.
+- `ReplicatedStorage.Shared.EggOdds`: funciones puras `GetEgg`, `GetSpecies`, `GetRarity`, `GetMutation`, `GetSpeciesOdds`, `GetMutationOdds`, `GetGiantChance`, `GetGoldPerSecond`, `GetHatchSeconds`, `FormatChance`, `Validate`. Los pesos de `Pool` son entradas `{ SpeciesId = "Draco", Weight = 60 }`. Los resultados de odds se normalizan y suman 1; suerte por defecto 1, limitada a `[1, Config.Eggs.MaxLuck]`.
+- `ServerScriptService.Server.Eggs.EggRoller.Roll(eggId, luck?, rng?)` devuelve `{ SpeciesId, Mutation, Giant }`, o `nil` para un huevo desconocido. Acepta `Random` para pruebas reproducibles, sin esperas ni concesiones de inventario.
+- `EggRoller.MakeDragon(roll)` devuelve exactamente `{ Id, SpeciesId, Mutation, Giant, HatchedAt }`; el Id es un GUID sin llaves y HatchedAt usa `os.time()`. **T30** es dueño de guardar ese registro y de disparar `Hatched` tras la concesión. El oro/s se deriva de `EggOdds.GetGoldPerSecond`, no se duplica en el registro.
+- `Giant` es booleano, independiente de `Mutation` (`Normal`, `Gold`, `Diamond`, `Shadow`, `Rainbow`). Para representar un gigante, T30 puede consultar `Config.Eggs.GiantScale`; no se cambia el builder en T34.
+- `EggDebugService` valida el catálogo al iniciar Studio y añade `/probs <EggId>`, `/suerte <N>` y `/huevo <EggId> [veces]`. No registra datos persistentes ni concede dragones; no conecta comandos ni crea remotes fuera de Studio.
+- `EggOddsGui.Show(eggId, luck?)` / `.Hide()` es un módulo de cliente reutilizable. Usa `ActiveModal = "EggOdds"`. `ShowEggOdds` envía solo el Id; el listener aplica `DebugLuck` exclusivamente en Studio, y suerte 1 en producción. Los futuros flujos con suerte deben llamar `.Show(eggId, suerteEfectiva)` para mostrar las mismas odds que pasan a `Roll`.
+- `HatchReveal.client.luau` escucha ambos remotes. El dueño recibe un revelado con `ActiveModal = "Hatch"`; espera su turno si hay otra ventana y pausa la tensión si se abre otra. «¡Genial!» cierra la carta y libera el siguiente revelado. Los avisos globales tienen una cola independiente de 4 s y solo aparecen desde Legendario o por mutación Rainbow. El visor utiliza un clon de `Assets.Dragons.Egg.Body` o una esfera provisional; la carta usa el retrato con colores y nombre autorizado en T34.
+
 ## RemoteEvents existentes
 
 | Nombre | Dirección | Argumentos | Servicio |
@@ -164,6 +177,23 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | StableData | servidor → dueño | `{ Dragons, Pens, PenCount, MaxDragons }` | StableService |
 | GoldCollected | servidor → dueño | cantidad cobrada | IncomeService |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
+
+### Remotes históricos de v3 (retirados; referencia de T34)
+
+| Nombre | Dirección | Argumentos | Servicio anterior |
+|---|---|---|---|
+| Train | cliente → servidor | ninguno | TrainService |
+| Hatched | servidor → todos | `{ UserId, DisplayName, EggId, SpeciesId, Mutation, Giant }` | T30 en producción; EggDebugService solo en Studio |
+| ShowEggOdds | servidor → un cliente | `eggId` (string) | T30/T31; EggDebugService solo en Studio |
+| TargetMob | cliente → servidor | `mobId` o `nil` (soltar). El servidor valida la distancia y el Poder de la zona | MobService |
+| CombatClick | cliente → servidor | ninguno (el servidor limita a 8/s) | MobService + DamageService |
+| Mobs | servidor → **todos** | `{ Type = "Hit"/"MobAttack"/"Telegraph"/"Explode"/"Death"/"Respawn", MobId, ... }` | MobService |
+| CombatInfo | servidor → un jugador | `{ Type = "Reward"/"NoReward"/"ZoneLocked"/"TooFar"/"TargetLost", ... }` | MobService |
+| Boss | servidor → todos o un jugador | `{ Type = "Warning"/"Spawn"/"Ranking"/"End"/"Retreat"/"Reward", ... }` | BossService (T22) |
+| BossTeleport | cliente → servidor | ninguno: ir al cráter (solo en aviso o pelea) | BossService (T22) |
+| Evolve | cliente → servidor | ninguno; máximo una compra cada 0,5 s por jugador | EvolutionService (T19) |
+| Evolved | servidor → todos los clientes | `{ UserId, DisplayName, SpeciesId, SpeciesName, SpeciesType }`, solo tras una compra válida | EvolutionService (T19) |
+
 
 **Streaming activado:**
 - Los modelos que el cliente necesita completos (guaridas, dragones) usan `ModelStreamingMode = Atomic`.
