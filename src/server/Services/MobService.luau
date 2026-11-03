@@ -108,12 +108,14 @@ local function resetCombat(mob)
 	mob.HP = mob.MaxHP
 end
 
-local function spawnMob(zoneIndex: number, spawnPoint)
+-- options (solo jefes): IsBoss, MaxHP, Reach, NoRespawn, Phase2At, OnKilled(mob, damage)
+local function spawnMob(zoneIndex: number, spawnPoint, options)
 	local enemy, enemyIndex = Config.GetEnemy(spawnPoint.Enemy)
 	if not enemy then
 		warn("[MobService] Enemigo desconocido en un MobSpawn:", spawnPoint.Enemy)
-		return
+		return nil
 	end
+	options = options or {}
 	nextId += 1
 	local root = Instance.new("Part")
 	root.Name = "Mob_" .. nextId
@@ -135,7 +137,7 @@ local function spawnMob(zoneIndex: number, spawnPoint)
 		Position = spawnPoint.Position,
 		Facing = Vector3.new(random:NextNumber(-1, 1), 0, random:NextNumber(-1, 1)),
 		Root = root,
-		MaxHP = enemy.RequiredPower * enemy.HPMultiplier,
+		MaxHP = options.MaxHP or enemy.RequiredPower * enemy.HPMultiplier,
 		HP = 0,
 		State = "Idle",
 		Damage = {},
@@ -147,12 +149,24 @@ local function spawnMob(zoneIndex: number, spawnPoint)
 		WanderTo = nil,
 		NextWander = 0,
 		RespawnAt = nil,
+		RemoveAt = nil,
+		IsBoss = options.IsBoss == true,
+		Reach = options.Reach,
+		NoRespawn = options.NoRespawn == true,
+		Phase2At = options.Phase2At,
+		Phase = 1,
+		OnKilled = options.OnKilled,
 	}
+	if mob.IsBoss then
+		mob.Facing = Vector3.new(0, 0, -1)
+		root:SetAttribute("IsBoss", true)
+	end
 	resetCombat(mob)
 	placeRoot(mob)
 	publish(mob)
 	root.Parent = mobsFolder
 	mobs[mob.Id] = mob
+	return mob
 end
 
 local function clearTarget(player: Player, reason: string?)
@@ -172,9 +186,14 @@ end
 -- Reparte recompensas: cobra quien hizo ≥ RewardMinShare del daño; el MVP cobra más.
 local function kill(mob)
 	mob.State = "Dead"
-	mob.RespawnAt = os.clock() + C.RespawnSeconds
 	mob.Pending = {}
 	mob.Target = nil
+	if mob.NoRespawn then
+		-- El jefe no reaparece: se retira tras su animación de muerte
+		mob.RemoveAt = os.clock() + 3
+	else
+		mob.RespawnAt = os.clock() + C.RespawnSeconds
+	end
 
 	local total = 0
 	local mvp, best = nil, 0
@@ -185,7 +204,13 @@ local function kill(mob)
 		end
 	end
 
-	for player, dealt in mob.Damage do
+	-- Los jefes reparten sus propios premios por puesto (BossService)
+	local rewardPlayers = if mob.OnKilled then {} else mob.Damage
+	if mob.OnKilled then
+		mob.OnKilled(mob, mob.Damage)
+	end
+
+	for player, dealt in rewardPlayers do
 		if player.Parent then
 			local share = if total > 0 then dealt / total else 0
 			if share >= C.RewardMinShare then
@@ -237,9 +262,16 @@ local function applyDamage(mob, player: Player, damage: number, source: string, 
 	})
 	if mob.HP <= 0 then
 		kill(mob)
-	else
-		publish(mob)
+		return
 	end
+	-- Fase 2 (jefes): más rápido y más círculos a partir de cierto % de vida
+	if mob.Phase2At and mob.Phase == 1 and mob.HP <= mob.MaxHP * mob.Phase2At then
+		mob.Phase = 2
+		mob.NextSpecial = now + 1.5
+		mob.Root:SetAttribute("Phase", 2)
+		broadcast({ Type = "Phase", MobId = mob.Id, Phase = 2 })
+	end
+	publish(mob)
 end
 
 -- El objetivo del monstruo es quien más daño le hizo y sigue cerca y consciente.
@@ -277,9 +309,65 @@ local function insideAny(position: Vector3, blast): boolean
 	return false
 end
 
+-- Ataques del jefe: el golpe normal alcanza a los que más daño hacen y la lluvia
+-- de círculos cae bajo cada participante (más algunos al azar).
+local BOSS = Config.Boss
+
+local function bossAttacks(mob, now: number)
+	local enemy = mob.Enemy
+	local participants = {}
+	for player, dealt in mob.Damage do
+		local root = rootOf(player)
+		if player.Parent and root and not DamageService.IsFainted(player) then
+			table.insert(participants, { Player = player, Root = root, Damage = dealt })
+		end
+	end
+	table.sort(participants, function(a, b)
+		return a.Damage > b.Damage
+	end)
+
+	if now >= mob.NextBasic then
+		local interval = enemy.Basic.Interval * (if mob.Phase == 2 then enemy.Phase2.IntervalMultiplier else 1)
+		mob.NextBasic = now + interval
+		for i = 1, math.min(BOSS.TopTargets, #participants) do
+			local entry = participants[i]
+			if flatDistance(entry.Root.Position, mob.Position) <= mob.Reach then
+				broadcast({ Type = "MobAttack", MobId = mob.Id, TargetUserId = entry.Player.UserId, Damage = enemy.Basic.Damage })
+				if DamageService.HurtDragon(entry.Player, enemy.Basic.Damage) then
+					clearTarget(entry.Player, "Fainted")
+				end
+			end
+		end
+	end
+
+	if now >= mob.NextSpecial and #participants > 0 then
+		local special = enemy.Special
+		local multiplier = if mob.Phase == 2 then enemy.Phase2.IntervalMultiplier else 1
+		mob.NextSpecial = now + special.Interval * multiplier + random:NextNumber(-C.SpecialJitter, C.SpecialJitter)
+		local positions = {}
+		for _, entry in participants do
+			local p = entry.Root.Position
+			table.insert(positions, Vector3.new(p.X, groundAt(p, p.Y - 3), p.Z))
+		end
+		local extra = BOSS.ExtraCircles + (if mob.Phase == 2 then enemy.Phase2.Count - special.Count else 0)
+		for _ = 1, extra do
+			local angle = random:NextNumber(0, math.pi * 2)
+			local distance = random:NextNumber(special.Radius, BOSS.ArenaRadius * 0.8)
+			local point = mob.Spawn + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+			table.insert(positions, Vector3.new(point.X, groundAt(point, mob.Spawn.Y), point.Z))
+		end
+		local blast = { At = now + special.Telegraph, Positions = positions, Radius = special.Radius, Damage = special.Damage }
+		table.insert(mob.Pending, blast)
+		broadcast({ Type = "Telegraph", MobId = mob.Id, Positions = positions, Radius = special.Radius, Delay = special.Telegraph })
+	end
+end
+
 local function stepMob(mob, now: number, dt: number)
 	if mob.State == "Dead" then
-		if now >= mob.RespawnAt then
+		if mob.RemoveAt and now >= mob.RemoveAt then
+			mob.Root:Destroy()
+			mobs[mob.Id] = nil
+		elseif mob.RespawnAt and now >= mob.RespawnAt then
 			resetCombat(mob)
 			mob.State = "Idle"
 			mob.Position = mob.Spawn
@@ -298,8 +386,13 @@ local function stepMob(mob, now: number, dt: number)
 		end
 	end
 
+	-- El jefe no se mueve ni vuelve a casa: solo ataca mientras dura el evento.
+	if mob.IsBoss then
+		if mob.State == "Chase" then
+			bossAttacks(mob, now)
+		end
 	-- ¿Sigue la pelea? Si no hay objetivo, se aleja demasiado o nadie le pega, vuelve a casa.
-	if mob.State == "Chase" then
+	elseif mob.State == "Chase" then
 		mob.Target = chooseTarget(mob)
 		local leashed = flatDistance(mob.Position, mob.Spawn) > C.LeashRange
 		local bored = now - mob.LastHit > C.LeashIdleSeconds
@@ -335,7 +428,7 @@ local function stepMob(mob, now: number, dt: number)
 		mob.Facing = flat(targetRoot.Position - mob.Position)
 	end
 
-	if goal then
+	if goal and not mob.IsBoss then
 		local delta = flat(goal - mob.Position)
 		local distance = delta.Magnitude
 		if distance > 0.2 then
@@ -407,7 +500,7 @@ local function stepPlayers(now: number)
 			targets[player] = nil
 		elseif not mob or mob.State == "Dead" then
 			clearTarget(player, nil)
-		elseif not root or flatDistance(root.Position, mob.Position) > C.LoseTargetRange then
+		elseif not root or flatDistance(root.Position, mob.Position) > math.max(C.LoseTargetRange, (mob.Reach or 0) + 15) then
 			clearTarget(player, "TooFar")
 		elseif DamageService.IsFainted(player) then
 			clearTarget(player, "Fainted")
@@ -534,6 +627,35 @@ local function loadZones()
 end
 
 -- Centro de una zona (lo usa el truco /zona de DebugService).
+-- JEFES (los usa BossService) ------------------------------------------------------
+
+-- Crea un jefe en una posición. options: MaxHP, Reach, Phase2At, OnKilled(mob, damage).
+function MobService.SpawnBoss(enemyName: string, position: Vector3, options)
+	options.IsBoss = true
+	options.NoRespawn = true
+	return spawnMob(0, { Enemy = enemyName, Position = position }, options)
+end
+
+-- Retira un monstruo sin premios (por ejemplo, el jefe cuando se acaba el tiempo).
+function MobService.RemoveMob(mobId: number)
+	local mob = mobs[mobId]
+	if not mob then
+		return
+	end
+	for player, target in targets do
+		if target.MobId == mobId then
+			clearTarget(player, nil)
+		end
+	end
+	mob.Root:Destroy()
+	mobs[mobId] = nil
+	broadcast({ Type = "Despawn", MobId = mobId })
+end
+
+function MobService.GetMob(mobId: number)
+	return mobs[mobId]
+end
+
 function MobService.GetZoneCenter(index: number): Vector3?
 	local zone = zones[index]
 	if not zone then
@@ -599,7 +721,7 @@ function MobService.Init()
 			infoEvent:FireClient(player, { Type = "ZoneLocked", Required = zone.RequiredPower })
 			return
 		end
-		if flatDistance(root.Position, mob.Position) > C.TargetRange + sizeOf(mob) then
+		if flatDistance(root.Position, mob.Position) > (mob.Reach or C.TargetRange + sizeOf(mob)) then
 			infoEvent:FireClient(player, { Type = "TooFar" })
 			return
 		end

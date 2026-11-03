@@ -38,12 +38,14 @@ Juego Roblox/
     │       ├── DragonService.luau → dragón compañero de cada jugador (Workspace.Dragons), elemento
     │       ├── DamageService.luau → núcleo de daño (auto, clic, combo, crítico) y vida del dragón
     │       ├── MobService.luau    → zonas, monstruos (raíz en Workspace.Mobs), objetivo, recompensas y MVP
+    │       ├── BossService.luau   → jefe mundial: ciclo, cráter, ranking en vivo y premios por puesto
     │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /zona, /curar, /reset)
     └── client/               → StarterPlayer.StarterPlayerScripts.Client
         ├── HUD.client.luau              → contador ⚡ 🏆 y texto guía
         ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en combate)
         ├── CombatController.client.luau → interfaz y efectos de combate, clics de ataque
         ├── MobController.client.luau    → dibuja los monstruos, barra de vida, marcar con clic, puertas
+        ├── BossController.client.luau   → cuenta atrás, ranking, avisos y botón «Ir al cráter»
         ├── MobRegistry.luau             → registro compartido mobId → visual (ModuleScript)
         ├── DragonController.client.luau → sigue o vuela al objetivo (propio), anima (todos), reacciona
         └── EnemyVisuals.luau            → construye y anima el cuerpo de cada monstruo (ModuleScript)
@@ -143,6 +145,8 @@ Detalle completo en [[T18-dragon-companero]].
 | CombatClick | cliente → servidor | ninguno (el servidor limita a 8/s) | MobService + DamageService |
 | Mobs | servidor → **todos** | `{ Type = "Hit"/"MobAttack"/"Telegraph"/"Explode"/"Death"/"Respawn", MobId, ... }` | MobService |
 | CombatInfo | servidor → un jugador | `{ Type = "Reward"/"NoReward"/"ZoneLocked"/"TooFar"/"TargetLost", ... }` | MobService |
+| Boss | servidor → todos o un jugador | `{ Type = "Warning"/"Spawn"/"Ranking"/"End"/"Retreat"/"Reward", ... }` | BossService (T22) |
+| BossTeleport | cliente → servidor | ninguno: ir al cráter (solo en aviso o pelea) | BossService (T22) |
 | Evolve | cliente → servidor | ninguno; máximo una compra cada 0,5 s por jugador | EvolutionService (T19) |
 | Evolved | servidor → todos los clientes | `{ UserId, DisplayName, SpeciesId, SpeciesName, SpeciesType }`, solo tras una compra válida | EvolutionService (T19) |
 
@@ -186,4 +190,5 @@ T19 muestra los avisos sociales debajo del panel de batalla (y = 148 px) durante
 | `Zone` | Suelo de cada zona | `ZoneIndex` (1–5) | MobService (centro para `/zona`) |
 | `MobSpawn` | Punto de aparición (parte invisible) | `ZoneIndex`, `Enemy` (nombre exacto de `Config.Enemies`) | MobService |
 | `ZoneGate` | Puerta de cada zona | `ZoneIndex`, `RequiredPower` | MobController (se abre en el cliente si tienes el Poder) |
+| `BossArena` | Suelo del cráter del jefe | — | BossService (si no existe, en Studio se crea uno de prueba) |
 | `TrainZone` | Zona de entrenamiento | `Multiplier` (número) | TrainService (futuro) |

@@ -13,6 +13,34 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### Claude conectado a Studio por MCP: pruebas en vivo y modelos de IA
+- **Revisión de T19 (Codex): aprobada.**
+  - Respetó sus archivos.
+  - La compra es segura en el servidor.
+  - Buena cinemática y banner.
+  - Detalle para Codex: las mayúsculas con tilde salen mal («CRíA DE DRAGóN»), porque `string.upper` no convierte letras con tilde.
+- **Rama de integración `integracion/lanzamiento`:** T21 + T19, con los conflictos de documentos resueltos. Aún no está en `main`.
+- **Prueba en vivo en el Studio de Guillermo** (Claude jugó usando el MCP):
+  - 26 monstruos y el dragón aparecen sin errores.
+  - Se mató a una lagartija y se cobró +2 🏆 como MVP.
+  - El dragón recibe daño.
+  - La evolución a Cría funciona, con cinemática y banner.
+- **Primeros modelos de IA generados por Claude:**
+  - Huevo, Cría, Lagartija (segundo intento) y Salamandra. Ya están en juego y se ven bien.
+  - Se corrigió la orientación de la Salamandra.
+  - `DragonBuilder` ahora orienta los modelos por su pivote.
+  - Detalle en [[Arte-IA]].
+- ⚠️ **Los modelos viven en el archivo del lugar:** hay que guardar en Studio (Ctrl+S).
+
+### T22 Jefe mundial (Claude, rama `integracion/lanzamiento`)
+- El Rey Volcán sale cada 10 min, avisa 60 s antes y pelea 3 min en el cráter.
+- Su vida escala con el servidor.
+- Golpe a los 3 que más daño hacen, lluvia de círculos y fase 2 al 50 %.
+- Ranking en vivo (Top 5) y premios por puesto (×3 / ×2 / ×1,5 / ×1).
+- Botón «Ir al cráter» y trucos `/jefe` y `/jefe 0`.
+- **Verificación:** 12 pruebas simuladas del jefe, y las 25 de monstruos siguen pasando. **Falta probarlo en vivo** cuando Rojo esté conectado.
+- Ficha: [[T22-jefe-mundial]].
+
 ### T21 Monstruos en el mundo (Claude, rama `tarea/T21-monstruos`)
 - **Hecho:**
   - 5 zonas de prueba con puertas por Poder.

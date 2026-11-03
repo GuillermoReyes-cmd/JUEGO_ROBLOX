@@ -2,7 +2,7 @@
 tipo: guía
 sistema: arte 3D con IA
 tarea: T20
-responsable: Guillermo (en Studio)
+responsable: Claude (vía Studio MCP) + Guillermo (guardar el lugar)
 actualizado: 2026-11-03
 ---
 
@@ -10,7 +10,32 @@ actualizado: 2026-11-03
 
 Volver a [[INICIO]] · Dragones en [[Dragones]] · Monstruos en [[Enemigos]]
 
-> **Reparto:** tú generas los modelos en Studio con los textos de esta guía y los guardas con los nombres indicados. El código los detecta solo: los arma, los anima y les pone efectos. Mientras falte alguno, el juego usa una versión provisional hecha con piezas, así que no hay bloqueo.
+> **Reparto actualizado (2026-11-03):**
+> - **Claude genera los modelos directamente en Studio** a través de la conexión MCP (`generate_mesh`), los revisa con capturas, los coloca en `ReplicatedStorage.Assets` y los prueba en juego.
+> - **Guillermo solo tiene que guardar el lugar en Studio (Ctrl+S)**, porque los modelos viven en el archivo del lugar, no en Git.
+> - Mientras falte alguno, el juego usa la versión provisional hecha con piezas.
+
+## ✅ Estado de los modelos
+
+| Modelo | Estado | Notas |
+|---|---|---|
+| `Dragons/Egg/Body` | ✅ En juego | Huevo rojo con escamas y púas; el aura del elemento le da el brillo |
+| `Dragons/Hatchling/Body` | ✅ En juego | Cría chibi muy lograda. **Trae las alas integradas** aunque se pidió sin ellas, así que no lleva `Wing` aparte |
+| `Enemies/Lagartija` | ✅ En juego (2.º intento) | El 1.º salió de pie y con la cabeza cuadrada. Se regeneró pidiendo «gecko, horizontal, cerca del suelo» |
+| `Enemies/Salamandra` | ✅ En juego | Manchas y cola en llamas; venía mirando de lado y se giró −90° |
+| Resto de dragones, monstruos y jefe | ⏳ Pendiente | Se generan en las siguientes tandas |
+
+## 🧠 Lo aprendido al generar (para las próximas tandas)
+- **Studio debe estar en modo edición.** Si está en Play, la generación falla con «should only be called from the server».
+- **Pedir siempre la postura y orientación:** «side view», «horizontal pose», «lying flat». Si no, a veces sale de pie.
+- **«WITHOUT wings» no siempre se respeta.** Hay que revisar cada resultado con una captura.
+- **Orientación:**
+  - El frente debe quedar hacia **−Z**.
+  - En los **monstruos** se fija con el `PivotOffset` de la pieza principal: pivote en la base y sin rotación.
+  - En los **dragones** se quita el `PrimaryPart` y se fija el `WorldPivot`.
+  - `DragonBuilder` ya orienta por el pivote, no por la malla.
+- **Tamaño:** los monstruos se escalan al guardarlos (Lagartija 5 studs, Salamandra 7); los dragones los escala el código según `Config/Dragons`.
+- Los modelos quedan **publicados en el inventario de Guillermo** (cada generación tiene su `publishedAssetId`).
 
 ## 1. Cómo generar un modelo
 1. En Studio abre el **Asistente** (pestaña Inicio o Ver → Asistente).

@@ -14,10 +14,9 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 > ✅ **Plan v3 aprobado el 2026-11-03**, junto con el calendario D-015 (duelos y montar en la actualización 1).
 >
 > **Estado de las tareas en curso:**
-> - [T18](T18-dragon-companero.md): **En revisión**.
-> - [T19](T19-especies-evolucion.md): **asignada a Codex**, ficha lista.
-> - [T21](T21-monstruos-mundo.md): **En revisión**.
-> - Las fichas de T22–T25 se escriben al empezar cada una.
+> - T18, T19, T21 y T22 están unidas en la rama **`integracion/lanzamiento`**. T18, T19 y T21 están **probadas en vivo en Studio**; T22, solo en simulación.
+> - **Falta tu aprobación para fusionar en `main`.**
+> - **Siguientes:** T05 (Codex), T06 + T24 (Claude) y T20 (Claude genera más modelos).
 
 ## Hecho
 
@@ -34,10 +33,10 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 | ID | Tarea | Responsable | Depende de | Archivos principales |
 |---|---|---|---|---|
 | [T18](T18-dragon-companero.md) ✅ En revisión | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
-| [T19](T19-especies-evolucion.md) ✅ Revisada por Claude (aprobada) | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController` (Config solo lectura) |
-| T20 | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Tú** (Studio) | — | `ReplicatedStorage.Assets` |
+| [T19](T19-especies-evolucion.md) ✅ Aprobada (probada en vivo) · arreglo menor pendiente: mayúsculas con tilde | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController` (Config solo lectura) |
+| T20 🔨 4 de 23 hechos | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Claude** (vía MCP) · tú guardas el lugar | — | `ReplicatedStorage.Assets` |
 | [T21](T21-monstruos-mundo.md) ✅ En revisión | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |
-| T22 | **Jefe mundial** cada 10 min con ranking de daño en vivo y premios por puesto | Claude | T21 | `Services/BossService`, `client/BossController` |
+| [T22](T22-jefe-mundial.md) ✅ En revisión | **Jefe mundial** cada 10 min con ranking de daño en vivo y premios por puesto | Claude | T21 | `Services/BossService`, `client/BossController` |
 | T24 | **Boosters** temporales y boosts de servidor + avisos sociales | Claude | T06 | `Services/BoostService`, `client/BoostController`, `Config/Boosts` |
 | T05 | Renacimiento + elemento (efectos sobre el dragón) | Codex | T18 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
 | T06 | Game passes, productos y ProcessReceipt | Claude | — | `Services/ShopService`, `client/ShopController`, `Config/Shop` |

@@ -144,3 +144,19 @@ Volver a [[INICIO]].
 - **Fecha:** 2026-11-03
 - **Decisión:** la colisión de la puerta se quita **solo en el cliente** de quien tiene el Poder. Además, el servidor no deja marcar monstruos de una zona sin su Poder.
 - **Por qué:** la física del personaje la simula su propio cliente: es la forma estándar en Roblox. Si alguien hace trampa y cruza la puerta, el servidor igualmente le impide pelear allí.
+
+## D-019 El jefe es un monstruo especial de MobService
+- **Fecha:** 2026-11-03
+- **Decisión:** el Rey Volcán se crea con `MobService.SpawnBoss` y aprovecha todo el combate de T21. `BossService` solo gestiona el ciclo, el ranking y los premios por puesto.
+- **Por qué:** cero código de combate duplicado y una sola forma de marcar y golpear para el jugador. Los arreglos del combate valen también para el jefe.
+
+## D-020 Claude genera y prueba en Studio vía MCP
+- **Fecha:** 2026-11-03
+- **Decisión:** Claude se conecta al Studio de Guillermo mediante el servidor MCP de Roblox para:
+  - generar los modelos 3D (`generate_mesh`) y revisarlos con capturas;
+  - colocarlos en `Assets`;
+  - jugar pruebas en vivo y leer la consola.
+- **Por qué:** quita a Guillermo el trabajo repetitivo, y los fallos se ven en el juego real y no solo en la simulación.
+- **Límites:**
+  - Guillermo debe **guardar el lugar** (los modelos no están en Git).
+  - Rojo se conecta con un botón que solo Guillermo puede pulsar.

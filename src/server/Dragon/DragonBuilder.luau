@@ -434,10 +434,26 @@ local function prepareTemplate(template: Instance, longest: number, placeAt: CFr
 	if not clone:IsA("Model") then
 		return nil, Vector3.zero, nil
 	end
-	local _, size = clone:GetBoundingBox()
+	-- El frente del modelo lo define su PIVOTE (frente = -Z del pivote), no la rotación
+	-- interna de la malla: las mallas generadas con IA pueden venir giradas por dentro.
+	local function extentsInPivot(): (Vector3, Vector3)
+		local pivot = clone:GetPivot()
+		local box, boxSize = clone:GetBoundingBox()
+		local low, high = Vector3.one * math.huge, -Vector3.one * math.huge
+		for _, sx in { -1, 1 } do
+			for _, sy in { -1, 1 } do
+				for _, sz in { -1, 1 } do
+					local corner = pivot:PointToObjectSpace((box * CFrame.new(boxSize.X / 2 * sx, boxSize.Y / 2 * sy, boxSize.Z / 2 * sz)).Position)
+					low, high = low:Min(corner), high:Max(corner)
+				end
+			end
+		end
+		return (low + high) / 2, high - low
+	end
+	local _, size = extentsInPivot()
 	clone:ScaleTo(clone:GetScale() * longest / math.max(size.X, size.Y, size.Z))
-	local box, newSize = clone:GetBoundingBox()
-	clone:PivotTo(placeAt * facing * box:ToObjectSpace(clone:GetPivot()))
+	local center, newSize = extentsInPivot()
+	clone:PivotTo(placeAt * facing * CFrame.new(-center))
 	local main = clone.PrimaryPart or clone:FindFirstChildWhichIsA("BasePart", true)
 	for _, item in clone:GetDescendants() do
 		if item:IsA("BasePart") then

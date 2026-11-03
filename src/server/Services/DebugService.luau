@@ -6,10 +6,12 @@
 --   /rebirths 2      → fija tus renacimientos
 --   /zona 3          → te lleva al centro de la zona 3
 --   /curar           → vida del dragón al máximo
+--   /jefe            → invoca al Rey Volcán ya (aviso de 3 s) · /jefe 0 → lo retira
 --   /reset           → vuelve todo a 0
 
 local RunService = game:GetService("RunService")
 
+local BossService = require(script.Parent.BossService)
 local DamageService = require(script.Parent.DamageService)
 local DataService = require(script.Parent.DataService)
 local MobService = require(script.Parent.MobService)
@@ -44,6 +46,13 @@ local function onChatted(player: Player, message: string)
 		return
 	elseif command == "curar" then
 		DamageService.Heal(player)
+		return
+	elseif command == "jefe" then
+		if tonumber(amount) == 0 then
+			BossService.EndNow()
+		else
+			BossService.StartNow()
+		end
 		return
 	elseif command == "reset" then
 		data.Power, data.Wins, data.Evolution, data.Rebirths = 0, 0, 1, 0

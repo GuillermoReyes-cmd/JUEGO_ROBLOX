@@ -255,7 +255,9 @@ RunService.Heartbeat:Connect(function()
 		local foePosition = foe.Base.Position
 		local away = (root.Position - foePosition) * Vector3.new(1, 0, 1)
 		away = if away.Magnitude > 0.1 then away.Unit else -look
-		target = foePosition + away * (3 * foe.Scale + size * 0.5 + 3)
+		-- Los monstruos grandes (el jefe) se miden por su altura, no solo por su escala
+		local foeRadius = math.max(3 * foe.Scale, (foe.HitHeight or 0) * 0.8)
+		target = foePosition + away * (foeRadius + size * 0.5 + 3)
 		look = -away
 	end
 
