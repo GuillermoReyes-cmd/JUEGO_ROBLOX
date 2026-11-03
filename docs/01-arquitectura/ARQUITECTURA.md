@@ -143,6 +143,8 @@ Detalle completo en [[T18-dragon-companero]].
 | CombatClick | cliente → servidor | ninguno (el servidor limita a 8/s) | MobService + DamageService |
 | Mobs | servidor → **todos** | `{ Type = "Hit"/"MobAttack"/"Telegraph"/"Explode"/"Death"/"Respawn", MobId, ... }` | MobService |
 | CombatInfo | servidor → un jugador | `{ Type = "Reward"/"NoReward"/"ZoneLocked"/"TooFar"/"TargetLost", ... }` | MobService |
+| Evolve | cliente → servidor | ninguno; máximo una compra cada 0,5 s por jugador | EvolutionService (T19) |
+| Evolved | servidor → todos los clientes | `{ UserId, DisplayName, SpeciesId, SpeciesName, SpeciesType }`, solo tras una compra válida | EvolutionService (T19) |
 
 **Monstruos:**
 - Cada uno es una raíz invisible anclada en `Workspace.Mobs.Mob_<id>`, con los atributos `MobId`, `EnemyIndex`, `Zone`, `HP`, `MaxHP`, `State` (`Idle`, `Chase`, `Return` o `Dead`) y `TargetUserId`.
@@ -162,10 +164,20 @@ Así varias tareas pueden crear botones sin taparse:
 | Derecha, y = 45 % | Contador de combo (T21) |
 | Abajo centro (y = −64 px) | Vida del dragón (T21) |
 | Abajo centro | Texto guía de entrenamiento |
-| Izquierda, botón 1 (y = 35%) | Evolucionar (T04) |
+| Izquierda, botón 1 (y = 35%, 200 × 48 px) | Evolucionar compañero (T19) |
 | Izquierda, botón 2 (y = 45%) | Renacer (T05) |
 | Izquierda, botón 3 (y = 55%) | Tienda (T06) |
 | Centro de la pantalla | Ventanas modales: solo una abierta a la vez |
+
+### Contrato de ventanas modales: ActiveModal
+
+Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` de `PlayerGui`:
+- Para abrir la evolución: `playerGui:SetAttribute("ActiveModal", "Evolution")`. Cada sistema usa su propio identificador.
+- Escuchar `GetAttributeChangedSignal("ActiveModal")` y mostrar la ventana únicamente si el valor coincide con su identificador; cualquier otro valor la cierra.
+- Para cerrar, eliminar el atributo con `SetAttribute("ActiveModal", nil)` solo si la ventana sigue siendo la activa. `nil` significa que no hay modal abierto.
+- El atributo solo coordina la interfaz: no autoriza compras ni cambia datos del servidor.
+
+T19 muestra los avisos sociales debajo del panel de batalla (y = 148 px) durante 4 s, en cola. Solo el dueño recibe una cinemática local de 2 s sobre el dragón reconstruido por T18; T19 no crea modelos ni modifica el avatar.
 
 ## Etiquetas (CollectionService) en el mapa
 

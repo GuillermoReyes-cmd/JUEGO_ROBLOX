@@ -34,7 +34,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 | ID | Tarea | Responsable | Depende de | Archivos principales |
 |---|---|---|---|---|
 | [T18](T18-dragon-companero.md) ✅ En revisión | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
-| [T19](T19-especies-evolucion.md) 📋 Asignada | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController`, `Config/Evolutions` |
+| [T19](T19-especies-evolucion.md) ✅ Revisada por Claude (aprobada) | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController` (Config solo lectura) |
 | T20 | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Tú** (Studio) | — | `ReplicatedStorage.Assets` |
 | [T21](T21-monstruos-mundo.md) ✅ En revisión | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |
 | T22 | **Jefe mundial** cada 10 min con ranking de daño en vivo y premios por puesto | Claude | T21 | `Services/BossService`, `client/BossController` |

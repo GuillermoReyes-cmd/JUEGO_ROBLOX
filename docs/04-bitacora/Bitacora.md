@@ -36,6 +36,15 @@ Volver a [[INICIO]].
 - Es decir, **Claude podría generar los modelos y probar el juego en Studio por sí mismo**.
 - Pendiente: que Guillermo active la conexión.
 
+### T19 Especies y evolución v3 (Codex, rama `tarea/T19-especies`)
+- Rama creada desde `origin/tarea/T18-dragon`. T04 queda sustituida y respaldada en `tarea/T04-evoluciones` (`91a1b0b`), sin integrar partes del avatar.
+- Compra validada de especies con Victorias y límite de una compra cada 0,5 s por jugador. Reconstrucción automática del compañero por T18.
+- Ventana con ActiveModal, nombre y tipo de especie, costos y multiplicador; previa mediante retrato con nombre y colores (alternativa autorizada en la ficha).
+- Cinemática de 2 s solo para el dueño, con restauración de cámara, destello elemental y partículas en espiral. Avisos de 4 s para todos, en cola.
+- Config y módulos del dragón intactos. Contrato de remotes y ActiveModal documentado en arquitectura.
+- Verificación: sintaxis y Rojo correctos; pruebas simuladas del servicio con costos y especies reales aprobadas. Falta comprobar cámara, efectos, replicación y persistencia en Studio; pasos en [[T19-especies-evolucion]].
+- Estado: **En revisión**. Sin merge a main.
+
 ### T18 Dragón compañero (Claude, rama `tarea/T18-dragon`)
 - **Plan v3 aprobado** por Guillermo, con el calendario D-015.
 - **Hecho:**
