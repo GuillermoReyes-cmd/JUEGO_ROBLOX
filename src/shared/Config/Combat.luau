@@ -1,8 +1,8 @@
--- Reglas generales del combate de acción. Diseño: docs/00-vision/Combate.md
--- Los números de cada enemigo están en Config/Enemies.luau.
+-- Reglas generales del combate en el mundo. Diseño: docs/00-vision/Combate.md
+-- Los números de cada monstruo están en Config/Enemies.luau.
 
 return {
-	-- Ataques del jugador (daño = Poder × factor)
+	-- Ataques del dragón (daño = Poder × factor)
 	AutoAttackInterval = 1,
 	AutoDamageFactor = 1,
 	ClickDamageFactor = 0.5,
@@ -13,21 +13,25 @@ return {
 	ComboBonusPerHit = 0.01,
 	ComboMaxBonus = 0.5,
 
-	-- Vida virtual del jugador en batalla
-	PlayerBaseHP = 100,
-	PlayerHPPerEvolution = 15,
+	-- Vida del dragón: 100 + 15 × (evolución − 1)
+	DragonBaseHP = 100,
+	DragonHPPerEvolution = 15,
+	DragonRegenDelay = 4, -- segundos sin recibir daño antes de regenerar
+	DragonRegenPerSecond = 0.15, -- fracción de la vida máxima por segundo
+	FaintSeconds = 5, -- desmayado: no ataca; vuelve con media vida
 
-	-- Ritmo de la batalla
-	CountdownSeconds = 3,
-	EndDelay = 2.5, -- segundos mostrando VICTORIA / DERROTA antes de volver
+	-- Objetivo y monstruos
+	TargetRange = 30, -- distancia máxima para marcar un monstruo
+	LoseTargetRange = 45, -- más lejos que esto se pierde el objetivo
+	LeashRange = 40, -- el monstruo vuelve a casa si se aleja más de esto de su aparición
+	LeashIdleSeconds = 10, -- o si nadie le pega en este tiempo
+	RespawnSeconds = 8,
+	MobTickRate = 0.1, -- el servidor mueve a los monstruos 10 veces por segundo
+	WanderRadius = 8,
 	SpecialJitter = 1, -- variación al azar (± s) del intervalo del especial
-	BossPhase2At = 0.5, -- fracción de vida a la que el jefe pasa a fase 2
+	FirstSpecialDelay = 3, -- segundos desde que empieza la pelea hasta el primer especial
 
-	-- Arenas privadas (una por jugador, lejos del mapa)
-	ArenaOrigin = Vector3.new(5000, 300, 0),
-	ArenaSpacing = 300,
-	ArenaSize = 80,
-	PlayerStartDistance = 16,
-	EnemyDistance = 18,
-	ReturnDistance = 12, -- al volver, aparece a esta distancia de la plataforma
+	-- Recompensas
+	RewardMinShare = 0.1, -- % mínimo del daño para cobrar
+	MVPBonus = 0.5, -- +50 % de 🏆 para quien más daño hizo
 }

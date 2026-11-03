@@ -20,8 +20,9 @@ Juego Roblox/
     │   │   ├── init.luau     → junta todo: require(Shared.Config)  [NÚCLEO]
     │   │   ├── Train.luau
     │   │   ├── Evolutions.luau
-    │   │   ├── Enemies.luau  → enemigos por nivel (vida, ataques, aspecto)
-    │   │   ├── Combat.luau   → reglas generales del combate
+    │   │   ├── Enemies.luau  → monstruos por nivel (vida, velocidad, ataques, aspecto)
+    │   │   ├── Combat.luau   → reglas del combate en el mundo (daño, vida del dragón, correa…)
+    │   │   ├── Zones.luau    → 5 zonas: Poder requerido y qué monstruos aparecen
     │   │   ├── Dragons.luau  → 10 especies del dragón compañero y 5 elementos
     │   │   └── Rebirth.luau
     │   ├── Format.luau       → formato de números (1.2K, 5.6M)
@@ -34,15 +35,18 @@ Juego Roblox/
     │       ├── DataService.luau   → guardar y cargar  [NÚCLEO]
     │       ├── StatsService.luau  → leaderstats + atributos para la interfaz
     │       ├── TrainService.luau  → clic = +Poder
-    │       ├── CombatService.luau → plataformas, arenas privadas y batallas (servidor manda)
     │       ├── DragonService.luau → dragón compañero de cada jugador (Workspace.Dragons), elemento
-    │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /pelea, /reset)
+    │       ├── DamageService.luau → núcleo de daño (auto, clic, combo, crítico) y vida del dragón
+    │       ├── MobService.luau    → zonas, monstruos (raíz en Workspace.Mobs), objetivo, recompensas y MVP
+    │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /zona, /curar, /reset)
     └── client/               → StarterPlayer.StarterPlayerScripts.Client
         ├── HUD.client.luau              → contador ⚡ 🏆 y texto guía
-        ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en batalla)
-        ├── CombatController.client.luau → interfaz y efectos de batalla, clics de ataque
-        ├── DragonController.client.luau → sigue (propio), anima (todos) y reacciona al entrenar
-        └── EnemyVisuals.luau            → dibuja y anima a los enemigos (ModuleScript)
+        ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en combate)
+        ├── CombatController.client.luau → interfaz y efectos de combate, clics de ataque
+        ├── MobController.client.luau    → dibuja los monstruos, barra de vida, marcar con clic, puertas
+        ├── MobRegistry.luau             → registro compartido mobId → visual (ModuleScript)
+        ├── DragonController.client.luau → sigue o vuela al objetivo (propio), anima (todos), reacciona
+        └── EnemyVisuals.luau            → construye y anima el cuerpo de cada monstruo (ModuleScript)
 ```
 
 **Lo que NO está en `src/`:** el mapa (Workspace) y los modelos (`ReplicatedStorage.Assets`). Los construye el humano en Studio y se guardan en el archivo del lugar, no en esta carpeta. Rojo no los toca.
@@ -100,7 +104,11 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 
 | Atributo | En | Lo pone | Significado |
 |---|---|---|---|
-| `InBattle` | Player | CombatService | `true` mientras el jugador está en una arena. Los clics no entrenan y el HUD oculta su texto guía |
+| `InCombat` | Player | MobService | `true` mientras tiene un monstruo marcado. Los clics atacan (no entrenan) y el HUD oculta su texto guía |
+| `CombatTarget` | Player | MobService | `MobId` del monstruo marcado |
+| `DragonHP` / `DragonMaxHP` | Player | DamageService | Vida del dragón: `100 + 15 × (evolución − 1)`. Se regenera fuera de combate |
+| `DragonFainted` | Player | DamageService | `true` durante los 5 s de desmayo |
+| `AttackPulse` | Modelo del dragón (**solo local**) | CombatController | Lo cambia el cliente para que DragonController anime un ataque de ese dragón |
 
 ### Dragón compañero (contrato T18)
 
@@ -131,8 +139,14 @@ Detalle completo en [[T18-dragon-companero]].
 | Nombre | Dirección | Argumentos | Servicio |
 |---|---|---|---|
 | Train | cliente → servidor | ninguno | TrainService |
-| Battle | servidor → cliente | `{ Type = "Start"/"Hit"/"EnemyAttack"/"Telegraph"/"Explode"/"Phase"/"End"/"TooWeak"/"Cooldown", ... }`. Los campos de cada tipo están en [[Combate#8. Reglas técnicas]] | CombatService |
-| BattleClick | cliente → servidor | ninguno (el servidor limita a 8/s) | CombatService |
+| TargetMob | cliente → servidor | `mobId` o `nil` (soltar). El servidor valida la distancia y el Poder de la zona | MobService |
+| CombatClick | cliente → servidor | ninguno (el servidor limita a 8/s) | MobService + DamageService |
+| Mobs | servidor → **todos** | `{ Type = "Hit"/"MobAttack"/"Telegraph"/"Explode"/"Death"/"Respawn", MobId, ... }` | MobService |
+| CombatInfo | servidor → un jugador | `{ Type = "Reward"/"NoReward"/"ZoneLocked"/"TooFar"/"TargetLost", ... }` | MobService |
+
+**Monstruos:**
+- Cada uno es una raíz invisible anclada en `Workspace.Mobs.Mob_<id>`, con los atributos `MobId`, `EnemyIndex`, `Zone`, `HP`, `MaxHP`, `State` (`Idle`, `Chase`, `Return` o `Dead`) y `TargetUserId`.
+- El cuerpo lo dibuja cada cliente en `Workspace.MobVisuals`.
 
 Cada tarea que cree un remote debe añadir aquí su fila.
 
@@ -143,10 +157,10 @@ Así varias tareas pueden crear botones sin taparse:
 | Zona | Uso |
 |---|---|
 | Arriba centro | HUD (⚡ Poder, 🏆 Victorias) |
-| Arriba centro, debajo del HUD (y = 64 px) | Panel de batalla: enemigo, vida, tiempo (T03) |
-| Centro, y = 28% / 36% | Avisos de combate / textos grandes (cuenta atrás, VICTORIA) (T03) |
-| Derecha, y = 45% | Contador de combo (T03) |
-| Abajo centro (y = −64 px) | Vida del jugador en batalla (T03) |
+| Arriba centro, debajo del HUD (y = 64 px) | Panel del monstruo marcado: nombre, vida y «Tu daño %» (T21) |
+| Centro, y = 30 % / 38 % | Avisos de combate / recompensa «+N 🏆 ⭐ MVP» (T21) |
+| Derecha, y = 45 % | Contador de combo (T21) |
+| Abajo centro (y = −64 px) | Vida del dragón (T21) |
 | Abajo centro | Texto guía de entrenamiento |
 | Izquierda, botón 1 (y = 35%) | Evolucionar (T04) |
 | Izquierda, botón 2 (y = 45%) | Renacer (T05) |
@@ -157,5 +171,7 @@ Así varias tareas pueden crear botones sin taparse:
 
 | Tag | Dónde | Atributos | Lo usa |
 |---|---|---|---|
-| `EnemyPad` | Plataforma de cada enemigo en Workspace | `EnemyIndex` (número de `Config.Enemies`) | CombatService (T03) |
+| `Zone` | Suelo de cada zona | `ZoneIndex` (1–5) | MobService (centro para `/zona`) |
+| `MobSpawn` | Punto de aparición (parte invisible) | `ZoneIndex`, `Enemy` (nombre exacto de `Config.Enemies`) | MobService |
+| `ZoneGate` | Puerta de cada zona | `ZoneIndex`, `RequiredPower` | MobController (se abre en el cliente si tienes el Poder) |
 | `TrainZone` | Zona de entrenamiento | `Multiplier` (número) | TrainService (futuro) |

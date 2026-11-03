@@ -13,6 +13,29 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### T21 Monstruos en el mundo (Claude, rama `tarea/T21-monstruos`)
+- **Hecho:**
+  - 5 zonas de prueba con puertas por Poder.
+  - 26 monstruos que deambulan, persiguen, golpean al dragón y lanzan círculos.
+  - Tu dragón vuela al monstruo marcado y lo ataca solo.
+  - Clics = zarpazos con combo y crítico.
+  - Recompensa compartida (≥ 10 % del daño) y MVP +50 %.
+  - Vida del dragón con desmayo de 5 s.
+- **Se eliminó la arena privada (T03 v2).** Sus fórmulas viven ahora en `DamageService`, que reutilizarán el jefe y los duelos.
+- **Verificación:** 25 pruebas simuladas superadas y el proyecto compila. **Falta probarlo en Studio.**
+- La simulación encontró un detalle que se corrigió: al despertar del desmayo, la vida empezaba a regenerarse al instante en vez de volver con el 50 %.
+- Ficha: [[T21-monstruos-mundo]].
+
+### T19 asignada a Codex
+- Ficha [[T19-especies-evolucion]]: compra de evolución, ventana con vista previa, cinemática y aviso al servidor.
+- Rama desde `tarea/T18-dragon`.
+
+### Modelos 3D con IA: Claude puede generarlos (investigación)
+- Studio incluye un **servidor MCP**: Assistant → … → Manage MCP Servers → «Enable Studio as MCP server».
+- Con él, Claude Code puede usar `generate_mesh` (malla 3D con textura a partir de texto) y también `screen_capture`, `start_stop_play`, `get_console_output` y `execute_luau`.
+- Es decir, **Claude podría generar los modelos y probar el juego en Studio por sí mismo**.
+- Pendiente: que Guillermo active la conexión.
+
 ### T18 Dragón compañero (Claude, rama `tarea/T18-dragon`)
 - **Plan v3 aprobado** por Guillermo, con el calendario D-015.
 - **Hecho:**

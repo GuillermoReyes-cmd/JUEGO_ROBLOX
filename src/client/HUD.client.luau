@@ -49,7 +49,7 @@ player:GetAttributeChangedSignal("Power"):Connect(refresh)
 player:GetAttributeChangedSignal("Wins"):Connect(refresh)
 refresh()
 
--- En batalla los clics atacan, así que se oculta el texto de entrenar.
-player:GetAttributeChangedSignal("InBattle"):Connect(function()
-	hint.Visible = not player:GetAttribute("InBattle")
+-- En combate los clics atacan, así que se oculta el texto de entrenar.
+player:GetAttributeChangedSignal("InCombat"):Connect(function()
+	hint.Visible = not player:GetAttribute("InCombat")
 end)

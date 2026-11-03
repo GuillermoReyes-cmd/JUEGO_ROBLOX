@@ -126,3 +126,21 @@ Volver a [[INICIO]].
   - **Lanzamiento (1 dic):** dragón compañero, monstruos en el mundo, jefe mundial, boosters, renacimiento, tienda y mapa.
   - **Actualización 1 (~15 dic):** duelos PvP, montar y evento de Navidad.
 - **Por qué:** el jefe mundial ya da competencia desde el primer día; los duelos requieren más equilibrio y sirven de gran novedad para que la gente vuelva.
+
+## D-016 Monstruos: raíz en el servidor, cuerpo en el cliente
+- **Fecha:** 2026-11-03
+- **Decisión:**
+  - El servidor solo mueve una **raíz invisible** por monstruo, 10 veces por segundo, con su vida y estado en atributos.
+  - Cada cliente **dibuja y anima el cuerpo** y lo desliza suavemente hacia la raíz.
+- **Por qué:** con unos 40 monstruos de ~20 piezas, mover todas las piezas desde el servidor saturaría la red y se vería a tirones. Así el servidor manda en todo, pero lo visual es fluido y gratis para la red.
+- **Consecuencia:** los efectos (números, bolas de fuego, círculos) los dibuja cada cliente a partir de eventos del servidor.
+
+## D-017 Recompensa compartida y MVP
+- **Fecha:** 2026-11-03
+- **Decisión:** todo jugador que haga ≥ 10 % del daño a un monstruo cobra sus 🏆 completas; el de más daño es MVP y cobra +50 %.
+- **Por qué:** evita los «robos» de presa, que frustran, y mantiene la competencia (MVP) que impulsa los boosters de daño. Ver [[Competencia-y-Boosters]].
+
+## D-018 Puertas de zona abiertas en el cliente
+- **Fecha:** 2026-11-03
+- **Decisión:** la colisión de la puerta se quita **solo en el cliente** de quien tiene el Poder. Además, el servidor no deja marcar monstruos de una zona sin su Poder.
+- **Por qué:** la física del personaje la simula su propio cliente: es la forma estándar en Roblox. Si alguien hace trampa y cruza la puerta, el servidor igualmente le impide pelear allí.

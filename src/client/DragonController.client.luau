@@ -10,6 +10,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
+local MobRegistry = require(script.Parent.MobRegistry)
 
 local player = Players.LocalPlayer
 local folder = workspace:WaitForChild("Dragons")
@@ -65,6 +66,14 @@ local function register(model: Instance)
 	end
 	local mouth = model:FindFirstChild("Mouth", true)
 	rig.Breath = mouth and mouth:FindFirstChild("Breath")
+	rig.Owner = Players:GetPlayerByUserId(model:GetAttribute("OwnerId") or 0)
+	-- CombatController pone AttackPulse (solo en este cliente) cuando este dragón golpea.
+	model:GetAttributeChangedSignal("AttackPulse"):Connect(function()
+		rig.AttackT = 0
+		if rig.Breath then
+			rig.Breath:Emit(6 + math.floor(rig.Scale * 4))
+		end
+	end)
 	rigs[model] = rig
 end
 
@@ -126,6 +135,11 @@ local function animate(rig, t: number, dt: number)
 			* CFrame.Angles(-0.3 * mv + math.sin(t * 1.8 + p) * 0.05, 0, math.sin(t * 0.9 + p) * 0.08)
 	end
 	body *= CFrame.new(0, 0, -attack * 0.5 * s) * CFrame.Angles(-attack * 0.12, 0, 0)
+	-- Desmayado: tumbado de lado y casi sin moverse
+	rig.Faint = (rig.Faint or 0) + (((if rig.Owner and rig.Owner:GetAttribute("DragonFainted") then 1 else 0) - (rig.Faint or 0)) * math.min(dt * 4, 1))
+	if rig.Faint > 0.01 then
+		body = body:Lerp(CFrame.new(0, -0.3 * s, 0) * CFrame.Angles(0, 0, 1.3), rig.Faint)
+	end
 	if rig.Joints.Body then
 		rig.Joints.Body.Transform = body
 	end
@@ -204,9 +218,11 @@ local function groundHeight(position: Vector3): number?
 	if player.Character then
 		table.insert(exclude, player.Character)
 	end
-	local fx = workspace:FindFirstChild("CombatFX")
-	if fx then
-		table.insert(exclude, fx)
+	for _, name in { "CombatFX", "MobVisuals" } do
+		local item = workspace:FindFirstChild(name)
+		if item then
+			table.insert(exclude, item)
+		end
 	end
 	rayParams.FilterDescendantsInstances = exclude
 	local result = workspace:Raycast(position + Vector3.new(0, 25, 0), Vector3.new(0, -80, 0), rayParams)
@@ -233,6 +249,16 @@ RunService.Heartbeat:Connect(function()
 	local right = Vector3.new(-look.Z, 0, look.X)
 	local target = root.Position + right * (FOLLOW.Side + size * 0.4) - look * (FOLLOW.Back + size * 0.5)
 
+	-- En combate (y consciente) el dragón vuela junto al monstruo, del lado del jugador, mirándolo.
+	local foe = if player:GetAttribute("DragonFainted") then nil else MobRegistry.Get(player:GetAttribute("CombatTarget"))
+	if foe then
+		local foePosition = foe.Base.Position
+		local away = (root.Position - foePosition) * Vector3.new(1, 0, 1)
+		away = if away.Magnitude > 0.1 then away.Unit else -look
+		target = foePosition + away * (3 * foe.Scale + size * 0.5 + 3)
+		look = -away
+	end
+
 	local ground = groundHeight(target) or (root.Position.Y - 3)
 	local flyHeight = model:GetAttribute("FlyHeight") or 0
 	local height = if flyHeight > 0 then flyHeight + size * 0.25 else model:GetAttribute("RootHeight") or 1
@@ -245,7 +271,7 @@ RunService.Heartbeat:Connect(function()
 	align.Position = target
 
 	local velocity = dragonRoot.AssemblyLinearVelocity * Vector3.new(1, 0, 1)
-	local facing = if velocity.Magnitude > 3 then velocity.Unit else look
+	local facing = if velocity.Magnitude > 3 and not foe then velocity.Unit else look
 	orient.CFrame = CFrame.lookAt(Vector3.zero, facing)
 end)
 
@@ -264,7 +290,7 @@ local function trainReaction()
 end
 
 UserInputService.InputBegan:Connect(function(input, processed)
-	if processed or player:GetAttribute("InBattle") then
+	if processed or player:GetAttribute("InCombat") then
 		return
 	end
 	if input.UserInputType == Enum.UserInputType.MouseButton1

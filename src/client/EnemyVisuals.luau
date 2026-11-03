@@ -1,10 +1,12 @@
--- Dibuja y anima a los enemigos SOLO en el cliente (la arena es privada).
--- Aspectos por nivel en docs/00-vision/Enemigos.md.
+-- Dibuja y anima a los monstruos en el cliente. El servidor solo mueve una raíz
+-- invisible por monstruo (MobService); cada cliente dibuja el cuerpo y lo desliza
+-- suavemente hacia esa raíz (SetTarget). Aspectos en docs/00-vision/Enemigos.md.
 --
--- Cada enemigo es un conjunto de piezas con una pose local (en studs, mirando a -Z).
+-- Cada monstruo es un conjunto de piezas con una pose local (en studs, mirando a -Z).
 -- Cada frame se calcula la pose de cada pieza a partir del tiempo y del estado
 -- (respirar, embestir, recibir golpe, morir) y se mueven todas a la vez con BulkMoveTo.
 -- Si existe un modelo real en ReplicatedStorage.Assets.Enemies.<Nombre>, se usa ese.
+-- Las piezas se pueden seleccionar con un rayo (CanQuery) para marcar al monstruo.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -34,7 +36,7 @@ local function newPart(shape: string, size: Vector3, color: Color3, material: En
 	part.Anchored = true
 	part.CanCollide = false
 	part.CanTouch = false
-	part.CanQuery = false
+	part.CanQuery = true
 	part.CastShadow = false
 	part.TopSurface = Enum.SurfaceType.Smooth
 	part.BottomSurface = Enum.SurfaceType.Smooth
@@ -363,12 +365,14 @@ end
 
 -- API -----------------------------------------------------------------------
 
--- enemy = entrada de Config.Enemies; position = suelo donde se planta; lookAt = hacia dónde mira.
-function EnemyVisuals.new(enemy, position: Vector3, lookAt: Vector3)
+-- enemy = entrada de Config.Enemies; base = CFrame en el suelo mirando al frente;
+-- parent = carpeta donde se dibuja (por defecto workspace).
+function EnemyVisuals.new(enemy, base: CFrame, parent: Instance?)
 	local self = setmetatable({}, EnemyVisuals)
 	self.Enemy = enemy
 	self.Scale = enemy.Look.Scale
-	self.Base = CFrame.lookAt(position, Vector3.new(lookAt.X, position.Y, lookAt.Z))
+	self.Base = base
+	self.TargetBase = base
 	self.Model = Instance.new("Model")
 	self.Model.Name = "Enemy_" .. enemy.Name
 	self.Pieces = {}
@@ -401,9 +405,14 @@ function EnemyVisuals.new(enemy, position: Vector3, lookAt: Vector3)
 	self.Highlight.DepthMode = Enum.HighlightDepthMode.Occluded
 	self.Highlight.Parent = self.Model
 
-	self.Model.Parent = workspace
+	self.Model.Parent = parent or workspace
 	self:Update(0)
 	return self
+end
+
+-- Hacia dónde debe deslizarse el monstruo (la raíz que mueve el servidor).
+function EnemyVisuals:SetTarget(base: CFrame)
+	self.TargetBase = base
 end
 
 -- 0 → 1 → 0 durante la embestida.
@@ -439,6 +448,8 @@ end
 function EnemyVisuals:Update(dt: number)
 	self.Time += dt
 	local t = self.Time
+	-- El servidor actualiza la raíz 10 veces por segundo: se interpola para ir suave.
+	self.Base = self.Base:Lerp(self.TargetBase, math.min(dt * 12, 1))
 
 	if self.AttackT then
 		self.AttackT += dt

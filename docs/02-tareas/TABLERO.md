@@ -15,7 +15,9 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 >
 > **Estado de las tareas en curso:**
 > - [T18](T18-dragon-companero.md): **En revisión**.
-> - Las fichas de T19–T25 se escriben al empezar cada una.
+> - [T19](T19-especies-evolucion.md): **asignada a Codex**, ficha lista.
+> - [T21](T21-monstruos-mundo.md): **En revisión**.
+> - Las fichas de T22–T25 se escriben al empezar cada una.
 
 ## Hecho
 
@@ -24,7 +26,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 | T00 | Configurar Rojo y estructura | Claude | Hecha |
 | T01 | Guardado de datos | Claude | Hecha |
 | T02 | Entrenar con clic en cualquier lugar | Claude | Hecha |
-| [T03](T03-combate.md) | Combate de acción v2 (arena). **Su lógica se reutiliza en T21–T23** | Claude | En revisión → se fusiona como base |
+| [T03](T03-combate.md) | Combate de acción v2 (arena) | Claude | **Sustituida por T21**: la arena se eliminó; sus fórmulas pasaron a `DamageService` |
 | [T04](T04-evoluciones.md) | Evoluciones v1: partes en el avatar | Codex | **Sustituida** por T19 (la compra validada de evoluciones se reutiliza) |
 
 ## Lanzamiento (objetivo 1 de diciembre)
@@ -32,9 +34,9 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 | ID | Tarea | Responsable | Depende de | Archivos principales |
 |---|---|---|---|---|
 | [T18](T18-dragon-companero.md) ✅ En revisión | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
-| T19 | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController`, `Config/Evolutions` |
+| [T19](T19-especies-evolucion.md) 📋 Asignada | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController`, `Config/Evolutions` |
 | T20 | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Tú** (Studio) | — | `ReplicatedStorage.Assets` |
-| T21 | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |
+| [T21](T21-monstruos-mundo.md) ✅ En revisión | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |
 | T22 | **Jefe mundial** cada 10 min con ranking de daño en vivo y premios por puesto | Claude | T21 | `Services/BossService`, `client/BossController` |
 | T24 | **Boosters** temporales y boosts de servidor + avisos sociales | Claude | T06 | `Services/BoostService`, `client/BoostController`, `Config/Boosts` |
 | T05 | Renacimiento + elemento (efectos sobre el dragón) | Codex | T18 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |

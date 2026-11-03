@@ -1,6 +1,6 @@
--- Combate de acción: interfaz, efectos y clics. Diseño: docs/00-vision/Combate.md
--- El servidor decide todo (daño, vida, esquivas). Aquí solo se dibuja y se avisa
--- de cada clic con el remote BattleClick.
+-- Combate en el mundo: interfaz, efectos y clics de ataque. Diseño: docs/00-vision/Combate.md
+-- El servidor decide todo (daño, vida, esquivas, recompensas). Aquí solo se dibuja
+-- y se avisa de cada clic de ataque (CombatClick) mientras hay objetivo (atributo InCombat).
 
 local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
@@ -12,13 +12,14 @@ local UserInputService = game:GetService("UserInputService")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
-local EnemyVisuals = require(script.Parent.EnemyVisuals)
+local MobRegistry = require(script.Parent.MobRegistry)
 
 local C = Config.Combat
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
-local battleEvent = Remotes.Get("Battle")
-local clickEvent = Remotes.Get("BattleClick")
+local mobEvent = Remotes.Get("Mobs")
+local infoEvent = Remotes.Get("CombatInfo")
+local clickEvent = Remotes.Get("CombatClick")
 local random = Random.new()
 
 local ORANGE = Color3.fromRGB(255, 140, 30)
@@ -26,17 +27,18 @@ local RED = Color3.fromRGB(255, 60, 50)
 local GREEN = Color3.fromRGB(110, 255, 120)
 local GOLD = Color3.fromRGB(255, 215, 60)
 
-local battle = nil -- estado local de la batalla en curso
+local myDamage = {} -- [mobId] = daño hecho por mí (para mostrar mi porcentaje)
+local discs = {} -- [mobId] = cola de grupos de discos rojos (por orden de aparición)
 
--- INTERFAZ ------------------------------------------------------------------
+-- INTERFAZ ------------------------------------------------------------------------------
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "BattleUI"
+gui.Name = "CombatUI"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 5
 
 local overlay = Instance.new("ScreenGui")
-overlay.Name = "BattleOverlay"
+overlay.Name = "CombatOverlay"
 overlay.ResetOnSpawn = false
 overlay.IgnoreGuiInset = true
 overlay.DisplayOrder = 4
@@ -78,6 +80,7 @@ vignette.BackgroundTransparency = 1
 vignette.BorderSizePixel = 0
 vignette.Parent = overlay
 
+-- Panel del objetivo (arriba, bajo el HUD)
 local top = Instance.new("Frame")
 top.AnchorPoint = Vector2.new(0.5, 0)
 top.Position = UDim2.new(0.5, 0, 0, 64)
@@ -87,10 +90,11 @@ top.BackgroundTransparency = 0.15
 top.Visible = false
 top.Parent = gui
 Instance.new("UICorner", top).CornerRadius = UDim.new(0, 12)
-local enemyName = label(top, { Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -110, 0, 26), TextXAlignment = Enum.TextXAlignment.Left })
-local timer = label(top, { Position = UDim2.new(1, -96, 0, 6), Size = UDim2.fromOffset(84, 26), TextXAlignment = Enum.TextXAlignment.Right })
-local enemyFill, enemyText = bar(top, UDim2.fromOffset(12, 40), UDim2.new(1, -24, 0, 26), RED)
+local targetName = label(top, { Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -130, 0, 26), TextXAlignment = Enum.TextXAlignment.Left })
+local shareText = label(top, { Position = UDim2.new(1, -118, 0, 6), Size = UDim2.fromOffset(106, 26), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = GOLD })
+local targetFill, targetText = bar(top, UDim2.fromOffset(12, 40), UDim2.new(1, -24, 0, 26), RED)
 
+-- Vida del dragón (abajo)
 local bottom = Instance.new("Frame")
 bottom.AnchorPoint = Vector2.new(0.5, 1)
 bottom.Position = UDim2.new(0.5, 0, 1, -64)
@@ -98,13 +102,13 @@ bottom.Size = UDim2.fromOffset(380, 34)
 bottom.BackgroundTransparency = 1
 bottom.Visible = false
 bottom.Parent = gui
-local playerFill, playerText = bar(bottom, UDim2.new(), UDim2.fromScale(1, 1), Color3.fromRGB(80, 200, 90))
+local dragonFill, dragonText = bar(bottom, UDim2.new(), UDim2.fromScale(1, 1), Color3.fromRGB(80, 200, 90))
 
 local hint = label(gui, {
 	AnchorPoint = Vector2.new(0.5, 1),
 	Position = UDim2.new(0.5, 0, 1, -24),
-	Size = UDim2.fromOffset(520, 30),
-	Text = "👆 ¡Clic = ataques rápidos!   🏃 ¡Esquiva los círculos rojos!",
+	Size = UDim2.fromOffset(560, 30),
+	Text = "👆 Clic = ataques rápidos   🏃 Esquiva los círculos rojos   Q = soltar",
 	Visible = false,
 })
 
@@ -117,18 +121,18 @@ local combo = label(gui, {
 	TextStrokeTransparency = 1,
 })
 
-local center = label(gui, {
+local toast = label(gui, {
 	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.36),
-	Size = UDim2.fromOffset(600, 110),
+	Position = UDim2.fromScale(0.5, 0.3),
+	Size = UDim2.fromOffset(560, 46),
 	TextTransparency = 1,
 	TextStrokeTransparency = 1,
 })
 
-local toast = label(gui, {
+local reward = label(gui, {
 	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.28),
-	Size = UDim2.fromOffset(560, 46),
+	Position = UDim2.fromScale(0.5, 0.38),
+	Size = UDim2.fromOffset(520, 70),
 	TextTransparency = 1,
 	TextStrokeTransparency = 1,
 })
@@ -138,7 +142,6 @@ overlay.Parent = player.PlayerGui
 
 local fadeTweens = {}
 
--- Muestra un texto y lo desvanece después de hold segundos.
 local function flashText(item: TextLabel, text: string, color: Color3, hold: number)
 	if fadeTweens[item] then
 		fadeTweens[item]:Cancel()
@@ -161,12 +164,12 @@ local function flashVignette(strength: number)
 end
 
 local function setBar(fill: Frame, text: TextLabel, value: number, max: number, prefix: string)
-	local ratio = math.clamp(value / max, 0, 1)
+	local ratio = math.clamp(value / math.max(max, 1), 0, 1)
 	TweenService:Create(fill, TweenInfo.new(0.15), { Size = UDim2.fromScale(ratio, 1) }):Play()
 	text.Text = prefix .. Format.Number(math.ceil(value)) .. " / " .. Format.Number(max)
 end
 
--- SACUDIDA DE CÁMARA ----------------------------------------------------------
+-- SACUDIDA DE CÁMARA ------------------------------------------------------------------------
 
 local shake = 0
 
@@ -183,7 +186,7 @@ RunService:BindToRenderStep("CombatShake", Enum.RenderPriority.Camera.Value + 1,
 	shake = math.max(0, shake - dt * 4)
 end)
 
--- EFECTOS 3D ------------------------------------------------------------------
+-- EFECTOS 3D ----------------------------------------------------------------------------------
 
 local fxFolder = Instance.new("Folder")
 fxFolder.Name = "CombatFX"
@@ -228,16 +231,31 @@ local function damageNumber(position: Vector3, text: string, color: Color3, big:
 	Debris:AddItem(anchor, 0.8)
 end
 
-local function fireball(from: Vector3, to: Vector3, onArrive: () -> ())
-	local ball = fxPart(Enum.PartType.Ball, Vector3.one * 1.6, CFrame.new(from), ORANGE)
+-- Bola de fuego con estela desde la boca del dragón hasta el monstruo.
+local function fireball(from: Vector3, to: Vector3, color: Color3, onArrive: () -> ())
+	local ball = fxPart(Enum.PartType.Ball, Vector3.one * 1.4, CFrame.new(from), color)
 	local light = Instance.new("PointLight")
-	light.Color = ORANGE
+	light.Color = color
 	light.Range = 10
 	light.Parent = ball
-	local tween = TweenService:Create(ball, TweenInfo.new(0.22, Enum.EasingStyle.Linear), { CFrame = CFrame.new(to) })
+	local a0 = Instance.new("Attachment")
+	a0.Position = Vector3.new(0, 0.5, 0)
+	a0.Parent = ball
+	local a1 = Instance.new("Attachment")
+	a1.Position = Vector3.new(0, -0.5, 0)
+	a1.Parent = ball
+	local trail = Instance.new("Trail")
+	trail.Attachment0 = a0
+	trail.Attachment1 = a1
+	trail.Color = ColorSequence.new(color)
+	trail.LightEmission = 1
+	trail.Lifetime = 0.2
+	trail.Transparency = NumberSequence.new(0.2, 1)
+	trail.Parent = ball
+	local tween = TweenService:Create(ball, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.new(to) })
 	tween.Completed:Connect(function()
 		ball:Destroy()
-		burst(to, 4, ORANGE)
+		burst(to, 4, color)
 		onArrive()
 	end)
 	tween:Play()
@@ -253,6 +271,36 @@ local function slash(position: Vector3)
 	end
 end
 
+local function dragonOf(userId: number): Model?
+	local folder = workspace:FindFirstChild("Dragons")
+	return folder and folder:FindFirstChild("Dragon_" .. userId)
+end
+
+-- Hace atacar al dragón de un jugador (lo anima DragonController con AttackPulse).
+local function pulseDragon(userId: number)
+	local model = dragonOf(userId)
+	if model then
+		model:SetAttribute("AttackPulse", os.clock())
+	end
+end
+
+local function mouthPosition(userId: number): Vector3?
+	local model = dragonOf(userId)
+	local mouth = model and model:FindFirstChild("Mouth", true)
+	return if mouth and mouth:IsA("Attachment") then mouth.WorldPosition else nil
+end
+
+local function elementColor(): Color3
+	local model = dragonOf(player.UserId)
+	local name = model and model:GetAttribute("Element")
+	for _, element in Config.Dragons.Elements do
+		if element.Name == name then
+			return element.Color
+		end
+	end
+	return ORANGE
+end
+
 local function headPosition(): Vector3?
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
@@ -260,88 +308,38 @@ local function headPosition(): Vector3?
 end
 
 -- Discos rojos en el suelo: el anillo marca el área y el relleno crece hasta explotar.
-local function telegraph(positions: { Vector3 }, radius: number, delay: number)
+local function telegraph(mobId: number, positions: { Vector3 }, radius: number, delay: number)
 	local group = {}
 	for _, position in positions do
-		local flat = CFrame.new(position + Vector3.new(0, 0.12, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+		local flat = CFrame.new(position + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.pi / 2)
 		local ring = fxPart(Enum.PartType.Cylinder, Vector3.new(0.15, radius * 2, radius * 2), flat, RED, 0.7)
 		local fill = fxPart(Enum.PartType.Cylinder, Vector3.new(0.2, 0.2, 0.2), flat * CFrame.new(0.02, 0, 0), RED, 0.35)
 		TweenService:Create(fill, TweenInfo.new(delay, Enum.EasingStyle.Linear), { Size = Vector3.new(0.2, radius * 2, radius * 2) }):Play()
 		table.insert(group, ring)
 		table.insert(group, fill)
+		Debris:AddItem(ring, delay + 1)
+		Debris:AddItem(fill, delay + 1)
 	end
-	table.insert(battle.Discs, group)
+	discs[mobId] = discs[mobId] or {}
+	table.insert(discs[mobId], group)
 end
 
--- BATALLA -------------------------------------------------------------------
-
-local function cleanup()
-	if not battle then
-		return
-	end
-	battle.Visual:Destroy()
-	for _, group in battle.Discs do
-		for _, part in group do
-			part:Destroy()
-		end
-	end
-	battle = nil
-	top.Visible = false
-	bottom.Visible = false
-	hint.Visible = false
-	combo.TextTransparency = 1
-	combo.TextStrokeTransparency = 1
-end
-
-local function onStart(payload)
-	cleanup()
-	local enemy = Config.Enemies[payload.EnemyIndex]
-	local now = os.clock()
-	local lookAt = payload.ArenaCenter + Vector3.new(0, 0, C.PlayerStartDistance)
-	battle = {
-		Enemy = enemy,
-		Visual = EnemyVisuals.new(enemy, payload.EnemyPosition, lookAt),
-		MaxHP = payload.MaxHP,
-		PlayerMaxHP = payload.PlayerMaxHP,
-		FightStart = now + payload.Countdown,
-		EndsAt = now + payload.Countdown + payload.TimeLimit,
-		Discs = {},
-		Ended = false,
-		Tokens = C.MaxClicksPerSecond,
-		TokensAt = now,
-		LastClick = 0,
-	}
-
-	enemyName.Text = (if enemy.IsBoss then "👑 " else "") .. "Nv." .. enemy.Level .. " · " .. enemy.Name
-	setBar(enemyFill, enemyText, payload.MaxHP, payload.MaxHP, "")
-	setBar(playerFill, playerText, payload.PlayerMaxHP, payload.PlayerMaxHP, "❤️ ")
-	top.Visible = true
-	bottom.Visible = true
-	hint.Visible = true
-
-	local current = battle
-	task.spawn(function()
-		for i = payload.Countdown, 1, -1 do
-			if battle ~= current then
-				return
-			end
-			flashText(center, tostring(i), Color3.new(1, 1, 1), 0.5)
-			task.wait(1)
-		end
-		if battle == current then
-			flashText(center, "¡PELEA!", ORANGE, 0.5)
-		end
-	end)
-end
+-- EVENTOS DEL SERVIDOR --------------------------------------------------------------------------
 
 local function onHit(payload)
-	local visual = battle.Visual
+	local visual = MobRegistry.Get(payload.MobId)
+	if not visual then
+		return
+	end
+	if payload.AttackerId ~= player.UserId then
+		-- Golpe de otro jugador: su dragón ataca (sin números, para no llenar la pantalla)
+		pulseDragon(payload.AttackerId)
+		return
+	end
+
+	myDamage[payload.MobId] = (myDamage[payload.MobId] or 0) + payload.Damage
 	local target = visual:GetHitPosition()
 	local function land()
-		if not battle then
-			return
-		end
-		visual:PlayHurt()
 		if payload.Crit then
 			damageNumber(target, "¡CRÍTICO! " .. Format.Number(payload.Damage), GOLD, true)
 			addShake(0.35)
@@ -350,10 +348,11 @@ local function onHit(payload)
 		end
 	end
 
+	pulseDragon(player.UserId)
 	if payload.Source == "Auto" then
-		local from = headPosition()
+		local from = mouthPosition(player.UserId) or headPosition()
 		if from then
-			fireball(from, target, land)
+			fireball(from, target, elementColor(), land)
 		else
 			land()
 		end
@@ -363,31 +362,11 @@ local function onHit(payload)
 			flashText(combo, "x" .. payload.Combo .. " COMBO", if payload.Combo >= 20 then RED else GOLD, C.ComboWindow)
 		end
 	end
-	setBar(enemyFill, enemyText, payload.HP, battle.MaxHP, "")
-end
-
-local function hurtPlayer(damage: number, playerHP: number, strength: number)
-	flashVignette(strength)
-	local head = headPosition()
-	if head then
-		damageNumber(head + Vector3.new(0, 2, 0), "-" .. Format.Number(damage), RED, false)
-	end
-	setBar(playerFill, playerText, playerHP, battle.PlayerMaxHP, "❤️ ")
-end
-
-local function onEnemyAttack(payload)
-	battle.Visual:PlayAttack()
-	local heavy = battle.Enemy.Look.Body == "Titan" or battle.Enemy.Look.Body == "DragonKing"
-	task.delay(0.15, function()
-		if battle then
-			addShake(if heavy then 0.8 else 0.25)
-			hurtPlayer(payload.Damage, payload.PlayerHP, 0.25)
-		end
-	end)
 end
 
 local function onExplode(payload)
-	local group = table.remove(battle.Discs, 1)
+	local queue = discs[payload.MobId]
+	local group = queue and table.remove(queue, 1)
 	if group then
 		for _, part in group do
 			part:Destroy()
@@ -396,97 +375,142 @@ local function onExplode(payload)
 	for _, position in payload.Positions do
 		burst(position + Vector3.new(0, 1, 0), payload.Radius * 2, ORANGE)
 	end
-	addShake(0.6)
-	if payload.Hit then
-		hurtPlayer(payload.Damage, payload.PlayerHP, 0.5)
-	else
+
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local near = false
+	if root then
+		for _, position in payload.Positions do
+			if (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(position.X, 0, position.Z)).Magnitude < payload.Radius + 25 then
+				near = true
+			end
+		end
+	end
+	if near then
+		addShake(0.6)
+	end
+	if table.find(payload.HitUserIds, player.UserId) then
+		flashVignette(0.5)
+		local head = headPosition()
+		if head then
+			damageNumber(head + Vector3.new(0, 2, 0), "-" .. payload.Damage, RED, false)
+		end
+	elseif player:GetAttribute("CombatTarget") == payload.MobId then
 		flashText(toast, "¡ESQUIVADO!", GREEN, 0.5)
 	end
 end
 
-local function onEnd(payload)
-	battle.Ended = true
-	hint.Visible = false
-	if payload.Result == "Won" then
-		battle.Visual:PlayDeath()
-		burst(battle.Visual:GetHitPosition(), 14, GOLD)
-		flashText(center, "¡VICTORIA!  +" .. Format.Number(payload.Wins) .. " 🏆", GREEN, C.EndDelay - 0.6)
-	elseif payload.Result == "Timeout" then
-		flashText(center, "¡SE ACABÓ EL TIEMPO!", RED, C.EndDelay - 0.6)
-	else
-		flashText(center, "DERROTA", RED, C.EndDelay - 0.6)
-	end
-	local current = battle
-	task.delay(C.EndDelay - 0.05, function()
-		if battle == current then
-			cleanup()
-		end
-	end)
-end
-
-battleEvent.OnClientEvent:Connect(function(payload)
+mobEvent.OnClientEvent:Connect(function(payload)
 	local kind = payload.Type
-	if kind == "Start" then
-		onStart(payload)
-		return
-	elseif kind == "TooWeak" then
-		local enemy = Config.Enemies[payload.EnemyIndex]
-		flashText(toast, "Necesitas ⚡ " .. Format.Number(enemy.RequiredPower) .. " para pelear contra " .. enemy.Name, RED, 1.2)
-		return
-	elseif kind == "Cooldown" then
-		flashText(toast, "⏳ Espera " .. payload.Seconds .. "s para pelear de nuevo", Color3.fromRGB(220, 220, 220), 1)
-		return
-	end
-
-	if not battle then
-		return
-	end
 	if kind == "Hit" then
 		onHit(payload)
-	elseif kind == "EnemyAttack" then
-		onEnemyAttack(payload)
 	elseif kind == "Telegraph" then
-		telegraph(payload.Positions, payload.Radius, payload.Delay)
+		telegraph(payload.MobId, payload.Positions, payload.Radius, payload.Delay)
 	elseif kind == "Explode" then
 		onExplode(payload)
-	elseif kind == "Phase" then
-		battle.Visual:SetEnraged()
-		addShake(2)
-		flashText(center, "¡FASE 2!", RED, 1)
-	elseif kind == "End" then
-		onEnd(payload)
+	elseif kind == "MobAttack" then
+		if payload.TargetUserId == player.UserId then
+			task.delay(0.15, function()
+				flashVignette(0.25)
+				addShake(0.25)
+			end)
+		end
+	elseif kind == "Death" then
+		local visual = MobRegistry.Get(payload.MobId)
+		if visual and myDamage[payload.MobId] then
+			burst(visual:GetHitPosition(), 10 * visual.Scale, GOLD)
+		end
+		myDamage[payload.MobId] = nil
 	end
 end)
 
--- Clics: durante la pelea cada clic es un ataque rápido.
+infoEvent.OnClientEvent:Connect(function(payload)
+	local kind = payload.Type
+	if kind == "Reward" then
+		local text = "+" .. Format.Number(payload.Wins) .. " 🏆"
+		if payload.MVP then
+			text ..= "   ⭐ MVP"
+		end
+		flashText(reward, text, if payload.MVP then GOLD else GREEN, 1.2)
+	elseif kind == "NoReward" then
+		flashText(toast, "Hiciste el " .. math.floor(payload.Share * 100) .. "% del daño (mínimo 10%)", Color3.fromRGB(220, 220, 220), 1.2)
+	elseif kind == "ZoneLocked" then
+		flashText(toast, "🔒 Necesitas ⚡ " .. Format.Number(payload.Required) .. " para pelear en esta zona", RED, 1.2)
+	elseif kind == "TooFar" then
+		flashText(toast, "Acércate más para atacar", Color3.fromRGB(220, 220, 220), 0.8)
+	elseif kind == "TargetLost" and payload.Reason == "Fainted" then
+		flashText(toast, "😵 ¡Tu dragón se desmayó! Vuelve en " .. C.FaintSeconds .. " s", RED, 1.5)
+	elseif kind == "TargetLost" and payload.Reason == "TooFar" then
+		flashText(toast, "Te alejaste demasiado", Color3.fromRGB(220, 220, 220), 0.8)
+	end
+end)
+
+-- CLICS DE ATAQUE ----------------------------------------------------------------------------------
 -- Se limita igual que en el servidor para no dibujar golpes que el servidor ignora.
+
+local tokens, tokensAt = C.MaxClicksPerSecond, os.clock()
+
 UserInputService.InputBegan:Connect(function(input, processed)
-	if processed or not battle or battle.Ended then
+	if processed or not player:GetAttribute("InCombat") or player:GetAttribute("DragonFainted") then
 		return
 	end
 	if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
 		return
 	end
 	local now = os.clock()
-	if now < battle.FightStart then
+	tokens = math.min(C.MaxClicksPerSecond, tokens + (now - tokensAt) * C.MaxClicksPerSecond)
+	tokensAt = now
+	if tokens < 1 then
 		return
 	end
-	battle.Tokens = math.min(C.MaxClicksPerSecond, battle.Tokens + (now - battle.TokensAt) * C.MaxClicksPerSecond)
-	battle.TokensAt = now
-	if battle.Tokens < 1 then
-		return
-	end
-	battle.Tokens -= 1
+	tokens -= 1
 	clickEvent:FireServer()
-	slash(battle.Visual:GetHitPosition() + random:NextUnitVector() * 1.2)
+	local visual = MobRegistry.Get(player:GetAttribute("CombatTarget"))
+	if visual then
+		slash(visual:GetHitPosition() + random:NextUnitVector() * 1.2)
+	end
 end)
 
-RunService.RenderStepped:Connect(function(dt)
-	if not battle then
-		return
+-- PANELES -------------------------------------------------------------------------------------------
+
+local function refreshDragonBar()
+	local hp = player:GetAttribute("DragonHP") or 0
+	local maxHP = player:GetAttribute("DragonMaxHP") or 100
+	setBar(dragonFill, dragonText, hp, maxHP, if player:GetAttribute("DragonFainted") then "😵 " else "🐉 ")
+	dragonFill.BackgroundColor3 = if hp / maxHP < 0.3 then RED else Color3.fromRGB(80, 200, 90)
+end
+
+player:GetAttributeChangedSignal("DragonHP"):Connect(refreshDragonBar)
+player:GetAttributeChangedSignal("DragonFainted"):Connect(refreshDragonBar)
+refreshDragonBar()
+
+local mobsFolder = workspace:WaitForChild("Mobs")
+local shown = { MobId = nil, HP = nil }
+
+RunService.RenderStepped:Connect(function()
+	local mobId = player:GetAttribute("CombatTarget")
+	local inCombat = player:GetAttribute("InCombat") == true and mobId ~= nil
+	top.Visible = inCombat
+	hint.Visible = inCombat
+	local hp = player:GetAttribute("DragonHP") or 0
+	local maxHP = player:GetAttribute("DragonMaxHP") or 100
+	bottom.Visible = inCombat or hp < maxHP
+
+	if inCombat then
+		local root = mobsFolder:FindFirstChild("Mob_" .. mobId)
+		local enemy = root and Config.Enemies[root:GetAttribute("EnemyIndex")]
+		if root and enemy then
+			local mobHP = root:GetAttribute("HP") or 0
+			local mobMax = root:GetAttribute("MaxHP") or 1
+			-- Solo se actualiza la barra cuando cambia la vida o el objetivo.
+			if shown.MobId ~= mobId or shown.HP ~= mobHP then
+				shown.MobId, shown.HP = mobId, mobHP
+				targetName.Text = "Nv." .. enemy.Level .. " · " .. enemy.Name
+				setBar(targetFill, targetText, mobHP, mobMax, "")
+				local share = (myDamage[mobId] or 0) / mobMax
+				shareText.Text = "Tu daño " .. math.floor(math.min(share, 1) * 100) .. "%"
+			end
+		end
+	else
+		shown.MobId = nil
 	end
-	battle.Visual:Update(dt)
-	local left = math.max(0, math.ceil(battle.EndsAt - os.clock()))
-	timer.Text = "⏱ " .. left .. "s"
-	timer.TextColor3 = if left <= 10 then RED else Color3.new(1, 1, 1)
 end)
