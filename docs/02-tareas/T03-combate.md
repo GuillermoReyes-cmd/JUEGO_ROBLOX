@@ -1,73 +1,102 @@
-# T03: Enemigos y duelos
+---
+tarea: T03
+responsable: Claude
+rama: tarea/T03-combate
+estado: En revisión
+version: 2
+---
+
+# T03: Combate de acción (v2)
 
 **Responsable:** Claude · **Rama:** `tarea/T03-combate` · **Estado:** En revisión
 
+> La v1 (duelo automático en la plataforma) se descartó porque al probarla se sintió muy básica. Ver [[Decisiones#D-010 Combate de acción en arena privada]].
+
 ## Objetivo
-El jugador pisa la plataforma de un enemigo. Si su Poder alcanza el requerido, gana un duelo de unos 3 segundos y cobra Victorias.
+Pisar la plataforma de un enemigo lleva a una arena privada. Allí:
+- El dragón ataca solo.
+- Cada clic es un ataque rápido, con críticos y combo.
+- Hay que esquivar los círculos rojos de los ataques especiales.
 
-## Contexto
-Implementa la sección 2 («Pelear») y la sección 4 de `docs/00-vision/Diseno-juego-Dragon.md`. Los enemigos ya están en `src/shared/Config/Enemies.luau`. El campo `Wins` ya existe en los datos.
+Cada nivel tiene un enemigo distinto, animado y más impresionante.
 
-## Archivos permitidos
-- Crear:
+## Diseño
+- Reglas, números y sensación de la batalla: [[Combate]].
+- Los 8 enemigos (tabla, aspecto y animaciones): [[Enemigos]].
+
+## Archivos de esta tarea
+- **Creados:**
   - `src/server/Services/CombatService.luau`
   - `src/client/CombatController.client.luau`
-- Editar:
-  - `src/shared/Config/Enemies.luau` (añadir `Cooldown` y `DuelSeconds`)
-  - `docs/01-arquitectura/ARQUITECTURA.md` (tabla de remotes)
-
-## Requisitos
-1. Las plataformas son partes de Workspace con el tag `EnemyPad` y el atributo `EnemyIndex`.
-   - Si no hay ninguna, el servidor crea plataformas de prueba en fila cerca del punto de aparición, **solo en Studio** (`RunService:IsStudio()`).
-   - Cada plataforma muestra un cartel con el nombre del enemigo y el Poder necesario (formateado).
-2. Al tocar una plataforma (`Touched` + validación en el servidor), empieza un duelo de `DuelSeconds`.
-   - Gana si `Power >= RequiredPower`; si no, pierde.
-3. Al ganar: `Wins += enemigo.Wins` y `StatsService.Refresh`.
-4. Hay un tiempo de espera por jugador y enemigo (`Cooldown`). No se puede iniciar otro duelo mientras dura uno.
-5. El cliente muestra una ventana de duelo: barras de vida que bajan y el texto «¡GANASTE! +N 🏆» o «Necesitas X ⚡».
+  - `src/client/EnemyVisuals.luau`
+  - `src/shared/Config/Combat.luau`
+- **Editados:**
+  - `src/shared/Config/Enemies.luau`: campos de batalla y aspecto.
+  - `src/shared/Config/init.luau`: registra `Config.Combat` (núcleo, dueño Claude).
+  - `src/client/TrainController.client.luau`: no entrena en batalla.
+  - `src/client/HUD.client.luau`: oculta el texto guía en batalla.
+  - `src/server/Services/DebugService.luau`: truco `/pelea N`.
+  - `docs/01-arquitectura/ARQUITECTURA.md`.
+- **Documentación (bóveda de Obsidian):**
+  - `docs/INICIO.md`
+  - `docs/00-vision/Combate.md`
+  - `docs/00-vision/Enemigos.md`
+  - `docs/04-bitacora/Bitacora.md`
+  - `docs/05-decisiones/Decisiones.md`
 
 ## Criterios de aceptación
-- [ ] Con 0 de Poder pierdo contra la Lagartija; con 10 o más gano y sube 🏆.
-- [ ] Mientras dura el tiempo de espera no puedo repetir el duelo.
-- [ ] Un cliente modificado que dispare el remote no puede ganar sin el Poder suficiente.
-- [ ] Sintaxis correcta y `rojo build` funciona.
-
-## Fuera de alcance
-El jefe con fases y el Aliento de fuego (T10). Modelos 3D de los enemigos (T08).
+- [ ] Sin el Poder requerido aparece «Necesitas ⚡ X…» y no entra.
+- [ ] Con Poder suficiente entra a la arena, con cuenta atrás 3·2·1·¡PELEA!.
+- [ ] Se ve al enemigo de su nivel, animado.
+- [ ] El dragón lanza bolas de fuego solo (cada 1 s) y los clics hacen zarpazos con números de daño, críticos y combo.
+- [ ] Los círculos rojos dañan si te quedas dentro y muestran «¡ESQUIVADO!» si sales a tiempo.
+- [ ] Ganar suma 🏆 y devuelve al mundo delante de la plataforma.
+- [ ] Perder (vida a 0) o agotar el tiempo devuelve sin premio.
+- [ ] Con el jefe, la fase 2 aparece al 50 %.
+- [ ] En batalla, los clics no entrenan.
+- [ ] Un cliente modificado no puede hacer más de 8 golpes por segundo ni ganar sin pelear.
+- [x] Sintaxis correcta y `rojo build` funciona.
 
 ## Bloqueos
+(ninguno)
 
 ## Resultado
 
 ### Qué se hizo
-- **`CombatService`:**
-  - Configura cada parte con el tag `EnemyPad`: cartel flotante con nombre (👑 si es jefe) y ⚡ necesario, y conexión de `Touched`.
-  - En Studio, si el mapa no tiene plataformas, crea la carpeta `Workspace.TestEnemyPads` con 8 plataformas en fila, 40 studs delante del punto de aparición. Cada una lleva un bloque rojo provisional que crece con la dificultad.
-- **Validación en el servidor:**
-  - El personaje debe estar vivo y realmente encima de la plataforma (margen de 6 studs); así no sirve un `Touched` falso.
-  - Debe tener Poder suficiente.
-  - No puede haber un duelo en curso ni estar en tiempo de espera.
-  - **No hay remote de cliente → servidor**: un cliente modificado no tiene nada que disparar para ganar.
-- **Si no alcanza el Poder no hay duelo:** solo aparece el aviso «Necesitas ⚡ X para vencer a …». Es una decisión de diseño: hacer esperar un duelo que se sabe perdido aburre.
-- **Las Victorias se entregan al terminar el duelo.** Si el jugador sale antes, no cobra.
-- **Los avisos se limitan a uno cada 1,5 s por jugador**, porque `Touched` se dispara muchas veces seguidas.
-- **`Config/Enemies.luau`:** se añadieron `DuelSeconds` (2 a 3,5 s; jefe 6 s) y `Cooldown` (1 a 5 s; jefe 30 s).
-- **`CombatController`:**
-  - Panel de duelo bajo el HUD con dos barras: la del enemigo baja a 0 y la tuya pierde parte.
-  - Avisos en el centro: «¡GANASTE! +N 🏆», «Necesitas ⚡ …» o «⏳ Espera Ns».
+- **Servidor (`CombatService`):**
+  - Arenas privadas que se reutilizan.
+  - Estado de cada batalla y un bucle en `Heartbeat` que maneja auto-ataque, golpes del enemigo, especiales con círculos, fase 2 y tiempo límite.
+  - Validación de la plataforma, límite de 8 clics/s y vida virtual (el personaje no muere).
+  - Si el jugador sale o reaparece, la batalla se cancela.
+- **Cliente:**
+  - `EnemyVisuals` construye los 8 enemigos con piezas y animaciones por código: respirar, embestir, aletear, ondular, tajo, retroceso al recibir golpe, hundirse al morir y brillo rojo en fase 2.
+  - Si existe `ReplicatedStorage.Assets.Enemies.<Nombre>`, usa ese modelo.
+  - `CombatController` dibuja la interfaz y los efectos: bolas de fuego, zarpazos, números, círculos, explosiones, temblor de cámara y combo.
 
 ### Verificación
-- La sintaxis de los 3 archivos es correcta y `rojo build` funciona.
-- Prueba de lógica con un entorno simulado (10 casos, todos superados): sin Poder da aviso y no cobra; los avisos no se repiten; no hay dos duelos a la vez; ganar suma Victorias; el tiempo de espera bloquea; tras la espera se repite; lejos de la plataforma o muerto se ignora.
-- **No probado todavía en Studio.**
+- La sintaxis de todos los archivos es correcta y `rojo build` funciona.
+- **Simulación de batallas con el servicio real: 29 pruebas superadas.** Cubren:
+  - Entrada y requisito de Poder.
+  - Cuenta atrás.
+  - Daño del auto-ataque y de los clics con combo.
+  - El límite de 8 clics.
+  - Victoria con Victorias y regreso.
+  - El tiempo de espera.
+  - Círculo bajo el jugador: golpear y esquivar.
+  - Derrota.
+  - Jefe con vida ×40 y fase 2 una sola vez, con 5 círculos.
+  - Liberar la arena al salir.
+- **No probado todavía en Studio:** el aspecto de los enemigos, las animaciones y la sensación de juego.
 
 ### Cómo probarlo en Studio
-1. Conecta Rojo a esta rama y pulsa **Play**. Delante del punto de aparición aparecen 8 plataformas de colores con su cartel.
-2. Pisa la **Lagartija** con 0 ⚡: aparece «Necesitas ⚡ 10…» y no sube 🏆.
-3. Entrena hasta 10 ⚡ (o escribe `/power 10` en el chat) y pisa la Lagartija: panel de duelo de 2 s, luego «¡GANASTE! +1 🏆».
-4. Quédate encima y muévete: aparece «⏳ Espera…» y no cobras. Baja y vuelve a subir tras 1 s: puedes repetir.
-5. Escribe `/power 5000000` y prueba el **Rey Volcán**: duelo de 6 s, +1000 🏆 y 30 s de espera.
+1. Conecta Rojo a esta rama y pulsa **Play**. Delante de ti verás 8 plataformas brillantes con su cartel (nivel, ⚡ necesario, 🏆).
+2. **Lagartija:**
+   - Pisa la plataforma con 0 ⚡: debe salir el aviso.
+   - Escribe `/power 10` en el chat y vuelve a pisarla: entras a la arena.
+   - Clica rápido y muévete cuando aparezca el círculo rojo.
+3. **Para ver cada enemigo directamente:** escribe `/power 5000000` y luego `/pelea 1` … `/pelea 8`. El 8 es el jefe Rey Volcán, con fase 2.
+4. **Para perder a propósito:** escribe `/power 10` y `/pelea 5`. El Poder es muy bajo y no da tiempo.
 
 ### Pendiente
-- Modelos y animaciones reales de enemigos (T08), jefe con fases y Aliento de fuego (T10).
-- En el mapa definitivo, cada plataforma necesita el tag `EnemyPad` y el atributo `EnemyIndex` (1–8). Se ponen en Studio: Propiedades → Atributos y Etiquetas.
+- Ajustar números (vida, daño, tiempos) cuando se sienta en juego. Todo está en `Config/Combat.luau` y `Config/Enemies.luau`.
+- Modelos reales de enemigos (T09), Aliento de fuego (T10) y sonidos (T16).

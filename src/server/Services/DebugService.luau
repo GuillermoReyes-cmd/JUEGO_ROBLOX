@@ -4,11 +4,12 @@
 --   /wins 5000       → fija tus Victorias
 --   /evo 5           → fija tu evolución
 --   /rebirths 2      → fija tus renacimientos
+--   /pelea 3         → entra directo a la batalla contra el enemigo 3 (sin requisito de Poder)
 --   /reset           → vuelve todo a 0
 
-local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
+local CombatService = require(script.Parent.CombatService)
 local DataService = require(script.Parent.DataService)
 local StatsService = require(script.Parent.StatsService)
 
@@ -33,7 +34,10 @@ local function onChatted(player: Player, message: string)
 	end
 	command = string.lower(command)
 
-	if command == "reset" then
+	if command == "pelea" then
+		CombatService.StartBattle(player, tonumber(amount) or 1)
+		return
+	elseif command == "reset" then
 		data.Power, data.Wins, data.Evolution, data.Rebirths = 0, 0, 1, 0
 	elseif FIELDS[command] and tonumber(amount) then
 		data[FIELDS[command]] = tonumber(amount)

@@ -50,8 +50,9 @@ end
 
 -- processed = true cuando el clic cayó sobre un botón u otra interfaz
 -- (por ejemplo el joystick o el botón de saltar en móvil), así no entrena por error.
+-- En batalla (atributo InBattle) los clics son ataques: los maneja CombatController.
 UserInputService.InputBegan:Connect(function(input, processed)
-	if processed then
+	if processed or player:GetAttribute("InBattle") then
 		return
 	end
 

@@ -1,14 +1,112 @@
--- Enemigos del Mundo 1. Fuente: docs/00-vision/Diseno-juego-Dragon.md, sección 4.
--- RequiredPower = Poder mínimo para ganar · Wins = Victorias al ganar
--- DuelSeconds = duración del duelo · Cooldown = segundos de espera antes de repetir
+-- Enemigos del Mundo 1. Diseño y tabla: docs/00-vision/Enemigos.md
+--   RequiredPower  Poder mínimo para entrar a la batalla
+--   Wins           Victorias al ganar
+--   Cooldown       segundos antes de poder repetir contra el mismo enemigo
+--   HPMultiplier   vida del enemigo = RequiredPower × HPMultiplier
+--   TimeLimit      segundos para ganar
+--   Basic          golpe normal (no se esquiva): Damage cada Interval s
+--   Special        círculos rojos esquivables: cada Interval s, Count círculos de Radius studs,
+--                  explotan tras Telegraph s y quitan Damage
+--   Phase2         (solo jefe) cambios al bajar de Combat.BossPhase2At de vida
+--   Look           aspecto por código (Body = constructor en client/EnemyVisuals)
 
 return {
-	{ Name = "Lagartija", RequiredPower = 10, Wins = 1, DuelSeconds = 2, Cooldown = 1 },
-	{ Name = "Salamandra", RequiredPower = 75, Wins = 3, DuelSeconds = 2, Cooldown = 1 },
-	{ Name = "Gólem de lava", RequiredPower = 500, Wins = 8, DuelSeconds = 2.5, Cooldown = 2 },
-	{ Name = "Serpiente de fuego", RequiredPower = 3000, Wins = 20, DuelSeconds = 2.5, Cooldown = 2 },
-	{ Name = "Wyvern", RequiredPower = 20000, Wins = 50, DuelSeconds = 3, Cooldown = 3 },
-	{ Name = "Caballero Cazadragones", RequiredPower = 120000, Wins = 120, DuelSeconds = 3, Cooldown = 3 },
-	{ Name = "Titán de Magma", RequiredPower = 800000, Wins = 300, DuelSeconds = 3.5, Cooldown = 5 },
-	{ Name = "Rey Volcán", RequiredPower = 5000000, Wins = 1000, DuelSeconds = 6, Cooldown = 30, IsBoss = true },
+	{
+		Name = "Lagartija",
+		Level = 1,
+		RequiredPower = 10,
+		Wins = 1,
+		Cooldown = 2,
+		HPMultiplier = 20,
+		TimeLimit = 40,
+		Basic = { Damage = 3, Interval = 1.6 },
+		Special = { Interval = 7, Count = 1, Radius = 7, Telegraph = 1.4, Damage = 20 },
+		Look = { Body = "Lizard", Scale = 1, Color = Color3.fromRGB(110, 140, 60), Accent = Color3.fromRGB(200, 210, 140) },
+	},
+	{
+		Name = "Salamandra",
+		Level = 2,
+		RequiredPower = 75,
+		Wins = 3,
+		Cooldown = 2,
+		HPMultiplier = 20,
+		TimeLimit = 40,
+		Basic = { Damage = 4, Interval = 1.5 },
+		Special = { Interval = 6.5, Count = 1, Radius = 8, Telegraph = 1.3, Damage = 22 },
+		Look = { Body = "Salamander", Scale = 1.4, Color = Color3.fromRGB(235, 120, 30), Accent = Color3.fromRGB(255, 220, 60) },
+	},
+	{
+		Name = "Gólem de lava",
+		Level = 3,
+		RequiredPower = 500,
+		Wins = 8,
+		Cooldown = 3,
+		HPMultiplier = 22,
+		TimeLimit = 40,
+		Basic = { Damage = 5, Interval = 1.6 },
+		Special = { Interval = 6, Count = 1, Radius = 10, Telegraph = 1.3, Damage = 25 },
+		Look = { Body = "Golem", Scale = 1, Color = Color3.fromRGB(70, 60, 60), Accent = Color3.fromRGB(255, 120, 20) },
+	},
+	{
+		Name = "Serpiente de fuego",
+		Level = 4,
+		RequiredPower = 3000,
+		Wins = 20,
+		Cooldown = 3,
+		HPMultiplier = 22,
+		TimeLimit = 40,
+		Basic = { Damage = 5, Interval = 1.3 },
+		Special = { Interval = 6, Count = 2, Radius = 8, Telegraph = 1.2, Damage = 25 },
+		Look = { Body = "Serpent", Scale = 1, Color = Color3.fromRGB(200, 40, 30), Accent = Color3.fromRGB(255, 170, 40) },
+	},
+	{
+		Name = "Wyvern",
+		Level = 5,
+		RequiredPower = 20000,
+		Wins = 50,
+		Cooldown = 4,
+		HPMultiplier = 24,
+		TimeLimit = 40,
+		Basic = { Damage = 6, Interval = 1.3 },
+		Special = { Interval = 5.5, Count = 2, Radius = 9, Telegraph = 1.1, Damage = 28 },
+		Look = { Body = "Wyvern", Scale = 1, Color = Color3.fromRGB(110, 40, 120), Accent = Color3.fromRGB(220, 50, 60) },
+	},
+	{
+		Name = "Caballero Cazadragones",
+		Level = 6,
+		RequiredPower = 120000,
+		Wins = 120,
+		Cooldown = 4,
+		HPMultiplier = 24,
+		TimeLimit = 40,
+		Basic = { Damage = 7, Interval = 1.2 },
+		Special = { Interval = 5, Count = 3, Radius = 8, Telegraph = 1.1, Damage = 28 },
+		Look = { Body = "Knight", Scale = 1.3, Color = Color3.fromRGB(190, 195, 205), Accent = Color3.fromRGB(200, 30, 40) },
+	},
+	{
+		Name = "Titán de Magma",
+		Level = 7,
+		RequiredPower = 800000,
+		Wins = 300,
+		Cooldown = 5,
+		HPMultiplier = 26,
+		TimeLimit = 40,
+		Basic = { Damage = 8, Interval = 1.4 },
+		Special = { Interval = 5, Count = 3, Radius = 11, Telegraph = 1, Damage = 32 },
+		Look = { Body = "Titan", Scale = 2, Color = Color3.fromRGB(35, 30, 30), Accent = Color3.fromRGB(255, 90, 10) },
+	},
+	{
+		Name = "Rey Volcán",
+		Level = 8,
+		IsBoss = true,
+		RequiredPower = 5000000,
+		Wins = 1000,
+		Cooldown = 30,
+		HPMultiplier = 40,
+		TimeLimit = 75,
+		Basic = { Damage = 8, Interval = 1.2 },
+		Special = { Interval = 5, Count = 3, Radius = 10, Telegraph = 1.1, Damage = 30 },
+		Phase2 = { Count = 5, IntervalMultiplier = 0.6 },
+		Look = { Body = "DragonKing", Scale = 1, Color = Color3.fromRGB(90, 25, 15), Accent = Color3.fromRGB(255, 140, 0) },
+	},
 }

@@ -23,7 +23,7 @@ En este sprint T03, T04, T05, T08 y T09 pueden ir **en paralelo**.
 
 | ID | Tarea | Responsable | Estado | Archivos principales | Depende de |
 |---|---|---|---|---|---|
-| [T03](T03-combate.md) | Enemigos y duelos | Claude | En revisión | `Services/CombatService`, `client/CombatController`, `Config/Enemies` | — |
+| [T03](T03-combate.md) | Combate de acción v2 (arena, auto-ataque, clics, esquivar, enemigos animados) | Claude | En revisión | `Services/CombatService`, `client/CombatController`, `client/EnemyVisuals`, `Config/Combat`, `Config/Enemies` | — |
 | [T04](T04-evoluciones.md) | Evoluciones + partes visuales | **Codex** | Pendiente | `Services/EvolutionService`, `client/EvolutionController`, `Config/Evolutions` | — |
 | [T05](T05-renacimiento.md) | Renacimiento + elementos | **Codex** | Pendiente | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` | — |
 | T08 | Mapa del Mundo 1 «Volcán» | **Tú** (Studio) | Pendiente | Workspace (no está en `src/`) | — |

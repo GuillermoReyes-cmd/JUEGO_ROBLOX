@@ -20,7 +20,8 @@ Juego Roblox/
     │   │   ├── init.luau     → junta todo: require(Shared.Config)  [NÚCLEO]
     │   │   ├── Train.luau
     │   │   ├── Evolutions.luau
-    │   │   ├── Enemies.luau
+    │   │   ├── Enemies.luau  → enemigos por nivel (vida, ataques, aspecto)
+    │   │   ├── Combat.luau   → reglas generales del combate
     │   │   └── Rebirth.luau
     │   ├── Format.luau       → formato de números (1.2K, 5.6M)
     │   └── Remotes.luau      → Remotes.Get("Nombre")  [NÚCLEO]
@@ -30,10 +31,13 @@ Juego Roblox/
     │       ├── DataService.luau   → guardar y cargar  [NÚCLEO]
     │       ├── StatsService.luau  → leaderstats + atributos para la interfaz
     │       ├── TrainService.luau  → clic = +Poder
-    │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /reset)
+    │       ├── CombatService.luau → plataformas, arenas privadas y batallas (servidor manda)
+    │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /pelea, /reset)
     └── client/               → StarterPlayer.StarterPlayerScripts.Client
-        ├── HUD.client.luau             → contador ⚡ 🏆 y texto guía
-        └── TrainController.client.luau → clic en cualquier lugar = entrenar
+        ├── HUD.client.luau              → contador ⚡ 🏆 y texto guía
+        ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en batalla)
+        ├── CombatController.client.luau → interfaz y efectos de batalla, clics de ataque
+        └── EnemyVisuals.luau            → dibuja y anima a los enemigos (ModuleScript)
 ```
 
 **Lo que NO está en `src/`:** el mapa (Workspace) y los modelos (`ReplicatedStorage.Assets`). Los construye el humano en Studio y se guardan en el archivo del lugar, no en esta carpeta. Rojo no los toca.
@@ -87,12 +91,19 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 
 `StatsService.Refresh(player)` copia estos campos a atributos del jugador (`Power`, `Wins`, `Evolution`, `Rebirths`). El cliente los lee con `player:GetAttribute(...)`.
 
+### Atributos de estado (no se guardan)
+
+| Atributo | En | Lo pone | Significado |
+|---|---|---|---|
+| `InBattle` | Player | CombatService | `true` mientras el jugador está en una arena. Los clics no entrenan y el HUD oculta su texto guía |
+
 ## RemoteEvents existentes
 
 | Nombre | Dirección | Argumentos | Servicio |
 |---|---|---|---|
 | Train | cliente → servidor | ninguno | TrainService |
-| Duel | servidor → cliente | `{ Phase = "Start"/"Won"/"TooWeak"/"Cooldown", EnemyIndex, Duration?, Wins?, Seconds? }` | CombatService |
+| Battle | servidor → cliente | `{ Type = "Start"/"Hit"/"EnemyAttack"/"Telegraph"/"Explode"/"Phase"/"End"/"TooWeak"/"Cooldown", ... }`. Los campos de cada tipo están en [[Combate#8. Reglas técnicas]] | CombatService |
+| BattleClick | cliente → servidor | ninguno (el servidor limita a 8/s) | CombatService |
 
 Cada tarea que cree un remote debe añadir aquí su fila.
 
@@ -103,8 +114,10 @@ Así varias tareas pueden crear botones sin taparse:
 | Zona | Uso |
 |---|---|
 | Arriba centro | HUD (⚡ Poder, 🏆 Victorias) |
-| Arriba centro, debajo del HUD (y = 68 px) | Panel de duelo (T03) |
-| Centro, y = 30% | Avisos breves de combate (T03) |
+| Arriba centro, debajo del HUD (y = 64 px) | Panel de batalla: enemigo, vida, tiempo (T03) |
+| Centro, y = 28% / 36% | Avisos de combate / textos grandes (cuenta atrás, VICTORIA) (T03) |
+| Derecha, y = 45% | Contador de combo (T03) |
+| Abajo centro (y = −64 px) | Vida del jugador en batalla (T03) |
 | Abajo centro | Texto guía de entrenamiento |
 | Izquierda, botón 1 (y = 35%) | Evolucionar (T04) |
 | Izquierda, botón 2 (y = 45%) | Renacer (T05) |
