@@ -160,3 +160,17 @@ Volver a [[INICIO]].
 - **Límites:**
   - Guillermo debe **guardar el lugar** (los modelos no están en Git).
   - Rojo se conecta con un botón que solo Guillermo puede pulsar.
+
+## D-021 Giro a «roba un huevo» con montar dragones
+- **Fecha:** 2026-11-03
+- **Estado:** propuesta, **pendiente de que Guillermo la apruebe**.
+- **Decisión:** el juego pasa a ser «Roba un Huevo de Dragón». El bucle es robar huevos a dragonas madre dormidas → incubarlos en tu guarida → los dragones dan oro → mejorar → nidos más raros. Se montan los dragones con animaciones al estilo de «Montar un dinosaurio». Diseño completo en [[Vision-v4]].
+- **Por qué:**
+  - La v3 tenía muchos sistemas pero no un objetivo que se entienda en 5 segundos.
+  - Guillermo prefiere la estructura de «Roba un huevo» y los personajes y animaciones de «Montar un dinosaurio».
+  - Estos géneros lideran Roblox en noviembre de 2026; «Montar un dinosaurio» lleva 31 M de visitas en 10 semanas.
+- **Consecuencias:**
+  - Se conservan los rigs, la animación, la IA de monstruos, el ciclo del jefe y el guardado.
+  - Se retiran el clic +1, el combate y la evolución por compra (siguen en Git).
+  - Solo se pueden robar **huevos en incubación**, nunca dragones ya conseguidos, para no frustrar a los jugadores.
+- **Riesgo conocido:** «Monta un dragón» (sep 2026) es un competidor directo. Nos diferenciamos con las madres dormidas, la mitología real, el evento de la Dragona Reina y mejores animaciones.

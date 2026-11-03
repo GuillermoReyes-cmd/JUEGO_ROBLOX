@@ -13,6 +13,18 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### Propuesta v4: «Roba un Huevo de Dragón» (Claude)
+- **Petición de Guillermo:** no veía claro el objetivo del juego. Prefiere algo tipo «Roba un huevo», con los personajes y animaciones de «Montar un dinosaurio».
+- **Investigación con la API de Roblox:**
+  - «Montar un dinosaurio»: 12.500 jugadores, 97 % de me gusta, 96 productos.
+  - «Montar una mascota».
+  - «Roba una mascota y móntala»: robar a jefes dormidos.
+  - «Monta un dragón»: competidor directo.
+  - Se tomaron precios, descripciones y miniaturas para ver el estilo.
+- **Documento:** [[Vision-v4]], con objetivo, bucle, sistemas, especies, monetización, qué se reutiliza, calendario de 4 semanas y riesgos.
+- **Decisión:** [[Decisiones#D-021 Giro a «roba un huevo» con montar dragones]] (pendiente de aprobar).
+- **Tareas v3 en pausa** hasta que se apruebe.
+
 ### Claude conectado a Studio por MCP: pruebas en vivo y modelos de IA
 - **Revisión de T19 (Codex): aprobada.**
   - Respetó sus archivos.

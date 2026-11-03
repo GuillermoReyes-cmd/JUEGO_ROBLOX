@@ -9,6 +9,8 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 - **Codex:** sistemas aislados con ficha detallada.
 - **Tú:** Studio (mapa y modelos con IA), pruebas, publicar y decidir los merges.
 
+> ⏸️ **En pausa (2026-11-03):** hay una propuesta de giro a [[Vision-v4]] («Roba un Huevo de Dragón»). Si se aprueba, este tablero se rehace con las tareas T30–T38.
+
 **Regla de oro:** dos tareas «En curso» a la vez **no pueden compartir archivos**.
 
 > ✅ **Plan v3 aprobado el 2026-11-03**, junto con el calendario D-015 (duelos y montar en la actualización 1).

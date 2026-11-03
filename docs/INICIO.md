@@ -14,7 +14,8 @@ Juego de Roblox del género «+1». Cada clic hace más fuerte a **tu dragón co
 
 | Área | Nota | Para qué |
 |---|---|---|
-| Visión | [[Vision-v3]] | **Concepto actual:** entrenador + dragón, bucle y calendario |
+| Visión | [[Vision-v4]] | **Propuesta nueva:** «Roba un Huevo de Dragón» (robar, incubar, montar) |
+| Visión | [[Vision-v3]] | Concepto anterior: entrenador + dragón con combate |
 | Visión | [[Dragones]] | Las 10 especies, de huevo a Níðhöggr, y los elementos |
 | Visión | [[Combate]] | Monstruos en el mundo, jefe mundial y duelos |
 | Visión | [[Enemigos]] | Zonas del mapa y monstruos |
@@ -30,6 +31,7 @@ Juego de Roblox del género «+1». Cada clic hace más fuerte a **tu dragón co
 | Reglas IA | [[AGENTS]] | Reglas que siguen Codex y Claude |
 
 ## 📌 Estado actual
+- 📝 **Propuesta v4** ([[Vision-v4]]): giro a «roba un huevo» con monturas. **Pendiente de aprobar**; las tareas de la v3 están en pausa.
 - ✅ **Base:** Rojo, guardado, entrenar con clic en cualquier lugar.
 - ✅ **Lógica de combate probada** (T03 v2, 29 pruebas). Se reutiliza en la v3.
 - 📝 **Diseño v3** escrito y **pendiente de aprobar** (entrenador + dragón, combate en el mundo, competencia y modelos con IA).
