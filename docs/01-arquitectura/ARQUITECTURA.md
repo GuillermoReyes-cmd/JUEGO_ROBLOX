@@ -92,6 +92,7 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | Nombre | Dirección | Argumentos | Servicio |
 |---|---|---|---|
 | Train | cliente → servidor | ninguno | TrainService |
+| Duel | servidor → cliente | `{ Phase = "Start"/"Won"/"TooWeak"/"Cooldown", EnemyIndex, Duration?, Wins?, Seconds? }` | CombatService |
 
 Cada tarea que cree un remote debe añadir aquí su fila.
 
@@ -102,6 +103,8 @@ Así varias tareas pueden crear botones sin taparse:
 | Zona | Uso |
 |---|---|
 | Arriba centro | HUD (⚡ Poder, 🏆 Victorias) |
+| Arriba centro, debajo del HUD (y = 68 px) | Panel de duelo (T03) |
+| Centro, y = 30% | Avisos breves de combate (T03) |
 | Abajo centro | Texto guía de entrenamiento |
 | Izquierda, botón 1 (y = 35%) | Evolucionar (T04) |
 | Izquierda, botón 2 (y = 45%) | Renacer (T05) |
