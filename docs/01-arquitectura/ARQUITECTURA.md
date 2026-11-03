@@ -228,3 +228,7 @@ Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` 
 | Tag | Dónde | Contenido | Lo usa |
 |---|---|---|---|
 | `Base` | `Model` de cada guarida (8) | Hijos `Incubator1..8`, `Pen1..12`, `CollectPlate`, `Spawn`, `Sign`, `Door` (todos BasePart). La entrada mira al eje Z+ local del pivote. Si no hay ninguna, BaseService construye 8 provisionales | BaseService, BaseController |
+
+## T35 · Mejoras
+- Remote `Upgrade`: cliente→servidor, solo Id. Niveles en `Upgrades`; atributos `Upgrade<Id>` y `Stealth`, `Saddle`, `Radar`.
+- `UpgradeService.Refresh(player)` reaplica atributos y WalkSpeed después de cambios de datos. ActiveModal `Upgrades`.

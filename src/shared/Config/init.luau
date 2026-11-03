@@ -11,6 +11,7 @@ Config.Dragons = require(script.Dragons)
 Config.Eggs = require(script.Eggs)
 Config.Rebirth = require(script.Rebirth)
 Config.Species = require(script.Species)
+Config.Upgrades = require(script.Upgrades)
 
 
 return Config

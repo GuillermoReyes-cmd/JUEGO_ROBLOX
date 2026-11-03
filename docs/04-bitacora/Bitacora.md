@@ -234,3 +234,6 @@ Volver a [[INICIO]].
 - Merge de T34 en origin/T30, conservando documentación de ambas ramas y los cinco módulos Config vigentes.
 - T30 y T34 en integración. Limpieza del recurso legado 203785492 en el clon de HatchReveal; el modelo original de Studio no se modifica.
 - Verificación: sintaxis de todos los Luau y Rojo. Validación visual del asset pendiente en Studio.
+
+## 2026-11-03 · T35
+Seis mejoras con oro, ventana adaptable, validación de Id, límites y antispam. Sintaxis y build correctos; prueba interactiva pendiente.

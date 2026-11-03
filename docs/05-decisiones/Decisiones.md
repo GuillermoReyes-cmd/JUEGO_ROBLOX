@@ -174,3 +174,6 @@ Volver a [[INICIO]].
   - Se retiran el clic +1, el combate y la evolución por compra (siguen en Git).
   - Solo se pueden robar **huevos en incubación**, nunca dragones ya conseguidos, para no frustrar a los jugadores.
 - **Riesgo conocido:** «Monta un dragón» (sep 2026) es un competidor directo. Nos diferenciamos con las madres dormidas, la mitología real, el evento de la Dragona Reina y mejores animaciones.
+
+## T35 · Niveles y costes (2026-11-03)
+Upgrades usa claves Incubator, Pen, Boots, Stealth, Saddle y Radar. Costes geométricos configurables. Stealth/Saddle/Radar solo exponen nivel hasta T31/T32; no simulan efectos aún inexistentes.

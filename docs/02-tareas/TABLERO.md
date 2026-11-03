@@ -36,7 +36,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | T31 | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |
 | T32 | **Montar:** silla, jinete, riendas, ciclo de patas, polvo, velocidad por especie | Claude | 2 | T30 | `DragonBuilder`, `DragonController`, `Services/MountService` |
 | T33 | **Robo entre jugadores:** empujón, huevo en el suelo, puerta y escudo | Claude | 2 | T30, T31 | `Services/RaidService`, `client/RaidController` |
-| T35 | **Mejoras con oro** (incubadora, corral, botas, sigilo, silla, radar) | Codex | 2 | T30 | `Services/UpgradeService`, `client/UpgradeController`, `Config/Upgrades` |
+| [T35](T35-mejoras.md) En revisión | **Mejoras con oro** (incubadora, corral, botas, sigilo, silla, radar) | Codex | 2 | T30 | `Services/UpgradeService`, `client/UpgradeController`, `Config/Upgrades` |
 | T13 | **Rankings** (oro/s, huevos robados) en tablones 3D | Codex | 2 | T30 | `Services/LeaderboardService` |
 | T06 | **Tienda Robux:** pases, productos, `ProcessReceipt` | Claude | 3 | T30–T35 | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
 | T36 | **Evento Dragona Reina** cada 10 min | Claude | 3 | T31 | `Services/BossService` (se adapta) |
