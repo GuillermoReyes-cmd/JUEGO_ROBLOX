@@ -31,7 +31,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | ID | Tarea | Responsable | Semana | Depende de | Archivos principales |
 |---|---|---|---|---|---|
 | [T34](T34-huevos-eclosion.md) | **Huevos, rarezas, mutaciones y eclosión** (catálogo, tiradas, probabilidades visibles, revelado) | **Codex** | 1 | — | `Config/Eggs`, `Config/Species`, `EggOdds`, `EggRoller`, `HatchReveal`, `EggOddsGui` |
-| T30 | **Guaridas:** asignar una por jugador, incubadoras, corrales, oro por segundo, placa de cobro | Claude | 1 | T34 (usa `EggRoller`) | `Services/BaseService`, `Services/IncubatorService`, `Config/Base` |
+| [T30](T30-guaridas.md) ✅ En revisión (probada en vivo) | **Guaridas:** asignar una por jugador, incubadoras, corrales, oro por segundo, placa de cobro | Claude | 1 | T34 (usa `EggRoller`) | `Services/BaseService`, `IncomeService`, `StableService`, `IncubatorService`, `Config/Base` |
 | T31 | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |
 | T32 | **Montar:** silla, jinete, riendas, ciclo de patas, polvo, velocidad por especie | Claude | 2 | T30 | `DragonBuilder`, `DragonController`, `Services/MountService` |
 | T33 | **Robo entre jugadores:** empujón, huevo en el suelo, puerta y escudo | Claude | 2 | T30, T31 | `Services/RaidService`, `client/RaidController` |

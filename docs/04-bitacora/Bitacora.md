@@ -13,6 +13,21 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### T30: guaridas, incubadoras, corrales y oro (Claude)
+- **Rama `tarea/T30-guaridas`.** Ficha: [[T30-guaridas]].
+- **Qué hace:**
+  - 8 guaridas provisionales;
+  - incubadoras con tiempo real (también desconectado) y «Eclosionar» solo para el dueño;
+  - dragones en corrales con tamaño por rareza y aspecto por mutación;
+  - oro/s en la placa de cobro y ganancias desconectado;
+  - ventana del establo (poner, quitar y vender);
+  - HUD de oro y avisos.
+- **Retirado de la v3** (sigue en Git): clic +1, combate de monstruos, jefe y evolución por compra.
+- **Probada en vivo en Studio por MCP**, junto a una copia de T34 de Codex aún en curso: eclosión, corrales, cobro, establo y ganancias desconectado. Todo funciona.
+- **Arreglo importante:** el lugar tiene streaming activado y las piezas llegaban sueltas. Ahora guaridas y dragones usan `ModelStreamingMode = Atomic`.
+- **Orden de fusión:** primero T34 y luego T30.
+- [[ARQUITECTURA]] reescrita para la v4: datos, atributos, APIs para otras tareas, remotes, posiciones de botones y etiqueta `Base`.
+
 ### v4 aprobada, tablero nuevo y ficha T34 para Codex (Claude)
 - **Guillermo aprobó la v4** tal cual: [[Vision-v4]] y D-021.
 - **[[TABLERO]] rehecho** con las tareas T30–T38, el calendario de 4 semanas y la lista de lo que se retira.

@@ -10,17 +10,13 @@ function StatsService.OnPlayerLoaded(player: Player)
 	local leaderstats = Instance.new("Folder")
 	leaderstats.Name = "leaderstats"
 
-	local power = Instance.new("NumberValue")
-	power.Name = "Poder"
-	power.Parent = leaderstats
+	local gold = Instance.new("NumberValue")
+	gold.Name = "Oro"
+	gold.Parent = leaderstats
 
-	local wins = Instance.new("NumberValue")
-	wins.Name = "Victorias"
-	wins.Parent = leaderstats
-
-	local rebirths = Instance.new("NumberValue")
-	rebirths.Name = "Renacimientos"
-	rebirths.Parent = leaderstats
+	local hatched = Instance.new("NumberValue")
+	hatched.Name = "Eclosionados"
+	hatched.Parent = leaderstats
 
 	leaderstats.Parent = player
 	StatsService.Refresh(player)
@@ -33,13 +29,10 @@ function StatsService.Refresh(player: Player)
 		return
 	end
 
-	leaderstats.Poder.Value = data.Power
-	leaderstats.Victorias.Value = data.Wins
-	leaderstats.Renacimientos.Value = data.Rebirths
+	leaderstats.Oro.Value = math.floor(data.Gold or 0)
+	leaderstats.Eclosionados.Value = data.EggsHatched or 0
 
-	player:SetAttribute("Power", data.Power)
-	player:SetAttribute("Wins", data.Wins)
-	player:SetAttribute("Evolution", data.Evolution)
+	player:SetAttribute("Gold", math.floor(data.Gold or 0))
 	player:SetAttribute("Rebirths", data.Rebirths)
 end
 

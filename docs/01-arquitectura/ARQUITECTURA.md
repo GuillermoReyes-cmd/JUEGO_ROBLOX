@@ -18,37 +18,39 @@ Juego Roblox/
     ├── shared/               → ReplicatedStorage.Shared (lo ven servidor y cliente)
     │   ├── Config/           → números del juego, un archivo por sistema
     │   │   ├── init.luau     → junta todo: require(Shared.Config)  [NÚCLEO]
-    │   │   ├── Train.luau
-    │   │   ├── Evolutions.luau
-    │   │   ├── Enemies.luau  → monstruos por nivel (vida, velocidad, ataques, aspecto)
-    │   │   ├── Combat.luau   → reglas del combate en el mundo (daño, vida del dragón, correa…)
-    │   │   ├── Zones.luau    → 5 zonas: Poder requerido y qué monstruos aparecen
-    │   │   ├── Dragons.luau  → 10 especies del dragón compañero y 5 elementos
+    │   │   ├── Base.luau     → guaridas, incubadoras, corrales, oro, aspecto de mutaciones (T30)
+    │   │   ├── Eggs.luau     → rarezas, mutaciones y huevos con sus probabilidades (T34)
+    │   │   ├── Species.luau  → especies de la v4 (rareza, bioma, Kind, oro/s, leyenda) (T34)
+    │   │   ├── Dragons.luau  → Kinds del dragón provisional y su movimiento (de la v3; se reutiliza)
     │   │   └── Rebirth.luau
+    │   ├── EggOdds.luau      → probabilidades y oro/s, compartido servidor/cliente (T34)
     │   ├── Format.luau       → formato de números (1.2K, 5.6M)
     │   └── Remotes.luau      → Remotes.Get("Nombre")  [NÚCLEO]
     ├── server/               → ServerScriptService.Server
     │   ├── Main.server.luau  → carga todos los Services automáticamente  [NÚCLEO]
     │   ├── Dragon/
-    │   │   └── DragonBuilder.luau → arma el dragón (modelo IA o provisional) con Motor6D
+    │   │   ├── DragonBuilder.luau → arma el dragón (modelo IA o provisional) con Motor6D
+    │   │   └── DragonDisplay.luau → dragón ya nacido en el mundo: tamaño por rareza, aspecto por mutación (T30)
+    │   ├── Eggs/
+    │   │   └── EggRoller.luau     → tirada de un huevo y registro del dragón (T34)
     │   └── Services/         → un archivo por sistema
-    │       ├── DataService.luau   → guardar y cargar  [NÚCLEO]
-    │       ├── StatsService.luau  → leaderstats + atributos para la interfaz
-    │       ├── TrainService.luau  → clic = +Poder
-    │       ├── DragonService.luau → dragón compañero de cada jugador (Workspace.Dragons), elemento
-    │       ├── DamageService.luau → núcleo de daño (auto, clic, combo, crítico) y vida del dragón
-    │       ├── MobService.luau    → zonas, monstruos (raíz en Workspace.Mobs), objetivo, recompensas y MVP
-    │       ├── BossService.luau   → jefe mundial: ciclo, cráter, ranking en vivo y premios por puesto
-    │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /zona, /curar, /reset)
+    │       ├── DataService.luau      → guardar y cargar  [NÚCLEO]
+    │       ├── StatsService.luau     → leaderstats (Oro, Eclosionados) + atributos
+    │       ├── BaseService.luau      → guaridas: construir o leer, asignar, llevar a casa (T30)
+    │       ├── IncomeService.luau    → oro/s, placa de cobro, multiplicadores, ganancias desconectado (T30)
+    │       ├── StableService.luau    → colección de dragones, corrales, vender (T30)
+    │       ├── IncubatorService.luau → incubadoras y eclosión (T30)
+    │       ├── EggDebugService.luau  → trucos de huevos en Studio: /huevo, /probs, /suerte (T34)
+    │       └── DebugService.luau     → trucos en Studio: /oro, /placa, /incubar, /listo, /incubadoras, /corrales, /ausente, /casa, /reset
     └── client/               → StarterPlayer.StarterPlayerScripts.Client
-        ├── HUD.client.luau              → contador ⚡ 🏆 y texto guía
-        ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en combate)
-        ├── CombatController.client.luau → interfaz y efectos de combate, clics de ataque
-        ├── MobController.client.luau    → dibuja los monstruos, barra de vida, marcar con clic, puertas
-        ├── BossController.client.luau   → cuenta atrás, ranking, avisos y botón «Ir al cráter»
-        ├── MobRegistry.luau             → registro compartido mobId → visual (ModuleScript)
-        ├── DragonController.client.luau → sigue o vuela al objetivo (propio), anima (todos), reacciona
-        └── EnemyVisuals.luau            → construye y anima el cuerpo de cada monstruo (ModuleScript)
+        ├── HUD.client.luau              → contador de oro y oro/s, avisos (Notify)
+        ├── BaseController.client.luau   → cuenta atrás de incubadoras, «Eclosionar», marcador de guarida, cobro, arcoíris (T30)
+        ├── StableController.client.luau → ventana del establo (T30)
+        ├── HatchReveal.client.luau      → revelado de la eclosión y aviso a todos (T34)
+        ├── EggOddsGui.luau              → panel de probabilidades (ModuleScript, T34)
+        ├── DragonController.client.luau → anima todos los dragones de Workspace.Dragons (y sigue al propio, base de T32)
+        ├── EnemyVisuals.luau            → cuerpo animado de un monstruo (se reutilizará para las dragonas madre, T31)
+        └── MobRegistry.luau             → registro mobId → visual (T31)
 ```
 
 **Lo que NO está en `src/`:** el mapa (Workspace) y los modelos (`ReplicatedStorage.Assets`). Los construye el humano en Studio y se guardan en el archivo del lugar, no en esta carpeta. Rojo no los toca.
@@ -95,64 +97,77 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | Campo | Tipo | Dueño | Significado |
 |---|---|---|---|
 | Version | número | DataService | Versión del formato de datos |
-| Power | número | TrainService | Poder total; nunca baja, salvo al renacer |
-| Wins | número | CombatService | Victorias, la moneda para evolucionar |
-| Evolution | número | EvolutionService | Índice en `Config.Evolutions` (empieza en 1) |
-| Rebirths | número | RebirthService | Número de renacimientos |
+| Rebirths | número | RebirthService (T37) | Número de renacimientos |
+| Gold | número | IncomeService | Oro en la cartera |
+| PlateGold | número | IncomeService | Oro acumulado en la placa, sin cobrar |
+| LastSeen | número | IncomeService | Último `os.time()` conectado (ganancias desconectado) |
+| Dragons | lista | StableService | `{ Id, SpeciesId, Mutation, Giant, HatchedAt }` (forma de `EggRoller.MakeDragon`) |
+| Pens | lista de `Id` | StableService | Dragones en corrales, en orden y sin huecos (solo estos dan oro) |
+| PenCount | número | StableService (sube T35) | Corrales desbloqueados (3 → 12) |
+| Incubators | diccionario `"1".."8"` | IncubatorService | `{ EggId, StartedAt, HatchSeconds }` (hora real: incuba también desconectado) |
+| IncubatorCount | número | IncubatorService (sube T35) | Incubadoras desbloqueadas (2 → 8) |
+| EggsHatched | número | IncubatorService | Total de huevos eclosionados |
 
-`StatsService.Refresh(player)` copia estos campos a atributos del jugador (`Power`, `Wins`, `Evolution`, `Rebirths`). El cliente los lee con `player:GetAttribute(...)`.
+`Power`, `Wins` y `Evolution` siguen en los valores por defecto de DataService (núcleo), pero ya no se usan.
 
-### Atributos de estado (no se guardan)
+### Atributos
 
 | Atributo | En | Lo pone | Significado |
 |---|---|---|---|
-| `InCombat` | Player | MobService | `true` mientras tiene un monstruo marcado. Los clics atacan (no entrenan) y el HUD oculta su texto guía |
-| `CombatTarget` | Player | MobService | `MobId` del monstruo marcado |
-| `DragonHP` / `DragonMaxHP` | Player | DamageService | Vida del dragón: `100 + 15 × (evolución − 1)`. Se regenera fuera de combate |
-| `DragonFainted` | Player | DamageService | `true` durante los 5 s de desmayo |
-| `AttackPulse` | Modelo del dragón (**solo local**) | CombatController | Lo cambia el cliente para que DragonController anime un ataque de ese dragón |
+| `Gold`, `Rebirths` | Player | StatsService | Copia de los datos para la interfaz |
+| `GoldPerSecond`, `PlateGold` | Player | IncomeService | Oro/s con multiplicadores y oro sin cobrar |
+| `BaseIndex` | Player y modelo de la guarida | BaseService | Número de su guarida |
+| `OwnerUserId` | Modelo de la guarida | BaseService | Dueño actual (nil = libre) |
+| `Luck` | Player | Tienda / pociones (T06) | Suerte de las eclosiones (por defecto 1) |
+| `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
+| `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
+| `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
 
-### Dragón compañero (contrato T18)
+### APIs de servidor para otras tareas
 
-El dragón de cada jugador está en `Workspace.Dragons.Dragon_<UserId>`. Su `PrimaryPart` es `Root`, que es invisible y su propiedad de red pertenece al dueño.
-
-**Atributos del modelo:** `OwnerId`, `Species`, `Movement`, `Scale`, `RootHeight`, `FlyHeight`, `Size` y `Element`.
-
-**Motor6D animables:**
-
-| Nombre | Parte del cuerpo |
+| API | Para |
 |---|---|
-| `Body` | Cuerpo, unido a `Root` |
-| `Head` | Cabeza |
-| `WingL`, `WingR` | Alas |
-| `Tail1…n` | Cola |
-| `Seg1…n` | Segmentos del cuerpo de serpiente |
-| `LegFL`, `LegFR`, `LegBL`, `LegBR`, `LegL`, `LegR` | Patas |
-| `Neck1…3` | Cuellos |
+| `BaseService.GetPlot(player)` → `{ Index, Model, Incubators, Pens, Plate, Spawn, Sign, Door, SignOwner, SignIncome }` | T31 (llegar a casa con un huevo), T33 (puerta) |
+| `BaseService.GetPlotFromPart(part)` · `BaseService.SendHome(player)` | T31, T33 |
+| `IncubatorService.TryDeposit(player, eggId)` → `(ok, slot o motivo)` | T31: entregar el huevo robado |
+| `IncubatorService.RemoveEgg(player, slot)` → `eggId?` | T33: robar de una guarida |
+| `IncubatorService.FinishNow(player, slot)` | T06: eclosión instantánea |
+| `IncomeService.AddMultiplier(nombre, función(player) → número)` | T06 (pase ×2, VIP), T37 (renacer), T38 (Dragonario) |
+| `IncomeService.AddGold(player, n)` · `IncomeService.SpendGold(player, n)` → `bool` | T06 (packs), T35 (mejoras) |
+| `StableService.Refresh(player)` | T35: tras cambiar `PenCount` |
+| `StableService.AddDragon(player, record)` · `StableService.GetDragons(player)` | T06 (dragones de pago), T32 (elegir montura) |
+| `DragonDisplay.Build(record, groundCFrame, oroPorSegundo)` → `Model` | T32: modelo de la montura |
 
-**Attachments:** `Mouth` (lleva el emisor `Breath`) y `Saddle`.
-
-Para obtener el dragón de un jugador desde el servidor: `DragonService.GetDragon(player)`.
-
-Detalle completo en [[T18-dragon-companero]].
+### Dragones en el mundo
+- **Carpeta:** `Workspace.Dragons`. `DragonController` anima todo lo que haya ahí, siempre que esté a menos de 220 studs de la cámara.
+- **Dragones de corral:** `Pen_<UserId>_<slot>`, con la raíz anclada y `ModelStreamingMode = Atomic`.
+- **Si existe `Dragon_<UserId>`, el dueño lo mueve detrás de sí.** Esa es la base de la montura (T32).
+- **Motor6D animables** (contrato de T18):
+  - `Body`
+  - `Head`
+  - `WingL` y `WingR`
+  - `Tail1…n`
+  - `Seg1…n`
+  - `LegFL`, `LegFR`, `LegBL`, `LegBR`, `LegL` y `LegR`
+  - `Neck1…3`
+- **Attachments:** `Mouth` y `Saddle`.
 
 ## RemoteEvents existentes
 
 | Nombre | Dirección | Argumentos | Servicio |
 |---|---|---|---|
-| Train | cliente → servidor | ninguno | TrainService |
-| TargetMob | cliente → servidor | `mobId` o `nil` (soltar). El servidor valida la distancia y el Poder de la zona | MobService |
-| CombatClick | cliente → servidor | ninguno (el servidor limita a 8/s) | MobService + DamageService |
-| Mobs | servidor → **todos** | `{ Type = "Hit"/"MobAttack"/"Telegraph"/"Explode"/"Death"/"Respawn", MobId, ... }` | MobService |
-| CombatInfo | servidor → un jugador | `{ Type = "Reward"/"NoReward"/"ZoneLocked"/"TooFar"/"TargetLost", ... }` | MobService |
-| Boss | servidor → todos o un jugador | `{ Type = "Warning"/"Spawn"/"Ranking"/"End"/"Retreat"/"Reward", ... }` | BossService (T22) |
-| BossTeleport | cliente → servidor | ninguno: ir al cráter (solo en aviso o pelea) | BossService (T22) |
-| Evolve | cliente → servidor | ninguno; máximo una compra cada 0,5 s por jugador | EvolutionService (T19) |
-| Evolved | servidor → todos los clientes | `{ UserId, DisplayName, SpeciesId, SpeciesName, SpeciesType }`, solo tras una compra válida | EvolutionService (T19) |
+| Hatched | servidor → todos | `{ UserId, DisplayName, EggId, SpeciesId, Mutation, Giant }` | IncubatorService (T30); el revelado lo hace HatchReveal (T34) |
+| ShowEggOdds | servidor → un jugador | `eggId` | T31 y T33 (y EggDebugService) |
+| Hatch | cliente → servidor | `slot`; el servidor valida dueño, huevo listo y establo con sitio | IncubatorService |
+| Stable | cliente → servidor | `{ Action = "SetPen", DragonId, InPen }` o `{ Action = "Sell", DragonId }`; como máximo 1 cada 0,2 s | StableService |
+| StableRequest | cliente → servidor | ninguno: pide `StableData` | StableService |
+| StableData | servidor → dueño | `{ Dragons, Pens, PenCount, MaxDragons }` | StableService |
+| GoldCollected | servidor → dueño | cantidad cobrada | IncomeService |
+| Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
-**Monstruos:**
-- Cada uno es una raíz invisible anclada en `Workspace.Mobs.Mob_<id>`, con los atributos `MobId`, `EnemyIndex`, `Zone`, `HP`, `MaxHP`, `State` (`Idle`, `Chase`, `Return` o `Dead`) y `TargetUserId`.
-- El cuerpo lo dibuja cada cliente en `Workspace.MobVisuals`.
+**Streaming activado:**
+- Los modelos que el cliente necesita completos (guaridas, dragones) usan `ModelStreamingMode = Atomic`.
+- Los scripts del cliente deben aceptar que las piezas lleguen más tarde.
 
 Cada tarea que cree un remote debe añadir aquí su fila.
 
@@ -162,33 +177,24 @@ Así varias tareas pueden crear botones sin taparse:
 
 | Zona | Uso |
 |---|---|
-| Arriba centro | HUD (⚡ Poder, 🏆 Victorias) |
-| Arriba centro, debajo del HUD (y = 64 px) | Panel del monstruo marcado: nombre, vida y «Tu daño %» (T21) |
-| Centro, y = 30 % / 38 % | Avisos de combate / recompensa «+N 🏆 ⭐ MVP» (T21) |
-| Derecha, y = 45 % | Contador de combo (T21) |
-| Abajo centro (y = −64 px) | Vida del dragón (T21) |
-| Abajo centro | Texto guía de entrenamiento |
-| Izquierda, botón 1 (y = 35%, 200 × 48 px) | Evolucionar compañero (T19) |
-| Izquierda, botón 2 (y = 45%) | Renacer (T05) |
-| Izquierda, botón 3 (y = 55%) | Tienda (T06) |
+| Arriba centro | HUD (oro y oro/s) |
+| Arriba centro, debajo del HUD (y = 64 px) | Avisos `Notify` (hasta 3, 4 s cada uno) |
+| Izquierda, botón 1 (y = 35 %, 200 × 48 px) | Establo (T30) |
+| Izquierda, botón 2 (y = 45 %) | Mejoras (T35) |
+| Izquierda, botón 3 (y = 55 %) | Tienda (T06) |
+| Izquierda, botón 4 (y = 65 %) | Dragonario (T38) |
 | Centro de la pantalla | Ventanas modales: solo una abierta a la vez |
 
 ### Contrato de ventanas modales: ActiveModal
 
 Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` de `PlayerGui`:
-- Para abrir la evolución: `playerGui:SetAttribute("ActiveModal", "Evolution")`. Cada sistema usa su propio identificador.
+- Para abrir una ventana: `playerGui:SetAttribute("ActiveModal", "Stable")`. Cada sistema usa su propio identificador: `Stable`, `Hatch`, `EggOdds`…
 - Escuchar `GetAttributeChangedSignal("ActiveModal")` y mostrar la ventana únicamente si el valor coincide con su identificador; cualquier otro valor la cierra.
 - Para cerrar, eliminar el atributo con `SetAttribute("ActiveModal", nil)` solo si la ventana sigue siendo la activa. `nil` significa que no hay modal abierto.
 - El atributo solo coordina la interfaz: no autoriza compras ni cambia datos del servidor.
 
-T19 muestra los avisos sociales debajo del panel de batalla (y = 148 px) durante 4 s, en cola. Solo el dueño recibe una cinemática local de 2 s sobre el dragón reconstruido por T18; T19 no crea modelos ni modifica el avatar.
-
 ## Etiquetas (CollectionService) en el mapa
 
-| Tag | Dónde | Atributos | Lo usa |
+| Tag | Dónde | Contenido | Lo usa |
 |---|---|---|---|
-| `Zone` | Suelo de cada zona | `ZoneIndex` (1–5) | MobService (centro para `/zona`) |
-| `MobSpawn` | Punto de aparición (parte invisible) | `ZoneIndex`, `Enemy` (nombre exacto de `Config.Enemies`) | MobService |
-| `ZoneGate` | Puerta de cada zona | `ZoneIndex`, `RequiredPower` | MobController (se abre en el cliente si tienes el Poder) |
-| `BossArena` | Suelo del cráter del jefe | — | BossService (si no existe, en Studio se crea uno de prueba) |
-| `TrainZone` | Zona de entrenamiento | `Multiplier` (número) | TrainService (futuro) |
+| `Base` | `Model` de cada guarida (8) | Hijos `Incubator1..8`, `Pen1..12`, `CollectPlate`, `Spawn`, `Sign`, `Door` (todos BasePart). La entrada mira al eje Z+ local del pivote. Si no hay ninguna, BaseService construye 8 provisionales | BaseService, BaseController |
