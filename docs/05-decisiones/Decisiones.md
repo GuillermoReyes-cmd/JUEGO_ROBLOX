@@ -121,7 +121,7 @@ Volver a [[INICIO]].
 
 ## D-015 Alcance: duelos en la actualización 1
 - **Fecha:** 2026-11-03
-- **Estado:** ⏳ **propuesta, pendiente de que Guillermo la confirme.**
+- **Estado:** ✅ **aprobada por Guillermo** («Aprobado, empieza»), junto con todo el plan v3.
 - **Decisión propuesta:**
   - **Lanzamiento (1 dic):** dragón compañero, monstruos en el mundo, jefe mundial, boosters, renacimiento, tienda y mapa.
   - **Actualización 1 (~15 dic):** duelos PvP, montar y evento de Navidad.

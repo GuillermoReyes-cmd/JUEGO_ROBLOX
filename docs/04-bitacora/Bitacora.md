@@ -13,6 +13,21 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### T18 Dragón compañero (Claude, rama `tarea/T18-dragon`)
+- **Plan v3 aprobado** por Guillermo, con el calendario D-015.
+- **Hecho:**
+  - Cada jugador tiene su dragón, que todos ven.
+  - Le sigue con física fluida, porque la propiedad de red es del dueño.
+  - Se anima por código según su tipo: rebota, camina, repta, vuela u ondula.
+  - Reacciona a cada clic de entrenamiento.
+  - Cambia de especie con `/evo` y de elemento con `/rebirths`.
+- **10 dragones provisionales distintos** mientras llegan los modelos de IA (T20).
+- **Verificación:** se simuló el armado de las 10 especies (todo correcto) y el proyecto compila. **Falta probarlo en Studio.**
+- **Organización:**
+  - La carpeta de Claude pasa a llamarse `Juego Roblox - Claude` (worktree).
+  - El enlace de Obsidian apunta ahí.
+- Ficha: [[T18-dragon-companero]].
+
 ### Rediseño v3: entrenador + dragón compañero (Claude, diseño)
 - **Tras probar la v2, Guillermo pidió:**
   - Animaciones más bonitas y con más movimiento.
