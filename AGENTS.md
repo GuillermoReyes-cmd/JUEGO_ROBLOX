@@ -44,6 +44,8 @@ Antes de trabajar, lee:
 10. **No metas modelos ni mapas en `src/`.** Los modelos y el mapa los crea el humano en Studio.
     - Si tu sistema necesita un modelo, búscalo en `ReplicatedStorage.Assets` (lo crea el humano).
     - Si no existe, usa una pieza provisional creada por código.
+11. **Sin propiedad intelectual ajena.** Nunca uses nombres, diseños ni frases de personajes o franquicias con derechos de autor (Juego de Tronos, Tolkien, Ghibli, Dragon Ball, Pokémon…). Los dragones de mitología son de dominio público y sí se pueden usar. Ver `docs/05-decisiones/Decisiones.md`, D-014.
+12. **Documenta en la bóveda.** Al terminar, añade una entrada en `docs/04-bitacora/Bitacora.md`. Si tomaste una decisión de diseño o técnica, añádela en `docs/05-decisiones/Decisiones.md`.
 
 ## Cuando termines una tarea
 

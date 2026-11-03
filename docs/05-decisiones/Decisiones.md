@@ -65,6 +65,7 @@ Volver a [[INICIO]].
 
 ## D-010 Combate de acción en arena privada
 - **Fecha:** 2026-11-03
+- ⚠️ **Sustituida por [[#D-012 Combate en el mundo con competencia]]:** se conserva la mecánica, pero no la arena privada.
 - **Sustituye a:** combate v1 (duelo automático en la plataforma).
 - **Decisión:**
   - Al pisar la plataforma de un enemigo, el jugador entra en una **arena privada**.
@@ -78,3 +79,50 @@ Volver a [[INICIO]].
   - Las animaciones son procedurales (por código) hasta que existan modelos animados reales (T09).
 - **Descartado:** enemigos sueltos por el mapa con IA, porque cuesta mucho más.
 - Ver [[Combate]] y [[Enemigos]].
+
+## D-011 Entrenador con dragón compañero
+- **Fecha:** 2026-11-03
+- **Decisión:** el jugador conserva su avatar y tiene un **dragón compañero** que le sigue, pelea y, más adelante, se puede montar.
+- **Por qué:**
+  - Con el v2, Guillermo no entendía por qué no era un dragón.
+  - El compañero da un dragón completo y visible sin perder el avatar del jugador.
+  - Es el mayor escaparate social del juego.
+- **Sustituye a:** las partes de dragón pegadas al avatar (T04 v1).
+- **Descartado:**
+  - Ser un dragón desde el inicio: se pierde el avatar.
+  - Humano que se transforma: se ve poco dragón.
+- Ver [[Vision-v3]] y [[Dragones]].
+
+## D-012 Combate en el mundo con competencia
+- **Fecha:** 2026-11-03
+- **Decisión:** se pelea en el mapa compartido.
+  - Hay monstruos por zonas con recompensa compartida y MVP.
+  - Hay un **jefe mundial cada 10 min** con ranking de daño en vivo.
+  - Habrá **duelos PvP en un Coliseo** visible para todos.
+- **Por qué:** Guillermo encontró simple irse a una arena privada y quiere competencia entre jugadores que impulse los boosters.
+- **Se mantiene de la v2:** auto-ataque, clics con crítico y combo, círculos para esquivar, fase 2 y servidor con autoridad.
+- Ver [[Combate]] y [[Competencia-y-Boosters]].
+
+## D-013 Modelos 3D generados con IA en Studio
+- **Fecha:** 2026-11-03
+- **Decisión:**
+  - Guillermo genera los modelos con el Asistente de Studio, siguiendo las indicaciones de [[Arte-IA]].
+  - Los dragones con alas se generan en piezas (cuerpo + ala) para poder animarlos.
+  - El elemento se muestra con efectos, sin repintar el modelo.
+- **Por qué:** con piezas hechas por código nunca se verá «bonito»; la IA da modelos únicos y gratis.
+- **Descartado:**
+  - Toolbox: repetido en otros juegos.
+  - Solo código: se ve de bloques.
+
+## D-014 Sin propiedad intelectual ajena
+- **Fecha:** 2026-11-03
+- **Decisión:** no se usan nombres ni diseños de personajes con derechos de autor (Smaug, Drogon, Rhaegal, Viserion, Balerion, Caraxes, Syrax, Vermithrax, Glaurung, Haku, el Shenron de Dragon Ball…). Sí se usan los tipos de dragón y los dragones de mitología, que son de dominio público.
+- **Por qué:** Roblox retira juegos por infracción de propiedad intelectual. Arriesgar el juego entero no compensa.
+
+## D-015 Alcance: duelos en la actualización 1
+- **Fecha:** 2026-11-03
+- **Estado:** ⏳ **propuesta, pendiente de que Guillermo la confirme.**
+- **Decisión propuesta:**
+  - **Lanzamiento (1 dic):** dragón compañero, monstruos en el mundo, jefe mundial, boosters, renacimiento, tienda y mapa.
+  - **Actualización 1 (~15 dic):** duelos PvP, montar y evento de Navidad.
+- **Por qué:** el jefe mundial ya da competencia desde el primer día; los duelos requieren más equilibrio y sirven de gran novedad para que la gente vuelva.

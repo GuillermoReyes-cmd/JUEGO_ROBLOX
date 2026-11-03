@@ -13,6 +13,28 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### Rediseño v3: entrenador + dragón compañero (Claude, diseño)
+- **Tras probar la v2, Guillermo pidió:**
+  - Animaciones más bonitas y con más movimiento.
+  - Entender por qué no es un dragón.
+  - Pelear en el mundo y no en otro lugar.
+  - Competencia entre jugadores.
+  - Que el dragón evolucione por todos los tipos de dragón.
+  - Modelos generados con IA.
+- **Notas nuevas o reescritas:**
+  - [[Vision-v3]]
+  - [[Dragones]]: 10 especies, de huevo a Níðhöggr.
+  - [[Combate]]: v3.
+  - [[Enemigos]]: zonas.
+  - [[Competencia-y-Boosters]]
+  - [[Arte-IA]]: textos para generar los 23 modelos.
+- **Decisiones:** de [[Decisiones#D-011 Entrenador con dragón compañero]] a D-015.
+- **Aviso de propiedad intelectual:** se descartan los nombres de Juego de Tronos y Tolkien; se usa mitología.
+- **Estado:** diseño **pendiente de aprobar** antes de programar.
+- **Consecuencias:**
+  - T04 v1 (Codex) queda sustituida.
+  - T03 v2 se reutilizará como núcleo de daño.
+
 ### Combate de acción v2 (Claude, rama `tarea/T03-combate`)
 - El combate v1 (pisar una plataforma y ver barras) se sintió **demasiado básico** al probarlo.
 - Rediseño completo en [[Combate]] y [[Enemigos]]:

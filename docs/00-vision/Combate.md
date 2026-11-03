@@ -1,127 +1,117 @@
 ---
 tipo: diseño
 sistema: combate
-version: 2
-tarea: T03
+version: 3
+estado: propuesta (pendiente de aprobar)
+tarea: T21, T22, T23
 actualizado: 2026-11-03
 ---
 
-# ⚔️ Combate de acción (v2)
+# ⚔️ Combate (v3): en el mundo, a la vista de todos
 
-Volver a [[INICIO]] · Enemigos en [[Enemigos]] · Decisión en [[Decisiones#D-010 Combate de acción en arena privada]]
+Volver a [[INICIO]] · Visión en [[Vision-v3]] · Monstruos en [[Enemigos]] · Competencia en [[Competencia-y-Boosters]]
 
-## 1. Fantasía del jugador
-> «Soy un dragón que cada vez pega más fuerte. Mi dragón ataca solo, pero si machaco el clic lo destrozo más rápido. Tengo que moverme para esquivar sus ataques fuertes.»
+> **Historial:**
+> - **v1:** duelo automático en la plataforma (muy básico).
+> - **v2:** arena privada de acción. Gustó la mecánica, pero no irse a otro lugar.
+> - **v3 (esta):** la misma acción, **en el mundo compartido**, con **jefe mundial** y **duelos PvP**.
 
-**Tres verbos:** **golpear** (clic), **esquivar** (moverse) y **crecer** (más Poder = más daño).
+## 1. Las 3 formas de pelear
 
-## 2. Flujo de una batalla
+| Modo | Dónde | Contra | Para qué |
+|---|---|---|---|
+| **Monstruos** | Zonas del mapa | Monstruos compartidos que reaparecen | Ganar 🏆 a tu ritmo (lo principal) |
+| **Jefe mundial** | Cráter del volcán, cada 10 min | El Rey Volcán, con todo el servidor | Gran recompensa y **ranking de daño en vivo** |
+| **Duelos** | Coliseo, en el centro del mapa | Otro jugador y su dragón | Rango PvP, racha y premios semanales (actualización 1) |
 
-```
-Mundo ──pisa plataforma──▶ ¿Poder ≥ requerido? ──no──▶ aviso «Necesitas ⚡ X»
-                                   │ sí
-                                   ▼
-                     ¿en espera? ──sí──▶ aviso «⏳ Espera Ns»
-                                   │ no
-                                   ▼
-              Teletransporte a ARENA PRIVADA (cuenta atrás 3·2·1·¡PELEA!)
-                                   ▼
-        ┌──────────────── BATALLA (tiempo límite) ────────────────┐
-        │ Dragón: auto-ataque cada 1 s (bola de fuego)            │
-        │ Jugador: clic = ataque rápido (garra), críticos, combo  │
-        │ Enemigo: golpe normal periódico (no se esquiva)         │
-        │ Enemigo: ESPECIAL → círculos rojos → explotan → esquiva │
-        │ Jefe: al 50 % de vida entra en FASE 2 (más rápido)      │
-        └─────────────────────────────────────────────────────────┘
-              │ vida del enemigo = 0         │ tu vida = 0 o se acaba el tiempo
-              ▼                              ▼
-     ¡VICTORIA! +🏆 (2 s)                DERROTA (2 s)
-              └──────────────┬───────────────┘
-                             ▼
-             Vuelta al mundo, delante de la plataforma
-```
+## 2. Mecánicas comunes (vienen de la v2 y ya están probadas)
+- **Auto-ataque:** tu dragón golpea cada **1 s** con daño = `Poder × 1`.
+- **Clic = ataque rápido:**
+  - Daño = `Poder × 0,5`, con máximo **8 clics/s** (límite en el servidor).
+  - **Crítico:** 12 % de probabilidad, daño ×2.
+  - **Combo:** +1 % de daño por golpe seguido, hasta +50 %.
+- **Esquivar:** los ataques especiales marcan **círculos rojos** (o conos o líneas) en el suelo. Si sigues dentro cuando explotan, recibes daño.
+- **Vida del dragón** = `100 + 15 × (evolución − 1)`. Si llega a 0, se desmaya 5 s y luego vuelve; no hay más castigo.
+- **El servidor manda en todo:** el cliente solo dice «hice clic» y dibuja.
 
-## 3. Arena privada
-- **Una arena por jugador**, creada por el servidor lejos del mapa (x = 5000 + 300 × hueco, y = 300). Se reutiliza.
-- **Suelo de roca de 80 × 80 studs**, anillo de lava decorativo y muros invisibles: no te puedes caer.
-- **Posiciones:** el jugador aparece a 16 studs del centro mirando al enemigo; el enemigo está a 18 studs del centro, al lado opuesto.
-- Nadie más ve tu batalla. El enemigo se dibuja **solo en tu pantalla** y el servidor lleva las cuentas.
+## 3. Monstruos en el mundo
 
-## 4. Números del combate
-Todos están en `src/shared/Config/Combat.luau` y en `Config/Enemies.luau`.
+### Cómo se pelea
+1. Te acercas a un monstruo (≤ 30 studs) y **haces clic sobre él**, o tocas en móvil.
+   - Queda marcado (aro rojo bajo sus pies) y **tu dragón vuela hacia él**.
+2. Mientras esté marcado, **los clics en cualquier parte de la pantalla son ataques rápidos**, no entrenamiento. Al terminar la pelea o alejarte más de 45 studs, los clics vuelven a entrenar.
+3. El monstruo ataca **al dragón que más daño le hace**:
+   - Golpe normal: no se esquiva.
+   - Especial: círculo rojo **bajo tu dragón y bajo ti**. Te mueves y tu dragón te sigue, así que esquivar sigue siendo moverte.
 
-| Concepto | Fórmula / valor |
+### Recompensas compartidas (sin «robos» de presa)
+- **Todos los que hicieron al menos el 10 % del daño** reciben las 🏆 completas del monstruo.
+- **El que más daño hizo es el MVP:** recibe +50 % de 🏆 y un aviso «⭐ MVP» sobre el dragón.
+- Así ayudar es bueno y competir por el MVP también. Por eso importan los **boosters de daño**.
+
+### Zonas
+- El monstruo reaparece **8 s** después de morir, en su punto de aparición.
+- **Puertas de zona:** para pasar a la siguiente zona necesitas cierto Poder. Es un objetivo claro, como en los «+1» exitosos.
+- Detalle de zonas y monstruos en [[Enemigos]].
+
+## 4. Jefe mundial «Rey Volcán»
+
+| Momento | Qué pasa |
 |---|---|
-| Vida del enemigo | `RequiredPower × HPMultiplier` (20 a 40 según el nivel) |
-| Daño del auto-ataque | `Poder × 1,0` cada **1 s** |
-| Daño de un clic | `Poder × 0,5`, como máximo **8 clics/s** (límite antitrampas) |
-| Crítico | **12 %** de probabilidad en los clics, daño **×2**, texto «¡CRÍTICO!» |
-| Combo | Clics separados por menos de 0,6 s suman combo; **+1 % de daño por golpe**, hasta **+50 %** |
-| Vida del jugador en batalla | `100 + 15 × (evolución − 1)`: 100 en evolución 1 y 235 en evolución 10 |
-| Tiempo límite | 40 s (normales) y 75 s (jefe) |
+| Cada 10 min | Aviso a todo el servidor: «⚠️ ¡El REY VOLCÁN despierta en 60 s!», con cuenta atrás arriba |
+| Aparece | Sale del cráter (animación grande y temblor de cámara para todos los que estén cerca) |
+| Vida | `máx(5 M × 40, suma del Poder de los jugadores cercanos × 30)`: escala con el servidor |
+| Pelea | 3 minutos como máximo. Ataques normales al azar sobre varios dragones, **lluvia de círculos** por toda la zona y **fase 2 al 50 %** (más rápido y más círculos) |
+| Ranking en vivo | Arriba a la derecha, **Top 5 de daño** con nombre y porcentaje; tu puesto aparece siempre |
+| Recompensas | 🥇 ×3 · 🥈 ×2 · 🥉 ×1,5 · el resto ×1 de 1.000 🏆. Basta con haber hecho ≥ 1 % del daño. Además, 2 % de probabilidad de un **Huevo de Jefe** (aspecto exclusivo) para el top 3 |
+| Si nadie lo vence | Se retira con una burla; vuelve en 10 min |
 
-**Ritmo objetivo** con el Poder justo requerido:
-- **Solo auto-ataque:** unos 20 s contra un enemigo normal (40 s contra el jefe). Se gana justo, o se pierde si no se esquiva.
-- **Clicando a unos 5 clics/s:** de 5 a 7 s (unos 12 s contra el jefe).
-- **Con más Poder:** las batallas se acortan. Es la recompensa de progresar.
+## 5. Duelos en el Coliseo (actualización 1)
+- **Desafiar:**
+  - Te acercas a otro jugador y aparece el botón **«⚔️ Desafiar»**.
+  - Él recibe una invitación de 10 s («Aceptar» o «Rechazar»).
+  - También hay una **cola rápida**: «Buscar rival» empareja con alguien de rango parecido.
+- **La pelea:**
+  - Los dos jugadores y sus dragones aparecen en el **Coliseo, a la vista de todos**. Hay gradas y quien pasa puede mirar.
+  - Hay cuenta atrás y **90 s** de límite.
+- **Equilibrio:**
+  - Vida de cada dragón = `su Poder × 30`; daño = su Poder.
+  - El más fuerte gana antes, pero **clicar mejor y esquivar** pueden darle la vuelta a una diferencia de hasta ~2× de Poder.
+- **Especial de cada especie:** botón con tiempo de recarga, por ejemplo cono de fuego, triple aliento o devorar. El rival ve el aviso y puede esquivar.
+- **Premios:**
+  - El ganador recibe **trofeos de rango** (+25; el perdedor −15, sin bajar de 0) y una pequeña bolsa de 🏆.
+  - Hay racha de victorias con 👑 «Campeón del servidor» sobre la cabeza.
+  - **Antiabuso:** después de 3 duelos contra la misma persona en 1 hora, ya no hay premio.
+- Ranking semanal en [[Competencia-y-Boosters]].
 
-> La vida de la batalla es **virtual**: el personaje de Roblox no muere. Perder solo te devuelve al mundo, sin castigo.
+## 6. Reglas técnicas
+- **`CombatService` se divide en 4 partes:**
+  - `MobService`: monstruos y zonas.
+  - `BossService`: jefe mundial.
+  - `DuelService`: Coliseo.
+  - `DamageService`: el núcleo común de daño, críticos, combo, círculos y vida de los dragones.
+  - Se reutiliza la lógica probada de T03 v2 (29 pruebas).
+- **Remotes:**
+  - `Combat` (servidor → cliente): eventos tipados como en la v2.
+  - `CombatClick` (cliente → servidor): «hice clic».
+  - `TargetMob` (cliente → servidor): «marco este monstruo»; el servidor valida la distancia.
+  - `DuelInvite` y `DuelAnswer`.
+- **Monstruos:**
+  - Las cuentas las lleva el servidor: vida, quién hizo daño y objetivo.
+  - El modelo se crea en el servidor (lo ven todos), anclado. Se mueve con pasos cortos hacia su objetivo.
+  - Las animaciones son procedurales en cada cliente, como los dragones.
+- **Atributo `InCombat`** (sustituye a `InBattle`): mientras sea `true`, los clics atacan en vez de entrenar.
+- **Rendimiento:**
+  - Como máximo **40 monstruos** vivos por servidor.
+  - El servidor manda el estado de vida de varios golpes juntos (cada 0,1 s).
+  - Los efectos los dibuja cada cliente.
 
-## 5. Ataques del enemigo
-1. **Golpe normal:** cada `Basic.Interval` s quita `Basic.Damage` de vida. Es la presión constante.
-   - **No se esquiva.** El enemigo hace una embestida y la pantalla parpadea en rojo.
-2. **Ataque especial (esquivable):** cada `Special.Interval` s, con una pequeña variación al azar.
-   - Aparecen `Special.Count` **círculos rojos** en el suelo, con radio `Special.Radius`. El primero sale **justo debajo del jugador**; los demás, cerca.
-   - Un relleno crece dentro del círculo durante `Special.Telegraph` s y luego **explota**.
-   - Si en ese momento estás dentro de algún círculo, recibes `Special.Damage` (una sola vez por especial).
-3. **Fase 2 (solo el jefe):** al bajar del 50 % de vida, el jefe ruge, se vuelve rojo y la pantalla tiembla.
-   - Sus especiales salen ×0,6 más seguidos y lanza más círculos (`Phase2.Count`).
-
-## 6. Sensación (feedback)
-
-| Evento | Qué se ve y se siente |
-|---|---|
-| Auto-ataque | Una bola de fuego sale de tu cabeza hacia el enemigo y explota |
-| Clic | Un zarpazo brillante sobre el enemigo y un número de daño que salta |
-| Crítico | Número grande y amarillo, «¡CRÍTICO!» y una pequeña sacudida de cámara |
-| Combo | Contador «x12 COMBO» que crece y se reinicia si dejas de clicar |
-| Enemigo golpeado | Destello blanco y retroceso corto del enemigo |
-| Golpe del enemigo | Embestida del enemigo y borde rojo en la pantalla |
-| Especial | Círculos rojos que se llenan; luego explosión naranja con sacudida |
-| Esquivar con éxito | Texto «¡ESQUIVADO!» en verde |
-| Fase 2 | Rugido (sacudida fuerte), el jefe brilla en rojo y aviso «¡FASE 2!» |
-| Victoria | El enemigo se hunde y desaparece en partículas; «¡VICTORIA! +N 🏆» |
-| Derrota | «DERROTA» en rojo; vuelves al mundo |
-
-## 7. Interfaz de batalla
-- **Arriba:** «Nv. 3 · Gólem de lava», la barra de vida del enemigo con números (1.2K / 11K) y el tiempo restante.
-- **Abajo:** tu barra de vida (❤️ 180 / 190).
-- **A la derecha:** el contador de combo.
-- **Abajo, en el centro:** «👆 ¡Clic = ataques rápidos! · 🏃 ¡Esquiva los círculos rojos!».
-- **Durante la batalla:** el texto de entrenar se oculta y **los clics no entrenan**, sino que atacan.
-
-## 8. Reglas técnicas
-- **El servidor manda.** El cliente solo envía «hice clic» (`BattleClick`, sin datos). El servidor calcula el daño, los críticos y el combo, mueve el temporizador y comprueba la posición del jugador en cada explosión.
-- **Remote `Battle`** (servidor → cliente). Lleva un campo `Type`:
-
-  | `Type` | Cuándo se envía |
-  |---|---|
-  | `Start` | Empieza la batalla |
-  | `Hit` | El jugador golpea al enemigo |
-  | `EnemyAttack` | Golpe normal del enemigo |
-  | `Telegraph` | Aparecen los círculos rojos |
-  | `Explode` | Explotan los círculos |
-  | `Phase` | El jefe entra en fase 2 |
-  | `End` | Termina la batalla |
-  | `TooWeak` | Aviso: falta Poder |
-  | `Cooldown` | Aviso: hay que esperar |
-
-- **Atributo `InBattle`** en el jugador. Lo leen `TrainController`, para no entrenar, y el `HUD`, para ocultar el texto de entrenar.
-- **Si el jugador sale o reaparece durante la batalla,** se cancela sin premio y se libera la arena.
-- **Prueba rápida en Studio:** escribe `/pelea N` en el chat para entrar directamente a la batalla contra el enemigo N.
-
-## 9. Futuro (no está en la v2)
-- **Aliento de fuego** como habilidad activa con tecla (T10).
-- **Pase «Auto Win»** o «2x Victorias» (T06).
-- **Modelos y animaciones reales** de enemigos, cuando existan en `ReplicatedStorage.Assets.Enemies` (T09).
-- **Sonidos** (T16).
+## 7. Sensación visual (estándar de calidad)
+- **Animaciones con anticipación y rebote:** el monstruo se encoge antes de golpear y se estira al hacerlo.
+- **Partículas:** brasas al quemar, chispas al golpear, humo al desmayarse y destello del elemento en los críticos.
+- **Estelas (`Trail`)** en las bolas de fuego y en las alas de los dragones voladores.
+- **Luz:**
+  - En el mapa: bloom suave y lava que ilumina (`PointLight`).
+  - Durante el jefe, el cielo se oscurece y se vuelve rojo.
+- **Cámara:** temblor proporcional al golpe, y cámara lenta de 0,3 s en el golpe que vence al jefe.
+- **Sonidos** (T16): rugido por especie, impactos, críticos, monedas al cobrar 🏆.

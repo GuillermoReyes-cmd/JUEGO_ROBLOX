@@ -2,73 +2,64 @@
 tipo: diseño
 sistema: enemigos
 mundo: 1 (Volcán)
-tarea: T03
+version: 3
+estado: propuesta (pendiente de aprobar)
 actualizado: 2026-11-03
 ---
 
-# 👹 Enemigos del Mundo 1 «Volcán»
+# 👹 Monstruos y zonas del Mundo 1 «Volcán»
 
-Volver a [[INICIO]] · Reglas de combate en [[Combate]]
+Volver a [[INICIO]] · Reglas en [[Combate]] · Modelos en [[Arte-IA]]
 
-Los enemigos **evolucionan con el nivel**, igual que el jugador:
-- Cada nivel es más grande, más elaborado, más brillante y con más ataques.
-- Hasta tener modelos reales (T09), cada uno se construye **por código con piezas** y se anima con movimientos programados: respirar, embestir, aletear, ondular y caer.
+> **Cambios de la v3:**
+> - Los monstruos viven en **zonas del mapa compartido** y se ven entre todos.
+> - El antiguo «Wyvern» enemigo pasa a ser el **Murciélago Ígneo**, para no confundirlo con el Guiverno, que ahora es una especie del jugador.
+> - El **Rey Volcán** pasa a ser un **coloso de magma**, no un dragón, y es el **jefe mundial**.
 
-## Tabla de combate
+## Mapa del Mundo 1
 
-| Nv | Enemigo | ⚡ necesario | 🏆 | Vida ×Poder | Golpe (daño / cada s) | Especial (cada s · círculos · radio · aviso · daño) | Espera |
+```
+                      ┌──────────────── CRÁTER ────────────────┐
+                      │   👑 Rey Volcán (jefe mundial, 10 min)  │
+                      └───────────────────▲────────────────────┘
+                                           │ (siempre abierto: todos pueden ir al jefe)
+ ZONA 5 Corazón del Volcán   ⚡800K ──▶ Titán de Magma
+ ZONA 4 Fortaleza Cazadragones ⚡120K ─▶ Caballero Cazadragones
+ ZONA 3 Cumbres Humeantes    ⚡20K ──▶ Murciélago Ígneo
+ ZONA 2 Ríos de Lava         ⚡500 ──▶ Gólem de lava · Serpiente de fuego
+ ZONA 1 Pradera de Ceniza    libre  ──▶ Lagartija · Salamandra
+                      ┌──────────── LOBBY ────────────┐
+                      │ spawn · entrenamiento · tienda │
+                      │ ⚔️ COLISEO (duelos)            │
+                      └───────────────────────────────┘
+```
+
+## Tabla de monstruos
+
+| Zona | Monstruo | ⚡ recomendado | 🏆 | Vida | Golpe (daño / s) | Especial (cada s · forma · radio · aviso · daño) | Cuántos |
 |---|---|---|---|---|---|---|---|
-| 1 | Lagartija | 10 | 1 | ×20 | 3 / 1,6 | 7 · 1 · 7 · 1,4 s · 20 | 2 s |
-| 2 | Salamandra | 75 | 3 | ×20 | 4 / 1,5 | 6,5 · 1 · 8 · 1,3 s · 22 | 2 s |
-| 3 | Gólem de lava | 500 | 8 | ×22 | 5 / 1,6 | 6 · 1 · 10 · 1,3 s · 25 | 3 s |
-| 4 | Serpiente de fuego | 3.000 | 20 | ×22 | 5 / 1,3 | 6 · 2 · 8 · 1,2 s · 25 | 3 s |
-| 5 | Wyvern | 20.000 | 50 | ×24 | 6 / 1,3 | 5,5 · 2 · 9 · 1,1 s · 28 | 4 s |
-| 6 | Caballero Cazadragones | 120.000 | 120 | ×24 | 7 / 1,2 | 5 · 3 · 8 · 1,1 s · 28 | 4 s |
-| 7 | Titán de Magma | 800.000 | 300 | ×26 | 8 / 1,4 | 5 · 3 · 11 · 1,0 s · 32 | 5 s |
-| 8 | 👑 Rey Volcán | 5.000.000 | 1.000 | ×40 | 8 / 1,2 | 5 · 3 · 10 · 1,1 s · 30 → **Fase 2:** 5 círculos, ×0,6 de intervalo | 30 s |
+| 1 | Lagartija | 10 | 1 | ×20 | 3 / 1,6 | 7 · círculo · 7 · 1,4 s · 20 | 6 |
+| 1 | Salamandra | 75 | 3 | ×20 | 4 / 1,5 | 6,5 · círculo · 8 · 1,3 s · 22 | 4 |
+| 2 | Gólem de lava | 500 | 8 | ×22 | 5 / 1,6 | 6 · círculo grande · 10 · 1,3 s · 25 | 4 |
+| 2 | Serpiente de fuego | 3.000 | 20 | ×22 | 5 / 1,3 | 6 · 2 círculos · 8 · 1,2 s · 25 | 3 |
+| 3 | Murciélago Ígneo | 20.000 | 50 | ×24 | 6 / 1,3 | 5,5 · línea en picado · 9 · 1,1 s · 28 | 4 |
+| 4 | Caballero Cazadragones | 120.000 | 120 | ×24 | 7 / 1,2 | 5 · 3 círculos · 8 · 1,1 s · 28 | 3 |
+| 5 | Titán de Magma | 800.000 | 300 | ×26 | 8 / 1,4 | 5 · pisotón: anillo que se expande · 11 · 1,0 s · 32 | 2 |
+| Cráter | 👑 **Rey Volcán** | (todos) | 1.000 base | escala con el servidor | 8 / 1,2 | lluvia de 6–10 círculos; fase 2 al 50 % | 1 (evento) |
 
-## Aspecto y animaciones por nivel
+La vida es «×Poder recomendado». Por ejemplo, la Lagartija tiene 10 × 20 = 200 de vida.
 
-### Nv 1 · Lagartija 🦎
-- **Forma:** cuerpo bajo y alargado, cabeza en cuña, cola fina y 4 patitas. Verde oliva con vientre claro.
-- **Animación:** reposo con balanceo lateral y cola que se menea; ataque de mordisco rápido hacia delante.
-- **Sensación:** tutorial, inofensiva.
+## Aspecto y animación
 
-### Nv 2 · Salamandra 🔥
-- **Forma:** como la lagartija pero más grande, naranja, con manchas amarillas brillantes y **llama en la punta de la cola**.
-- **Animación:** ondulación del cuerpo y la llama parpadeando.
+| Monstruo | Aspecto | Animaciones clave |
+|---|---|---|
+| Lagartija | Pequeña, verde oliva, ojos amarillos | Corretea, cola que se menea, mordisco rápido |
+| Salamandra | Naranja con manchas brillantes, **cola en llamas** | Ondula, la llama parpadea, escupe brasas |
+| Gólem de lava | Rocas oscuras con **grietas de lava** que laten | Pasos pesados (temblor), golpe a dos manos |
+| Serpiente de fuego | Cuerpo segmentado con fuego | Ondulación continua, latigazo |
+| Murciélago Ígneo | Alas membranosas encendidas | Aleteo rápido, picado en línea |
+| Caballero Cazadragones | Armadura plateada, espada brillante, escudo | Guardia, tajo, se cubre con el escudo |
+| Titán de Magma | Gólem gigante con aura de fuego | Respiración profunda, pisotón con onda expansiva |
+| 👑 Rey Volcán | Coloso de magma con corona de obsidiana, mitad dentro del cráter | Emerge, rugido, brazos que golpean el suelo, fase 2 al rojo vivo |
 
-### Nv 3 · Gólem de lava 🪨
-- **Forma:** bloques de roca oscura (torso, cabeza, brazos gruesos) con **grietas de lava brillantes**.
-- **Animación:** respiración lenta y pesada; ataque de **golpe con los dos brazos** hacia abajo.
-
-### Nv 4 · Serpiente de fuego 🐍
-- **Forma:** 9 segmentos esféricos rojos que se hacen pequeños hacia la cola, cabeza con colmillos y **fuego a lo largo del cuerpo**.
-- **Animación:** el cuerpo **ondula como una ola** continua; el ataque es un latigazo hacia delante.
-
-### Nv 5 · Wyvern 🦇
-- **Forma:** cuerpo morado y rojo, cuello largo, **dos alas grandes** y cola.
-- **Animación:** **aleteo constante** y flota subiendo y bajando; el ataque es un picado corto.
-
-### Nv 6 · Caballero Cazadragones 🛡️
-- **Forma:** humanoide de armadura plateada, yelmo con visera, **espada brillante** y **escudo** con emblema rojo.
-- **Animación:** guardia con la espada levantada; ataque de **tajo** (giro de la espada).
-- **Sensación:** el «anti-dragón», el primer rival «inteligente».
-
-### Nv 7 · Titán de Magma 🌋
-- **Forma:** gólem gigante (el doble que el Nv 3), roca negra con **lava brillante**, ojos ardientes y **aura de fuego** (partículas).
-- **Animación:** respiración profunda; el ataque es un **pisotón** que sacude la cámara.
-
-### Nv 8 · 👑 Rey Volcán (jefe)
-- **Forma:** dragón gigante de lava (cuerpo, cuello largo, cabeza con mandíbula), **alas enormes** y **corona dorada**, con aura de fuego.
-- **Animación:** aleteo lento e imponente; embestida con la cabeza.
-- **Fase 2:** brilla en rojo, ruge (sacudida fuerte), lanza 5 círculos y ataca más rápido.
-
-## Cómo añadir modelos reales (T09)
-1. Crea un Model con el **nombre exacto** del enemigo («Lagartija», «Gólem de lava»…) dentro de `ReplicatedStorage.Assets.Enemies`.
-2. Su `PrimaryPart` debe estar en la base, mirando al frente (-Z).
-3. Si existe, el juego lo usa **en lugar de** las piezas por código y le aplica las mismas animaciones de movimiento (respirar, embestir, hundirse al morir).
-
-## Ideas para los mundos siguientes
-- **Mundo 2 «Hielo»:** pingüino guerrero, lobo de escarcha, golem de hielo, yeti; especial = líneas de hielo además de círculos.
-- **Mundo 3 «Tormenta»:** aves trueno, elementales de rayo; especial = rayos que caen en cadena.
+Todos se generan con IA (ver [[Arte-IA]]). Mientras no exista el modelo, se usa la versión provisional hecha con piezas por código (ya programada en `EnemyVisuals`).
