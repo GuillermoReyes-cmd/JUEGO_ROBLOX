@@ -1,7 +1,7 @@
 -- Configuración del juego. Cada sistema tiene su propio archivo en esta carpeta,
 -- para que dos tareas distintas no editen el mismo archivo.
 -- Uso: local Config = require(ReplicatedStorage.Shared.Config)
---      Config.Evolutions, Config.Enemies, Config.Rebirth, Config.Train, Config.Combat, Config.Dragons, Config.Zones, Config.Boss
+--      Config.Evolutions, Config.Enemies, Config.Rebirth, Config.Train, Config.Combat, Config.Dragons, Config.Zones, Config.Boss, Config.Eggs, Config.Species
 
 local Config = {}
 
@@ -13,6 +13,8 @@ Config.Combat = require(script.Combat)
 Config.Dragons = require(script.Dragons)
 Config.Zones = require(script.Zones)
 Config.Boss = require(script.Boss)
+Config.Eggs = require(script.Eggs)
+Config.Species = require(script.Species)
 
 -- Busca un monstruo por su nombre exacto. Devuelve la entrada y su índice.
 function Config.GetEnemy(name: string)

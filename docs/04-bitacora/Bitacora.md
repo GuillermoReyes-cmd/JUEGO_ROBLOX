@@ -13,6 +13,15 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### T34 Huevos, rarezas, mutaciones y eclosión (Codex, `tarea/T34-huevos`)
+- Rama desde `origin/integracion/lanzamiento`. Catálogo de 19 especies y 7 huevos, cinco mutaciones y gigante independiente, con los números de la ficha.
+- Contrato `EggOdds` / `EggRoller` completo para T30; mismas probabilidades para mostrar y tirar, suerte limitada y validación de catálogos. MakeDragon crea el registro con GUID sin concederlo ni guardarlo.
+- Panel de probabilidades adaptable con ActiveModal; revelado con visor 3D del huevo, grietas, luz, partículas 2D, carta con retrato, Myth y oro/s. Colas de revelados/avisos y arcoíris para Secreto.
+- Comandos de prueba aislados en EggDebugService, solo Studio. Config/init cambia únicamente las dos líneas autorizadas y su comentario.
+- Verificado: sintaxis de los ocho archivos de código y build Rojo; pruebas de contrato, límites, validación negativa y debug; 210.000 tiradas reproducibles simuladas, con desviación de especies inferior a 1 punto porcentual.
+- Pendiente: aspecto e interacción en Studio, móvil y replicación real. T30 integrará concesión, guardado e incubadoras. Resultado y pasos completos en [[T34-huevos-eclosion]].
+- Estado: **En revisión**; sin merge a main.
+
 ### v4 aprobada, tablero nuevo y ficha T34 para Codex (Claude)
 - **Guillermo aprobó la v4** tal cual: [[Vision-v4]] y D-021.
 - **[[TABLERO]] rehecho** con las tareas T30–T38, el calendario de 4 semanas y la lista de lo que se retira.

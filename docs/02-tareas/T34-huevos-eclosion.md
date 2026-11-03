@@ -2,14 +2,14 @@
 tarea: T34
 responsable: Codex
 rama: tarea/T34-huevos (desde origin/integracion/lanzamiento)
-estado: Pendiente
+estado: En revisión
 depende_de: —
 actualizado: 2026-11-03
 ---
 
 # T34: Huevos, rarezas, mutaciones y eclosión
 
-**Responsable:** Codex · **Rama:** `tarea/T34-huevos`, **creada desde `origin/integracion/lanzamiento`** · **Estado:** Pendiente
+**Responsable:** Codex · **Rama:** `tarea/T34-huevos`, **creada desde `origin/integracion/lanzamiento`** · **Estado:** En revisión
 
 Diseño: [[Vision-v4]] (§5.4 eclosión, §6 especies, §7 probabilidades visibles) · Arquitectura: [[ARQUITECTURA]] · Reglas: [[AGENTS]]
 
@@ -224,7 +224,7 @@ Funciones puras, sin estado. Usan `Config.Eggs` y `Config.Species`:
 - [ ] `/huevo Real` varias veces seguidas: los revelados se ponen en cola, sin solaparse.
 - [ ] Con 2 jugadores (Test → Servidor local con 2 clientes): una Hidra (Legendario) muestra el banner al otro jugador, y un Draco Normal no.
 - [ ] Panel y revelado se ven bien en el emulador de móvil.
-- [ ] Sintaxis correcta (`luau` en cada archivo) y `rojo build default.project.json -o build.rbxlx` funciona.
+- [x] Sintaxis correcta (`luau` en cada archivo) y `rojo build default.project.json -o build.rbxlx` funciona.
 
 ## Fuera de alcance
 - Incubadoras, guarida, inventario de dragones y guardado: **T30, Claude**.
@@ -238,4 +238,46 @@ Funciones puras, sin estado. Usan `Config.Eggs` y `Config.Species`:
 (vacío)
 
 ## Resultado
-Lo rellena Codex al terminar: qué hizo, cómo probarlo y qué quedó pendiente.
+### Qué se hizo
+- Catálogo completo de 19 especies y 7 huevos con los Id, Kind, rarezas, oro base, pesos, tiempos y penalizaciones indicados; cinco mutaciones y sorteo independiente de gigante.
+- `EggOdds` cumple todas las funciones del contrato. La suerte se limita, normaliza especies, reserva el mínimo de Normal y limita gigante. Formatos con coma decimal y «1 entre 2.000» bajo el 1 %. `Validate` comprueba referencias, Kind, Id duplicados, pesos positivos/finite, reserva de Normal y coherencia numérica.
+- `EggRoller` usa exclusivamente esas probabilidades y admite un Random recibido; MakeDragon produce solo los cinco campos contratados, con GUID y fecha. No escribe inventarios ni datos del jugador.
+- Panel desplazable adaptable a móvil con tiempo, bioma, rarezas, probabilidades de especies/mutaciones/gigante y nota de suerte. `EggOddsGui.Show` / `.Hide` coordinados con ActiveModal.
+- Revelado con ViewportFrame (modelo de huevo IA teñido o esfera provisional), temblor creciente, grietas, brillo, estallido blanco y partículas 2D; ritmo y fuerza por rareza en Config/Eggs. Se usan partículas 2D porque los ParticleEmitter del mundo no se dibujan dentro del visor.
+- Carta con nombre sin convertirlo a mayúsculas, insignias de rareza/mutación/gigante, oro/s y Myth. **Retrato permitido con Color/Accent y nombre**, sin construir modelos de dragón ni duplicar DragonBuilder.
+- Cola de revelados que espera/cierra con «¡Genial!», respeta otros modales y pausa su tensión al ocultarse; cola separada de banners de 4 s para Legendario+ o Rainbow. Secreto anima borde y texto en arcoíris mediante un solo bucle.
+- Debug solo en Studio: Validate al arrancar, `/probs`, `/suerte` y `/huevo` con tabla observado/esperado por especie, mutación y gigante; máximo 10.000, se anuncia únicamente la última tirada y no se concede nada.
+- `Config/init.luau` cambia exclusivamente el comentario de uso y las dos líneas de registro autorizadas. Núcleo restante y módulos ajenos intactos. Arquitectura documenta las formas exactas para T30.
+
+### Verificación realizada
+- `luau` en los siete archivos creados y Config/init: sin errores de parseo; los errores de ejecución en `game`, `Color3` o `script` son esperables fuera de Roblox.
+- `rojo build default.project.json -o build.rbxlx`: correcto; build excluido del commit.
+- Pruebas Luau aisladas ejecutando el código real con servicios de Roblox simulados: 19 especies/7 huevos, Prado 60/35/5, Normal 87 %, gigante 2 %, Draco Dorado 4/s y gigante Dorado 12/s, tiempos, formato decimal y «1 entre», identificadores desconocidos, sumas a 1 y orden por probabilidad.
+- Suerte probada en -3, 0, 1, 3, 10, 100, infinito y NaN; reserva de Normal, límite de gigante, intervalos exactos de selección y reproducibilidad con RNG inyectado. MakeDragon conserva la tirada y genera Id distintos.
+- Validate rechaza pools con especies inexistentes, pesos 0/NaN, Kind inválido, Id de especie/huevo duplicados y exceso de probabilidades de mutación; pasa tras restaurar cada catálogo.
+- 210.000 tiradas con RNG reproducible simulado (10.000 por huevo, suerte 1/3/10): desviación máxima de especies 0,783 puntos porcentuales (menor de 1); mutaciones 1,100 puntos, dentro de seis desviaciones estándar de su probabilidad. Las sumas y reglas se comprueban además exactamente, sin depender de esta prueba estadística.
+- Prueba del servicio debug con Studio falso/verdadero: inactivo fuera de Studio, validación al iniciar, límites de suerte, payload de ambos remotes y tope de 10.000 tiradas correctos.
+- Pruebas temporales fuera del repositorio; no se añadieron dependencias ni archivos ajenos al alcance.
+
+### Cómo probar en Studio
+1. Conectar Rojo a esta rama, pulsar Play y comprobar que Validate no da errores. T34 no elimina los sistemas v3: esa retirada e integración corresponde al resto de tareas v4.
+2. `/probs Prado`: Draco 60 %, Cuélebre 35 %, Guivernillo 5 %, Normal 87 %, Dorada 8 %, Diamante 3 %, Sombra 1,5 %, Arcoíris 0,5 % (1 entre 200), Gigante 2 %; tiempo 30 s. Revisar scroll y cerrar.
+3. `/suerte 3` y `/probs Prado`: 54,545455 % / 31,818182 % / 13,636364 % para las especies; Normal 61 %, Dorada 24 %, Diamante 9 %, Sombra 4,5 %, Arcoíris 1,5 %, Gigante 6 %. Los cálculos suman 1 antes de redondear los textos. Con suerte 10, Normal se queda en 50 %.
+4. `/suerte 1`, `/huevo Prado`: comprobar huevo, temblor, grietas, estallido, carta con Myth, insignias y oro/s. Draco Normal da 2/s, Dorado 4/s, Dorado Gigante 12/s. Cerrar con «¡Genial!».
+5. `/huevo Cielo 10000`: revisar tabla observado/esperado; se revela solo el último resultado. Repetir para Real y suerte 3/10. Las muestras aleatorias varían y no se exige coincidencia exacta.
+6. Enviar varios `/huevo Real` seguidos: cada carta espera a «¡Genial!». Abrir `/probs Prado` durante la tensión, cerrarlo y comprobar que el revelado continúa sin superponerse; otra ventana con ActiveModal ajeno debe ocultarlo.
+7. Para probar determinísticamente desde la consola **del servidor en Studio**, ejecutar `local r=require(game.ReplicatedStorage.Shared.Remotes); r.Get("Hatched"):FireAllClients({UserId=game.Players:GetPlayers()[1].UserId,DisplayName="Prueba",EggId="Real",SpeciesId="ReinaDorada",Mutation="Rainbow",Giant=true})`. Comprobar arcoíris, fuerza de revelado, insignias y 1,8M/s. El registro real será responsabilidad de T30.
+8. Con 2 clientes, repetir el paso anterior con Hidra/Normal y Draco/Normal (EggId Prado para Draco). Hidra se anuncia a ambos durante 4 s y se revela solo al dueño; Draco Normal no se anuncia. Draco Rainbow sí se anuncia. Enviar varios anuncios para comprobar la cola.
+9. Probar tanto con `Assets.Dragons.Egg.Body` presente como sin él, y con emulador móvil en vertical y horizontal. Revisar encuadre, scroll, legibilidad, botón y que la cámara del mundo no cambia.
+10. En una sesión publicada, comprobar que `/huevo`, `/probs` y `/suerte` no funcionan. T30/T31 deben crear/disparar los remotes reales y T30 guardar los registros; T34 no concede ni persiste dragones.
+
+### Fuentes de leyendas consultadas
+- [National Museum of the Philippines: Bakunawa y el eclipse](https://www.nationalmuseum.gov.ph/2021/10/29/abaknon-and-their-view-of-the-world/).
+- [Yale Peabody: Ouroboros e Hieroglyphica](https://echoesofegypt.peabody.yale.edu/egyptosophy/hieroglyphica).
+- [University of Victoria: Níðhöggr](https://myndir.uvic.ca/NdHgR01.html).
+- Las variantes originales (Guivernillo, Dragón de Hielo, Lung de Escarcha y Reina Dorada) se describen como inspiraciones, no como figuras antiguas con esos nombres exactos.
+
+### Pendiente
+- Verificación visual, entrada de chat real, modelos IA, interacción móvil y replicación con dos jugadores en Studio. No se marcaron como aprobadas automáticamente.
+- T30 debe integrar tiradas, inventario, persistencia y eclosión de incubadoras. Si aplica suerte, debe pasar el mismo valor a Roll y al panel; el remote ShowEggOdds conserva solo `eggId` como exige la ficha.
+- No hay incubadoras, compras Robux, inventarios ni nuevos modelos en esta tarea. No se hizo merge a main.
