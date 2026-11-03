@@ -22,21 +22,26 @@ Juego Roblox/
     │   │   ├── Evolutions.luau
     │   │   ├── Enemies.luau  → enemigos por nivel (vida, ataques, aspecto)
     │   │   ├── Combat.luau   → reglas generales del combate
+    │   │   ├── Dragons.luau  → 10 especies del dragón compañero y 5 elementos
     │   │   └── Rebirth.luau
     │   ├── Format.luau       → formato de números (1.2K, 5.6M)
     │   └── Remotes.luau      → Remotes.Get("Nombre")  [NÚCLEO]
     ├── server/               → ServerScriptService.Server
     │   ├── Main.server.luau  → carga todos los Services automáticamente  [NÚCLEO]
+    │   ├── Dragon/
+    │   │   └── DragonBuilder.luau → arma el dragón (modelo IA o provisional) con Motor6D
     │   └── Services/         → un archivo por sistema
     │       ├── DataService.luau   → guardar y cargar  [NÚCLEO]
     │       ├── StatsService.luau  → leaderstats + atributos para la interfaz
     │       ├── TrainService.luau  → clic = +Poder
     │       ├── CombatService.luau → plataformas, arenas privadas y batallas (servidor manda)
+    │       ├── DragonService.luau → dragón compañero de cada jugador (Workspace.Dragons), elemento
     │       └── DebugService.luau  → trucos de chat SOLO en Studio (/power, /wins, /evo, /rebirths, /pelea, /reset)
     └── client/               → StarterPlayer.StarterPlayerScripts.Client
         ├── HUD.client.luau              → contador ⚡ 🏆 y texto guía
         ├── TrainController.client.luau  → clic en cualquier lugar = entrenar (no en batalla)
         ├── CombatController.client.luau → interfaz y efectos de batalla, clics de ataque
+        ├── DragonController.client.luau → sigue (propio), anima (todos) y reacciona al entrenar
         └── EnemyVisuals.luau            → dibuja y anima a los enemigos (ModuleScript)
 ```
 
@@ -96,6 +101,30 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | Atributo | En | Lo pone | Significado |
 |---|---|---|---|
 | `InBattle` | Player | CombatService | `true` mientras el jugador está en una arena. Los clics no entrenan y el HUD oculta su texto guía |
+
+### Dragón compañero (contrato T18)
+
+El dragón de cada jugador está en `Workspace.Dragons.Dragon_<UserId>`. Su `PrimaryPart` es `Root`, que es invisible y su propiedad de red pertenece al dueño.
+
+**Atributos del modelo:** `OwnerId`, `Species`, `Movement`, `Scale`, `RootHeight`, `FlyHeight`, `Size` y `Element`.
+
+**Motor6D animables:**
+
+| Nombre | Parte del cuerpo |
+|---|---|
+| `Body` | Cuerpo, unido a `Root` |
+| `Head` | Cabeza |
+| `WingL`, `WingR` | Alas |
+| `Tail1…n` | Cola |
+| `Seg1…n` | Segmentos del cuerpo de serpiente |
+| `LegFL`, `LegFR`, `LegBL`, `LegBR`, `LegL`, `LegR` | Patas |
+| `Neck1…3` | Cuellos |
+
+**Attachments:** `Mouth` (lleva el emisor `Breath`) y `Saddle`.
+
+Para obtener el dragón de un jugador desde el servidor: `DragonService.GetDragon(player)`.
+
+Detalle completo en [[T18-dragon-companero]].
 
 ## RemoteEvents existentes
 

@@ -11,7 +11,11 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 
 **Regla de oro:** dos tareas «En curso» a la vez **no pueden compartir archivos**.
 
-> ⏳ **El plan v3 está pendiente de aprobar.** Las fichas de T18–T25 se escriben cuando lo apruebes.
+> ✅ **Plan v3 aprobado el 2026-11-03**, junto con el calendario D-015 (duelos y montar en la actualización 1).
+>
+> **Estado de las tareas en curso:**
+> - [T18](T18-dragon-companero.md): **En revisión**.
+> - Las fichas de T19–T25 se escriben al empezar cada una.
 
 ## Hecho
 
@@ -27,7 +31,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v3]]
 
 | ID | Tarea | Responsable | Depende de | Archivos principales |
 |---|---|---|---|---|
-| T18 | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
+| [T18](T18-dragon-companero.md) ✅ En revisión | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
 | T19 | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController`, `Config/Evolutions` |
 | T20 | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Tú** (Studio) | — | `ReplicatedStorage.Assets` |
 | T21 | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |

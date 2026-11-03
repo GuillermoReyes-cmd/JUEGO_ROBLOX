@@ -1,7 +1,7 @@
 -- Configuración del juego. Cada sistema tiene su propio archivo en esta carpeta,
 -- para que dos tareas distintas no editen el mismo archivo.
 -- Uso: local Config = require(ReplicatedStorage.Shared.Config)
---      Config.Evolutions, Config.Enemies, Config.Rebirth, Config.Train, Config.Combat
+--      Config.Evolutions, Config.Enemies, Config.Rebirth, Config.Train, Config.Combat, Config.Dragons
 
 local Config = {}
 
@@ -10,6 +10,7 @@ Config.Evolutions = require(script.Evolutions)
 Config.Enemies = require(script.Enemies)
 Config.Rebirth = require(script.Rebirth)
 Config.Combat = require(script.Combat)
+Config.Dragons = require(script.Dragons)
 
 function Config.GetPowerPerClick(evolution: number, rebirths: number): number
 	local evo = Config.Evolutions[evolution] or Config.Evolutions[1]
