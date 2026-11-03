@@ -1,7 +1,7 @@
 ---
 tipo: diseño
 version: 4
-estado: propuesta (pendiente de aprobar)
+estado: aprobada (2026-11-03)
 actualizado: 2026-11-03
 ---
 

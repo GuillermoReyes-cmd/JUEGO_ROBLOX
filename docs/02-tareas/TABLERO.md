@@ -1,66 +1,68 @@
-# Tablero de tareas (plan v3)
+# Tablero de tareas (plan v4)
 
-Volver a [[INICIO]] · Visión en [[Vision-v3]]
+Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver historial de Git)
 
 **Estados:** Pendiente → En curso → En revisión → Hecha · Bloqueada · Sustituida
 
 **Responsables:**
-- **Claude:** núcleo, sistemas críticos (combate, dinero) y revisión.
+- **Claude:** núcleo, sistemas críticos (guarida, robo, dinero, montar) y revisión.
 - **Codex:** sistemas aislados con ficha detallada.
-- **Tú:** Studio (mapa y modelos con IA), pruebas, publicar y decidir los merges.
-
-> ⏸️ **En pausa (2026-11-03):** hay una propuesta de giro a [[Vision-v4]] («Roba un Huevo de Dragón»). Si se aprueba, este tablero se rehace con las tareas T30–T38.
+- **Tú:** Studio (mapa), pruebas, publicar y decidir los merges.
 
 **Regla de oro:** dos tareas «En curso» a la vez **no pueden compartir archivos**.
 
-> ✅ **Plan v3 aprobado el 2026-11-03**, junto con el calendario D-015 (duelos y montar en la actualización 1).
+> ✅ **Plan v4 aprobado el 2026-11-03** ([[Decisiones#D-021 Giro a «roba un huevo» con montar dragones]]).
 >
-> **Estado de las tareas en curso:**
-> - T18, T19, T21 y T22 están unidas en la rama **`integracion/lanzamiento`**. T18, T19 y T21 están **probadas en vivo en Studio**; T22, solo en simulación.
-> - **Falta tu aprobación para fusionar en `main`.**
-> - **Siguientes:** T05 (Codex), T06 + T24 (Claude) y T20 (Claude genera más modelos).
+> **Rama base de todas las tareas v4:** `integracion/lanzamiento`. Cada tarea crea su rama desde `origin/integracion/lanzamiento`.
+>
+> **Lanzamiento:** domingo 30 de noviembre.
 
 ## Hecho
-
 | ID | Tarea | Responsable | Estado |
 |---|---|---|---|
-| T00 | Configurar Rojo y estructura | Claude | Hecha |
-| T01 | Guardado de datos | Claude | Hecha |
-| T02 | Entrenar con clic en cualquier lugar | Claude | Hecha |
-| [T03](T03-combate.md) | Combate de acción v2 (arena) | Claude | **Sustituida por T21**: la arena se eliminó; sus fórmulas pasaron a `DamageService` |
-| [T04](T04-evoluciones.md) | Evoluciones v1: partes en el avatar | Codex | **Sustituida** por T19 (la compra validada de evoluciones se reutiliza) |
+| T00–T02 | Rojo, guardado, clic en cualquier lugar | Claude | Hecha (el clic +1 se retira en la v4) |
+| [T18](T18-dragon-companero.md) | Dragón compañero: rigs, seguir, animación procedural | Claude | En integración · **se reutiliza** para monturas |
+| [T19](T19-especies-evolucion.md) | Especies y evolución v3 | Codex | En integración · **se retira**: la cinemática sirve de referencia |
+| [T21](T21-monstruos-mundo.md) | Monstruos en el mundo | Claude | En integración · **su IA se reutiliza** para las dragonas madre |
+| [T22](T22-jefe-mundial.md) | Jefe mundial | Claude | En integración · **su ciclo se reutiliza** para la Dragona Reina |
+| T03, T04 | Combate en arena, evoluciones v1 | — | Sustituidas |
 
-## Lanzamiento (objetivo 1 de diciembre)
+## Lanzamiento (30 de noviembre)
+| ID | Tarea | Responsable | Semana | Depende de | Archivos principales |
+|---|---|---|---|---|---|
+| [T34](T34-huevos-eclosion.md) | **Huevos, rarezas, mutaciones y eclosión** (catálogo, tiradas, probabilidades visibles, revelado) | **Codex** | 1 | — | `Config/Eggs`, `Config/Species`, `EggOdds`, `EggRoller`, `HatchReveal`, `EggOddsGui` |
+| T30 | **Guaridas:** asignar una por jugador, incubadoras, corrales, oro por segundo, placa de cobro | Claude | 1 | T34 (usa `EggRoller`) | `Services/BaseService`, `Services/IncubatorService`, `Config/Base` |
+| T31 | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |
+| T32 | **Montar:** silla, jinete, riendas, ciclo de patas, polvo, velocidad por especie | Claude | 2 | T30 | `DragonBuilder`, `DragonController`, `Services/MountService` |
+| T33 | **Robo entre jugadores:** empujón, huevo en el suelo, puerta y escudo | Claude | 2 | T30, T31 | `Services/RaidService`, `client/RaidController` |
+| T35 | **Mejoras con oro** (incubadora, corral, botas, sigilo, silla, radar) | Codex | 2 | T30 | `Services/UpgradeService`, `client/UpgradeController`, `Config/Upgrades` |
+| T13 | **Rankings** (oro/s, huevos robados) en tablones 3D | Codex | 2 | T30 | `Services/LeaderboardService` |
+| T06 | **Tienda Robux:** pases, productos, `ProcessReceipt` | Claude | 3 | T30–T35 | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
+| T36 | **Evento Dragona Reina** cada 10 min | Claude | 3 | T31 | `Services/BossService` (se adapta) |
+| T37 | **Renacer** (conserva dragones, multiplicador de oro) | Codex | 3 | T30, T35 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
+| T38 | **Dragonario** (álbum de especies × mutaciones) | Codex | 3 | T34 | `Services/DexService`, `client/DexController` |
+| T20 | **Modelos con IA:** especies, madres, huevos, guarida | Claude (vía MCP) · tú guardas | 2–3 | — | `ReplicatedStorage.Assets` |
+| T08 | **Mapa:** 8 guaridas, plaza, 6 biomas, cráter | **Tú** (Studio) | 2–3 | — | Workspace |
+| T16 | Pulido: sonidos, luz, interfaz | Codex | 4 | todo | `client/…` |
+| T17 | Miniatura, icono, descripción, publicar | **Tú** | 4 | todo | — |
 
-| ID | Tarea | Responsable | Depende de | Archivos principales |
-|---|---|---|---|---|
-| [T18](T18-dragon-companero.md) ✅ En revisión | **Dragón compañero:** armado del modelo (`Body` + `Wing` con `Motor6D`), seguimiento, animaciones procedurales y dragón provisional sin modelo | Claude | — | `Services/DragonService`, `client/DragonAnimator`, `Config/Dragons` |
-| [T19](T19-especies-evolucion.md) ✅ Aprobada (probada en vivo) · arreglo menor pendiente: mayúsculas con tilde | **Especies y evolución v3:** 10 especies, cambio de modelo, efecto cinematográfico y aviso al servidor (reutiliza la compra de T04) | Codex | T18 | `Services/EvolutionService`, `client/EvolutionController` (Config solo lectura) |
-| T20 🔨 4 de 23 hechos | **Modelos con IA:** 15 piezas de dragón y 8 monstruos (guía [[Arte-IA]]) | **Claude** (vía MCP) · tú guardas el lugar | — | `ReplicatedStorage.Assets` |
-| [T21](T21-monstruos-mundo.md) ✅ En revisión | **Monstruos en el mundo:** zonas, apariciones, marcar objetivo, daño compartido, MVP, puertas de zona | Claude | T18 | `Services/MobService`, `Services/DamageService`, `client/CombatController` |
-| [T22](T22-jefe-mundial.md) ✅ En revisión | **Jefe mundial** cada 10 min con ranking de daño en vivo y premios por puesto | Claude | T21 | `Services/BossService`, `client/BossController` |
-| T24 | **Boosters** temporales y boosts de servidor + avisos sociales | Claude | T06 | `Services/BoostService`, `client/BoostController`, `Config/Boosts` |
-| T05 | Renacimiento + elemento (efectos sobre el dragón) | Codex | T18 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
-| T06 | Game passes, productos y ProcessReceipt | Claude | — | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
-| T13 | Rankings permanentes (tablones 3D en el lobby) | Codex | — | `Services/LeaderboardService` |
-| T08 | **Mapa del Mundo 1:** lobby, 5 zonas con puertas, cráter y Coliseo (ver [[Enemigos]]) | **Tú** (Studio) | — | Workspace |
-| T16 | Pulido: sonidos, luz y estilo de interfaz único | Codex | todo lo anterior | `client/…` |
-| T17 | Miniatura, icono, descripción, publicar | **Tú** | todo lo anterior | — |
+**Retirar del juego** (Claude, al empezar T30): clic +1 (`TrainService`, `TrainController`), combate de monstruos (`DamageService`, `CombatController`) y evolución por compra (`EvolutionService`, `EvolutionController`). Siguen en el historial de Git.
 
 ## Actualización 1 «Navidad» (~15 de diciembre)
+| ID | Tarea | Responsable |
+|---|---|---|
+| T26 | Bioma nevado festivo, huevos de Navidad limitados y mutación «Escarcha» | Codex |
+| T25 | Volar en Islas del Cielo (si no entró en el lanzamiento) | Claude |
 
-| ID | Tarea | Responsable | Depende de |
-|---|---|---|---|
-| T23 | **Duelos PvP en el Coliseo:** desafío, cola por rango, especiales por especie, racha, ranking semanal | Claude | T21 |
-| T25 | **Montar y volar** (desde la evolución 5 y 6) | Claude | T18 |
-| T26 | Evento de Navidad (monstruos y aspecto temporales) | Codex | T21 |
-
-## Orden sugerido para trabajar en paralelo
-1. **Ya:**
-   - Tú: T20 (modelos) y T08 (mapa).
-   - Claude: T18 (dragón compañero).
-   - Codex: T13 (rankings), que no depende de nada.
-2. **Después de T18:**
-   - Codex: T19 (especies) y T05 (renacimiento).
-   - Claude: T21 (monstruos) y luego T22 (jefe).
-3. **Al final:** T06 y T24 (dinero), T16 (pulido) y T17 (publicar).
+## Orden para trabajar en paralelo
+1. **Semana 1:**
+   - Codex: **T34**, que no depende de nada.
+   - Claude: T30 y luego T31.
+2. **Semana 2:**
+   - Codex: T35 y T13.
+   - Claude: T32 y T33.
+   - Tú: mapa.
+3. **Semana 3:**
+   - Codex: T37 y T38.
+   - Claude: T06, T36 y modelos.
+4. **Semana 4:** pulido y publicar.

@@ -13,6 +13,15 @@ Volver a [[INICIO]].
 
 ## 2026-11-03
 
+### v4 aprobada, tablero nuevo y ficha T34 para Codex (Claude)
+- **Guillermo aprobó la v4** tal cual: [[Vision-v4]] y D-021.
+- **[[TABLERO]] rehecho** con las tareas T30–T38, el calendario de 4 semanas y la lista de lo que se retira.
+- **Ficha [[T34-huevos-eclosion]] para Codex:**
+  - catálogo de 19 especies y 7 huevos, rarezas, mutaciones y gigante;
+  - suerte, panel de probabilidades y revelado;
+  - contrato `EggOdds` / `EggRoller` / `Hatched`, que usará T30.
+- Es la primera tarea de la semana 1. Codex trabaja en la rama `tarea/T34-huevos`, creada desde `integracion/lanzamiento`.
+
 ### Propuesta v4: «Roba un Huevo de Dragón» (Claude)
 - **Petición de Guillermo:** no veía claro el objetivo del juego. Prefiere algo tipo «Roba un huevo», con los personajes y animaciones de «Montar un dinosaurio».
 - **Investigación con la API de Roblox:**

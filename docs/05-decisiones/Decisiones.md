@@ -163,7 +163,7 @@ Volver a [[INICIO]].
 
 ## D-021 Giro a «roba un huevo» con montar dragones
 - **Fecha:** 2026-11-03
-- **Estado:** propuesta, **pendiente de que Guillermo la apruebe**.
+- **Estado:** **aprobada** por Guillermo el 2026-11-03.
 - **Decisión:** el juego pasa a ser «Roba un Huevo de Dragón». El bucle es robar huevos a dragonas madre dormidas → incubarlos en tu guarida → los dragones dan oro → mejorar → nidos más raros. Se montan los dragones con animaciones al estilo de «Montar un dinosaurio». Diseño completo en [[Vision-v4]].
 - **Por qué:**
   - La v3 tenía muchos sistemas pero no un objetivo que se entienda en 5 segundos.
