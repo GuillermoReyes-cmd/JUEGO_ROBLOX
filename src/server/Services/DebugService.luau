@@ -8,6 +8,7 @@
 --   /corrales 12      → fija cuántos corrales tienes desbloqueados
 --   /ausente 3600     → simula que estuviste N segundos desconectado (ganancias)
 --   /casa             → te lleva a tu guarida
+--   /tutorial         → vuelve a empezar el tutorial (con /reset antes, como un jugador nuevo)
 --   /reset            → vuelve todo a 0 (oro, dragones, huevos, mejoras)
 -- Los trucos de huevos de T34 (/huevo, /probs, /suerte) están en EggDebugService.
 
@@ -21,6 +22,7 @@ local IncomeService = require(script.Parent.IncomeService)
 local IncubatorService = require(script.Parent.IncubatorService)
 local StableService = require(script.Parent.StableService)
 local StatsService = require(script.Parent.StatsService)
+local TutorialService = require(script.Parent.TutorialService)
 
 local DebugService = {}
 
@@ -58,6 +60,8 @@ local function onChatted(player: Player, message: string)
 	elseif command == "ausente" and amount then
 		data.LastSeen = os.time() - amount
 		IncomeService.ApplyOffline(player)
+	elseif command == "tutorial" then
+		TutorialService.Reset(player)
 	elseif command == "casa" then
 		BaseService.SendHome(player)
 	elseif command == "reset" then

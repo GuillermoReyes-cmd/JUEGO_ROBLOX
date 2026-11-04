@@ -31,6 +31,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | ID | Tarea | Responsable | Semana | Depende de | Archivos principales |
 |---|---|---|---|---|---|
 | [T34](T34-huevos-eclosion.md) En integración | **Huevos, rarezas, mutaciones y eclosión** (catálogo, tiradas, probabilidades visibles, revelado) | **Codex** | 1 | — | `Config/Eggs`, `Config/Species`, `EggOdds`, `EggRoller`, `HatchReveal`, `EggOddsGui` |
+| [T39](T39-primeros-pasos.md) ✅ En revisión (probada en vivo) | **Primeros pasos:** objetivo guiado, flechas en el suelo, «!» y botón que brilla; huevo de regalo | Claude | 1 | T30, T34 | `Services/TutorialService`, `client/TutorialController`, `Config/Tutorial` |
 | [T30](T30-guaridas.md) En integración (probada en vivo) | **Guaridas:** asignar una por jugador, incubadoras, corrales, oro por segundo, placa de cobro | Claude | 1 | T34 (usa `EggRoller`) | `Services/BaseService`, `IncomeService`, `StableService`, `IncubatorService`, `Config/Base` |
 
 | T31 | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |

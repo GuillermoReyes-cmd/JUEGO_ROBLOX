@@ -11,6 +11,19 @@ Volver a [[INICIO]].
 
 ---
 
+## 2026-11-04
+
+### T39: primeros pasos (tutorial guiado) (Claude)
+- Rama `tarea/T39-tutorial`. Ficha: [[T39-primeros-pasos]].
+- Copia el sistema de «Montar un dinosaurio» ([[Partida-Montar-un-dinosaurio]]):
+  - panel «OBJETIVO» a la izquierda con barra de pasos;
+  - flechas blancas en el suelo;
+  - «!» rojo sobre el destino;
+  - el botón a pulsar brilla.
+- Huevo de regalo que eclosiona en 8 s. Premios de 50, 100, 50 y 200 💰.
+- Los pasos de nidos (T31) y mejoras (T35) se activan solos cuando existan.
+- Probado en vivo en Studio: pasos 1 a 3 y el salto de los pasos que faltan.
+
 ## 2026-11-03
 
 ### T30: guaridas, incubadoras, corrales y oro (Claude)
