@@ -23,6 +23,18 @@ Volver a [[INICIO]].
 - Huevo de regalo que eclosiona en 8 s. Premios de 50, 100, 50 y 200 💰.
 - Los pasos de nidos (T31) y mejoras (T35) se activan solos cuando existan.
 - Probado en vivo en Studio: pasos 1 a 3 y el salto de los pasos que faltan.
+### Partida real de «Montar un dinosaurio» (Claude)
+- Claude jugó con la cuenta de Guillermo (sin gastar Robux).
+- **Documentado en [[Partida-Montar-un-dinosaurio]]:**
+  - ventana de ganancias sin conexión con «Reclamar ×3» de pago;
+  - objetivos guiados con flechas;
+  - plaza y corrales con etiquetas de mutación y tamaño;
+  - cañón con lazo;
+  - índice por zonas con recompensas y sillas de zona;
+  - registro de actualizaciones (modo sin fin, tienda de fósiles, rareza Divina);
+  - tienda completa con precios y su orden.
+- **Lista de ideas para copiar,** con la tarea que afecta. Propone una tarea nueva: **T39 «Primeros pasos»** (tutorial guiado).
+- Complementa la investigación con fuentes de Codex ([[Referencia-Montar-un-dinosaurio]], rama `investigacion/montar-dino`).
 
 ## 2026-11-03
 
