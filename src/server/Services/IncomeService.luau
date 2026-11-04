@@ -119,6 +119,8 @@ function IncomeService.ApplyOffline(player: Player)
 	data.LastSeen = os.time()
 	if gain >= BASE.OfflineNoticeMin then
 		data.PlateGold += gain
+		-- La tienda (T06) muestra la ventana «Reclamar / Reclamar ×3» con este atributo
+		player:SetAttribute("OfflineGain", gain)
 		notifyEvent:FireClient(player, {
 			Text = "Mientras no estabas, tus dragones ganaron " .. Format.Number(gain) .. " 💰. ¡Cóbralo en la placa!",
 			Color = Color3.fromRGB(255, 210, 80),

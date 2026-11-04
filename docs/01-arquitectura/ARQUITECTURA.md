@@ -125,6 +125,7 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `Mounted`, `MountSpeed`, `MountId` | Player | MountService (T32) | Va montado · velocidad de la montura · montura elegida |
 | `LockedUntil`, `DoorReadyAt` | Modelo de la guarida | RaidService (T33) | Puerta cerrada hasta (hora del servidor) · se podrá cerrar desde |
 | `ShieldUntil` | Player | Tienda (T06) | Escudo comprado: nadie puede robarle hasta esa hora |
+| `Pass<Id>`, `Luck`, `LuckUntil`, `OfflineGain` | Player | ShopService / IncomeService (T06) | Pases comprados · suerte temporal · oro ganado sin conexión (ventana de bienvenida) |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -189,6 +190,7 @@ Los módulos nuevos son independientes del compañero v3 y no modifican su model
 | Push | cliente → servidor | ninguno: empujar (recarga de 3 s) | RaidService (T33) |
 | RaidIncubator | cliente → servidor | `plotIndex`, `slot`: robar de una guarida ajena | RaidService (T33) |
 | DoorToggle | cliente → servidor | ninguno: cerrar mi guarida | RaidService (T33) |
+| ShopBuy | cliente → servidor | `id` del producto o pase de Config/Shop; el servidor abre la compra de Roblox (o la simula en Studio con Id 0) | ShopService (T06) |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
 ### Remotes históricos de v3 (retirados; referencia de T34)

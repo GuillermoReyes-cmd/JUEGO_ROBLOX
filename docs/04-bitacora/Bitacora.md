@@ -13,6 +13,17 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### T06: tienda con Robux (Claude)
+- **Rama `tarea/T06-tienda`,** fusionada en `integracion/v4`. Ficha: [[T06-tienda]].
+- **Qué hay:**
+  - Huevo Real con probabilidades;
+  - pack de inicio a 29 R$;
+  - pases ×2 Oro y Auto-cobrar;
+  - suerte, eclosión instantánea, escudo y packs de oro;
+  - ventana de bienvenida «Reclamar ×3».
+- **Probado en modo prueba de Studio.**
+- **Falta:** que Guillermo cree los productos al publicar y pase los ID.
+
 ### T33: robo entre jugadores (Claude)
 - **Rama `tarea/T33-robo`,** fusionada en `integracion/v4`. Ficha: [[T33-robo]].
 - **Qué hace:**
