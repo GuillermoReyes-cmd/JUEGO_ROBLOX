@@ -9,6 +9,7 @@
 --   /ausente 3600     → simula que estuviste N segundos desconectado (ganancias)
 --   /casa             → te lleva a tu guarida
 --   /soltar           → se te cae al suelo el huevo que llevas (como al recibir un empujón)
+--   /velocidad 60     → fija tu velocidad al andar (sin número vuelve a la normal); se pierde al morir
 --   /reina            → la Dragona Reina aparece ya (aviso de 3 s)
 --   /tutorial         → vuelve a empezar el tutorial (con /reset antes, como un jugador nuevo)
 --   /reset            → vuelve todo a 0 (oro, dragones, huevos, mejoras)
@@ -66,6 +67,12 @@ local function onChatted(player: Player, message: string)
 		IncomeService.ApplyOffline(player)
 	elseif command == "soltar" then
 		NestService.DropToGround(player)
+	elseif command == "velocidad" then
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = amount or 16
+		end
+		return
 	elseif command == "reina" then
 		QueenService.StartNow()
 	elseif command == "tutorial" then
