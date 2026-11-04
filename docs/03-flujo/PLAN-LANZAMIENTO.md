@@ -31,7 +31,7 @@ Volver a [[INICIO]] · Tareas: [[TABLERO]] · Cómo trabajamos: [[FLUJO-CON-CODE
 ## Cola de Claude (en este orden)
 | # | Tarea | Qué entrega | Estado |
 |---|---|---|---|
-| C1 | Integración | `integracion/v4` = base + T35 + T37 + T38 + T13 (Codex) + T39 + notas de investigación. Revisión de Codex y prueba en Studio | ⏳ |
+| C1 | Integración | `integracion/v4` = base + T35 + T37 + T38 + T13 (Codex) + T39 + notas de investigación. Revisión de Codex y prueba en Studio | ✅ 2026-11-04 |
 | C2 | Draco en el juego (T20) | `DragonBuilder` acepta modelos de varias piezas («Rig»); el Draco de Blender aparece animado en los corrales | ⏳ |
 | C3 | **T31 Nidos y dragonas madre** | Nidos en los biomas, madre dormida con barra de sueño, robar con E, persecución, llevar el huevo y entregarlo en la incubadora | ⏳ |
 | C4 | **T32 Montar** | Montar el mejor dragón (o el elegido), silla, jinete, galope, polvo, velocidad por especie | ⏳ |
@@ -92,6 +92,16 @@ Commit «T16: novedades» y push. No hagas merge.
 
 ### X4 · Arreglos de revisión
 Claude añadirá aquí los arreglos que encuentre al revisar las ramas de Codex.
+
+**Revisión del 2026-11-04 (T35, T37, T38, T13): aprobadas.** Respetan sus archivos, validan en el servidor y usan Config. Arreglos de estilo para cuando Codex haga T16 (pulido):
+
+```text
+Codex: tarea T16b «Estilo común de botones». Rama tarea/T16-estilo desde origin/integracion/v4.
+Archivos: UpgradeController, DexController, RebirthController (solo la parte visual) y docs.
+- Los botones laterales «Mejoras», «Dragonario» y «Renacer» deben verse como «🐉 Establo» (StableController): 200×48 px, esquinas redondeadas de 8 px, fuente FredokaOne en grande (TextScaled), un emoji delante (⬆️ Mejoras, 📖 Dragonario, 🔁 Renacer) y su color propio (verde, azul, morado).
+- Un «!» rojo en la esquina del botón cuando haya algo pendiente: Dragonario con DexPending > 0; Mejoras cuando alcance el oro para alguna mejora; Renacer cuando alcance el oro para renacer.
+Commit «T16b: estilo común de botones» y push.
+```
 
 ## Lo que hace Guillermo (cuando Claude lo pida)
 - Conectar Rojo (puerto **34872**) en Studio cuando se le avise.
