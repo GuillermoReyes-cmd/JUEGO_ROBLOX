@@ -119,6 +119,7 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `BaseIndex` | Player y modelo de la guarida | BaseService | Número de su guarida |
 | `OwnerUserId` | Modelo de la guarida | BaseService | Dueño actual (nil = libre) |
 | `Luck` | Player | Tienda / pociones (T06) | Suerte de las eclosiones (por defecto 1) |
+| `TutorialStep`, `TutorialTotal`, `TutorialText`, `TutorialTarget`, `TutorialButton` | Player | TutorialService (T39) | Paso actual del tutorial y adónde apuntan las flechas o qué botón brilla |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -176,6 +177,7 @@ Los módulos nuevos son independientes del compañero v3 y no modifican su model
 | StableRequest | cliente → servidor | ninguno: pide `StableData` | StableService |
 | StableData | servidor → dueño | `{ Dragons, Pens, PenCount, MaxDragons }` | StableService |
 | GoldCollected | servidor → dueño | cantidad cobrada | IncomeService |
+| TutorialAction | cliente → servidor | `"OpenedStable"`: lo que solo ve el cliente; cada paso paga una vez | TutorialService (T39) |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
 ### Remotes históricos de v3 (retirados; referencia de T34)
