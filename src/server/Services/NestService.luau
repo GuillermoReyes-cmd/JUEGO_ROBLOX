@@ -115,7 +115,7 @@ end
 -- DRAGONA MADRE --------------------------------------------------------------------
 
 local function createMother(nest, spawnCFrame: CFrame)
-	local settings = NESTS.Mothers[nest.EggId]
+	local settings = nest.MotherSettings
 	if not settings then
 		return nil
 	end
@@ -160,7 +160,7 @@ local function createMother(nest, spawnCFrame: CFrame)
 		Height = height,
 		Settings = settings,
 		State = "Sleeping",
-		Sleep = 0,
+		Sleep = settings.StartSleep or 0, -- la Reina (T36) duerme con un ojo abierto
 		Target = nil :: Player?,
 	}
 end
@@ -177,14 +177,11 @@ end
 
 -- NIDO -----------------------------------------------------------------------------
 
-local function createNest(spawnPart: BasePart)
-	local eggId = spawnPart:GetAttribute("Biome")
-	if bySpawn[spawnPart] or type(eggId) ~= "string" or not EggOdds.GetEgg(eggId) or not NESTS.Mothers[eggId] then
-		return
-	end
+-- Construye un nido con sus huevos y su madre. options (todo opcional):
+--   EggCount · Radius · Mother (ajustes como Config.Nests.Mothers) · NoRespawn (los huevos no vuelven)
+local function buildNest(center: CFrame, eggId: string, options)
+	options = options or {}
 	local index = #nests + 1
-	local ground = groundY(spawnPart.Position) or (spawnPart.Position.Y - spawnPart.Size.Y / 2)
-	local center = CFrame.new(spawnPart.Position.X, ground, spawnPart.Position.Z) * spawnPart.CFrame.Rotation
 
 	local model = Instance.new("Model")
 	model.Name = "Nest_" .. index
@@ -193,7 +190,7 @@ local function createNest(spawnPart: BasePart)
 	CollectionService:AddTag(model, "Nest")
 
 	-- Anillo de ramas y piedras
-	local radius = NESTS.NestRadius
+	local radius = options.Radius or NESTS.NestRadius
 	for i = 1, 10 do
 		local angle = i / 10 * math.pi * 2
 		local stick = Instance.new("Part")
@@ -218,25 +215,67 @@ local function createNest(spawnPart: BasePart)
 	bed.Parent = model
 	model.PrimaryPart = bed
 
+	local eggCount = options.EggCount or NESTS.EggsPerNest
 	local nest = {
 		Index = index,
 		EggId = eggId,
-		Spawn = spawnPart,
 		Model = model,
 		Center = center * CFrame.new(0, 0.4, 0),
 		Slots = {},
+		MotherSettings = options.Mother or NESTS.Mothers[eggId],
+		NoRespawn = options.NoRespawn == true,
 	}
-	for slot = 1, NESTS.EggsPerNest do
-		local angle = slot / NESTS.EggsPerNest * math.pi * 2
-		nest.Slots[slot] = { Offset = Vector3.new(math.cos(angle) * 1.4, 0, math.sin(angle) * 1.4), Part = nil, RespawnAt = nil }
+	local ring = radius * 0.35
+	for slot = 1, eggCount do
+		local angle = slot / eggCount * math.pi * 2
+		nest.Slots[slot] = { Offset = Vector3.new(math.cos(angle) * ring, 0, math.sin(angle) * ring), Part = nil, RespawnAt = nil }
 	end
 	model.Parent = folder
-	for slot = 1, NESTS.EggsPerNest do
+	for slot = 1, eggCount do
 		spawnEgg(nest, slot)
 	end
 	nest.Mother = createMother(nest, center)
-	bySpawn[spawnPart] = nest
 	table.insert(nests, nest)
+	return nest
+end
+
+local function createNest(spawnPart: BasePart)
+	local eggId = spawnPart:GetAttribute("Biome")
+	if bySpawn[spawnPart] or type(eggId) ~= "string" or not EggOdds.GetEgg(eggId) or not NESTS.Mothers[eggId] then
+		return
+	end
+	local ground = groundY(spawnPart.Position) or (spawnPart.Position.Y - spawnPart.Size.Y / 2)
+	local center = CFrame.new(spawnPart.Position.X, ground, spawnPart.Position.Z) * spawnPart.CFrame.Rotation
+	bySpawn[spawnPart] = buildNest(center, eggId)
+end
+
+-- Nido de evento (T36, Dragona Reina). Devuelve el nido; quitarlo con NestService.RemoveNest.
+function NestService.CreateEventNest(position: Vector3, eggId: string, options)
+	local ground = groundY(position) or position.Y
+	return buildNest(CFrame.new(position.X, ground, position.Z), eggId, options)
+end
+
+function NestService.RemoveNest(nest)
+	local index = table.find(nests, nest)
+	if index then
+		table.remove(nests, index)
+	end
+	if nest.Mother then
+		setState(nest.Mother, "Sleeping")
+		nest.Mother.Model:Destroy()
+	end
+	nest.Model:Destroy()
+end
+
+-- Huevos que quedan en el nido
+function NestService.CountEggs(nest): number
+	local count = 0
+	for _, info in nest.Slots do
+		if info.Part then
+			count += 1
+		end
+	end
+	return count
 end
 
 -- Nidos provisionales: dos por bioma en fila, para poder jugar sin el mapa de T43
@@ -333,7 +372,7 @@ end
 -- Devuelve el huevo a su nido (si hay sitio, aparece ya; si no, se pierde)
 local function returnToNest(carry)
 	local nest = carry.Nest
-	if not nest then
+	if not nest or not table.find(nests, nest) then
 		return
 	end
 	for slot, info in nest.Slots do
@@ -469,7 +508,7 @@ takeEgg = function(player: Player, nest, slot)
 	end
 	info.Part:Destroy()
 	info.Part = nil
-	info.RespawnAt = os.clock() + NESTS.EggRespawnSeconds
+	info.RespawnAt = if nest.NoRespawn then nil else os.clock() + NESTS.EggRespawnSeconds
 
 	carrying[player] = { EggId = nest.EggId, Nest = nest, Visual = attachEgg(player, nest.EggId) }
 	player:SetAttribute("CarryingEgg", nest.EggId)
@@ -568,7 +607,7 @@ local function updateMother(nest, dt: number)
 		if noise > 0 then
 			mother.Sleep = math.min(NESTS.SleepMax, mother.Sleep + noise)
 		else
-			mother.Sleep = math.max(0, mother.Sleep - NESTS.SleepRecover * dt)
+			mother.Sleep = math.max(settings.MinSleep or 0, mother.Sleep - NESTS.SleepRecover * dt)
 		end
 		if mother.Sleep >= NESTS.SleepMax then
 			-- Prefiere al que lleva su huevo; si no, al más ruidoso
@@ -608,7 +647,7 @@ local function updateMother(nest, dt: number)
 			mother.Orient.CFrame = CFrame.lookAt(Vector3.zero, look.Unit)
 		else
 			mother.Orient.CFrame = mother.Home.Rotation
-			mother.Sleep = NESTS.CalmSleep
+			mother.Sleep = settings.CalmSleep or NESTS.CalmSleep
 			setState(mother, "Sleeping")
 		end
 	end

@@ -50,7 +50,7 @@ Codex: reanuda tu cola en docs/03-flujo/PLAN-LANZAMIENTO.md (rama integracion/v4
 | C4 | **T32 Montar** | Montar el mejor dragón (o el elegido), silla, jinete, galope, polvo, velocidad por especie | ✅ 2026-11-04 |
 | C5 | **T33 Robo entre jugadores** | Empujón (F), huevo en el suelo, robar de incubadoras ajenas, puerta y escudo | ✅ 2026-11-04 (falta prueba con 2 jugadores) |
 | C6 | **T06 Tienda Robux** | Pases y productos; recompensa sin conexión ×3, primera compra barata, regalos, probabilidades visibles | ✅ 2026-11-04 (faltan los ID reales al publicar) |
-| C7 | **T36 Dragona Reina** | Evento cada 10 min con nido gigante en el centro | ⏳ |
+| C7 | **T36 Dragona Reina** | Evento cada 10 min con nido gigante (al oeste de las guaridas) | ✅ 2026-11-04 |
 | C8 | Más especies en Blender (T20) | Una especie por `Kind` con el mismo estilo de bloques | ⏳ |
 
 ## Cola de Codex (copiar y pegar en este orden)

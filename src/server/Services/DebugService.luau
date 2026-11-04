@@ -9,6 +9,7 @@
 --   /ausente 3600     → simula que estuviste N segundos desconectado (ganancias)
 --   /casa             → te lleva a tu guarida
 --   /soltar           → se te cae al suelo el huevo que llevas (como al recibir un empujón)
+--   /reina            → la Dragona Reina aparece ya (aviso de 3 s)
 --   /tutorial         → vuelve a empezar el tutorial (con /reset antes, como un jugador nuevo)
 --   /reset            → vuelve todo a 0 (oro, dragones, huevos, mejoras)
 -- Los trucos de huevos de T34 (/huevo, /probs, /suerte) están en EggDebugService.
@@ -22,6 +23,7 @@ local DataService = require(script.Parent.DataService)
 local IncomeService = require(script.Parent.IncomeService)
 local IncubatorService = require(script.Parent.IncubatorService)
 local NestService = require(script.Parent.NestService)
+local QueenService = require(script.Parent.QueenService)
 local StableService = require(script.Parent.StableService)
 local StatsService = require(script.Parent.StatsService)
 local TutorialService = require(script.Parent.TutorialService)
@@ -64,6 +66,8 @@ local function onChatted(player: Player, message: string)
 		IncomeService.ApplyOffline(player)
 	elseif command == "soltar" then
 		NestService.DropToGround(player)
+	elseif command == "reina" then
+		QueenService.StartNow()
 	elseif command == "tutorial" then
 		TutorialService.Reset(player)
 	elseif command == "casa" then

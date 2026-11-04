@@ -126,6 +126,7 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `LockedUntil`, `DoorReadyAt` | Modelo de la guarida | RaidService (T33) | Puerta cerrada hasta (hora del servidor) · se podrá cerrar desde |
 | `ShieldUntil` | Player | Tienda (T06) | Escudo comprado: nadie puede robarle hasta esa hora |
 | `Pass<Id>`, `Luck`, `LuckUntil`, `OfflineGain` | Player | ShopService / IncomeService (T06) | Pases comprados · suerte temporal · oro ganado sin conexión (ventana de bienvenida) |
+| `QueenState`, `QueenAt`, `QueenPosition` | ReplicatedStorage | QueenService (T36) | Waiting/Warning/Active · hora del siguiente cambio · dónde aparece el nido |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -247,6 +248,7 @@ Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` 
 |---|---|---|---|
 | `NestSpawn` | Pieza invisible de cada nido (T43 o provisional) | Atributo `Biome` = Id del huevo | NestService (T31) |
 | `Nest`, `Mother` | Modelos que crea NestService | — | NestController, TutorialService |
+| `QueenSpawn` | Pieza donde aparece el nido de la Reina (opcional) | — | QueenService (T36) |
 | `Base` | `Model` de cada guarida (8) | Hijos `Incubator1..8`, `Pen1..12`, `CollectPlate`, `Spawn`, `Sign`, `Door` (todos BasePart). La entrada mira al eje Z+ local del pivote. Si no hay ninguna, BaseService construye 8 provisionales | BaseService, BaseController |
 
 ## T35 · Mejoras

@@ -13,6 +13,14 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### T36: evento de la Dragona Reina (Claude)
+- **Rama `tarea/T36-reina`,** fusionada en `integracion/v4`. Ficha: [[T36-reina]].
+- **El evento:**
+  - cada 10 min, con aviso a todos 60 s antes;
+  - nido gigante con 5 Huevos Reales y una Reina que nunca duerme del todo;
+  - contador arriba a la derecha y corona flotante en el lugar.
+- **Probado en vivo con `/reina`.**
+
 ### T06: tienda con Robux (Claude)
 - **Rama `tarea/T06-tienda`,** fusionada en `integracion/v4`. Ficha: [[T06-tienda]].
 - **Qué hay:**
