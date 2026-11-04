@@ -232,3 +232,6 @@ Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` 
 ## T35 · Mejoras
 - Remote `Upgrade`: cliente→servidor, solo Id. Niveles en `Upgrades`; atributos `Upgrade<Id>` y `Stealth`, `Saddle`, `Radar`.
 - `UpgradeService.Refresh(player)` reaplica atributos y WalkSpeed después de cambios de datos. ActiveModal `Upgrades`.
+
+## T37 · Renacer
+Remote `Rebirth`: cliente→servidor con número de renacimientos mostrado. Rechaza confirmaciones antiguas y aplica antispam. Multiplicador IncomeService `Rebirth`. ActiveModal `Rebirth`, botón y=75 %.

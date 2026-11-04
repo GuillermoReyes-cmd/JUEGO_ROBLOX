@@ -237,3 +237,6 @@ Volver a [[INICIO]].
 
 ## 2026-11-03 · T35
 Seis mejoras con oro, ventana adaptable, validación de Id, límites y antispam. Sintaxis y build correctos; prueba interactiva pendiente.
+
+## 2026-11-04 · T37
+Renacer v4 con oro, reinicio de mejoras y capacidades, conservación de inventarios y multiplicador permanente. Sintaxis y build correctos; prueba en vivo pendiente.

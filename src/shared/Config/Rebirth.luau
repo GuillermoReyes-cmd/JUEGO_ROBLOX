@@ -1,7 +1,8 @@
--- Renacimiento. Fuente: docs/00-vision/Diseno-juego-Dragon.md, sección 5.
+-- Economía de oro v4: se conserva la colección al renacer.
 
 return {
-	BaseCost = 250000,
+	BaseCost = 1000000,
 	CostGrowth = 3,
 	MultiplierPerRebirth = 0.5,
+	Cooldown = 1,
 }

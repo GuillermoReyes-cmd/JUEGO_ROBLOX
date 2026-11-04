@@ -177,3 +177,6 @@ Volver a [[INICIO]].
 
 ## T35 · Niveles y costes (2026-11-03)
 Upgrades usa claves Incubator, Pen, Boots, Stealth, Saddle y Radar. Costes geométricos configurables. Stealth/Saddle/Radar solo exponen nivel hasta T31/T32; no simulan efectos aún inexistentes.
+
+## T37 · Inventarios tras renacer (2026-11-04)
+Se conservan huevos incluso en incubadoras ahora bloqueadas; su reloj sigue y pueden eclosionar cuando se recompre la plaza. Los dragones de corrales sobrantes quedan en el establo. Confirmar incluye Rebirths esperado para evitar peticiones repetidas sobre el siguiente renacimiento.

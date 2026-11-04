@@ -40,7 +40,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | T13 | **Rankings** (oro/s, huevos robados) en tablones 3D | Codex | 2 | T30 | `Services/LeaderboardService` |
 | T06 | **Tienda Robux:** pases, productos, `ProcessReceipt` | Claude | 3 | T30–T35 | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
 | T36 | **Evento Dragona Reina** cada 10 min | Claude | 3 | T31 | `Services/BossService` (se adapta) |
-| T37 | **Renacer** (conserva dragones, multiplicador de oro) | Codex | 3 | T30, T35 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
+| [T37](T37-renacer.md) En revisión | **Renacer** (conserva dragones, multiplicador de oro) | Codex | 3 | T30, T35 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
 | T38 | **Dragonario** (álbum de especies × mutaciones) | Codex | 3 | T34 | `Services/DexService`, `client/DexController` |
 | T20 | **Modelos con IA:** especies, madres, huevos, guarida | Claude (vía MCP) · tú guardas | 2–3 | — | `ReplicatedStorage.Assets` |
 | T08 | **Mapa:** 8 guaridas, plaza, 6 biomas, cráter | **Tú** (Studio) | 2–3 | — | Workspace |
