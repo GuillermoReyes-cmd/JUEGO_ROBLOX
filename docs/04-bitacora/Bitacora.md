@@ -333,3 +333,6 @@ Implementado Dragonario actualizado según investigación de la partida: fichas,
 
 ## 2026-11-04 · T13
 Tablones globales de oro/s y eclosionados, actualización de 60 s, soportes etiquetados o provisionales y fallback Sin datos. Sintaxis y build correctos.
+
+## 2026-11-04 · T16a y pruebas de contratos
+Ventana versionada de novedades con scroll y dato NewsSeen. Todos los archivos pasan sintaxis y build. `python docs/03-flujo/probar-v4.py`: pasan contratos T35, T37, T38, T13 y T16; no sustituye replicación ni DataStore reales.

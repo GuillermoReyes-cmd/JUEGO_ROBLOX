@@ -45,7 +45,7 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | [T38](T38-dragonario.md) En revisión | **Dragonario** (álbum de especies × mutaciones) | Codex | 3 | T34 | `Services/DexService`, `client/DexController` |
 | T20 | **Modelos con IA:** especies, madres, huevos, guarida | Claude (vía MCP) · tú guardas | 2–3 | — | `ReplicatedStorage.Assets` |
 | T08 | **Mapa:** 8 guaridas, plaza, 6 biomas, cráter | **Tú** (Studio) | 2–3 | — | Workspace |
-| T16 | Pulido: sonidos, luz, interfaz | Codex | 4 | todo | `client/…` |
+| [T16a](T16-novedades.md) En revisión | Novedades e indicadores; resto del pulido: sonidos, luz, interfaz | Codex | 4 | todo | `client/…` |
 | T17 | Miniatura, icono, descripción, publicar | **Tú** | 4 | todo | — |
 
 **Retirar del juego** (Claude, al empezar T30): clic +1 (`TrainService`, `TrainController`), combate de monstruos (`DamageService`, `CombatController`) y evolución por compra (`EvolutionService`, `EvolutionController`). Siguen en el historial de Git.

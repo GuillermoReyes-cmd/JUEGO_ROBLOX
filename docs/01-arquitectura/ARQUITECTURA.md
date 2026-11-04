@@ -263,3 +263,6 @@ Datos Dex (`SpeciesId|Mutation|true/false`), DexClaimed (especies cobradas) y De
 
 ## T13 · Rankings
 LeaderboardService requiere Config.Leaderboards directamente. Tag Leaderboard en Part/Model, Board o PrimaryPart como superficie y atributo opcional LeaderboardId (GoldPerSecond/EggsHatched). Sin remotes. OrderedDataStores V4_TopGoldPerSecond_v1 y V4_TopEggsHatched_v1.
+
+## T16a · Novedades
+NewsService registra NewsSeen y lo replica como atributo. Remote NewsSeen recibe solo la versión vigente. Config.News se requiere directamente desde su ModuleScript; no se añade a init. ActiveModal News espera al modal actual.
