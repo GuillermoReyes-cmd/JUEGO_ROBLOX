@@ -238,3 +238,6 @@ Remote `Rebirth`: cliente→servidor con número de renacimientos mostrado. Rech
 
 ## T38 · Dragonario
 Datos Dex (`SpeciesId|Mutation|true/false`), DexClaimed (especies cobradas) y DexBiomes (premios de bioma cobrados). Remotes DexRequest (sin argumentos), DexData (snapshot al dueño), DexClaim (Id o All). Atributos DexPending y Saddle<Bioma>; multiplicador Dex. ActiveModal Dex.
+
+### Compatibilidad de atributos verificada en Studio
+Roblox rechaza SaddleVolcán. Se expone **SaddleVolcan** (ASCII); la página conserva el nombre Volcán. T32 debe consultar Config.Dex.Pages[].SaddleAttribute para obtener el atributo correcto de cada bioma.

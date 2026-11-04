@@ -9,6 +9,7 @@ local Dex = {
 	MultiplierPerBiome = 0.05,
 	Pages = {},
 	VariantCount = #Eggs.Mutations * 2,
+	BiomeAttributeIds = { ["Volcán"] = "Volcan" },
 }
 for _, species in Species do
 	local page
@@ -16,7 +17,7 @@ for _, species in Species do
 		if candidate.Biome == species.Biome then page = candidate; break end
 	end
 	if not page then
-		page = { Biome = species.Biome, Species = {} }
+		page = { Biome = species.Biome, Species = {}, SaddleAttribute = "Saddle" .. (Dex.BiomeAttributeIds[species.Biome] or species.Biome) }
 		table.insert(Dex.Pages, page)
 	end
 	table.insert(page.Species, species)

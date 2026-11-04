@@ -33,3 +33,6 @@ Ninguno de implementación.
 7. Probar tablet/teléfono, cambio de páginas y exclusión de modales.
 ### Pendiente
 Validación visual, prueba multijugador y persistencia con DataStore publicado.
+
+### Compatibilidad de atributos verificada en Studio
+Roblox rechaza SaddleVolcán. Se expone **SaddleVolcan** (ASCII); la página conserva el nombre Volcán. T32 debe consultar Config.Dex.Pages[].SaddleAttribute para obtener el atributo correcto de cada bioma.

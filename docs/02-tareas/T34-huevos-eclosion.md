@@ -281,3 +281,6 @@ Funciones puras, sin estado. Usan `Config.Eggs` y `Config.Species`:
 - Verificación visual, entrada de chat real, modelos IA, interacción móvil y replicación con dos jugadores en Studio. No se marcaron como aprobadas automáticamente.
 - T30 debe integrar tiradas, inventario, persistencia y eclosión de incubadoras. Si aplica suerte, debe pasar el mismo valor a Roll y al panel; el remote ShowEggOdds conserva solo `eggId` como exige la ficha.
 - No hay incubadoras, compras Robux, inventarios ni nuevos modelos en esta tarea. No se hizo merge a main.
+
+### Bloqueo externo revisado (2026-11-04)
+El aviso 203785492 procede del plugin Rojo 7.7.1, no de HatchReveal. Ver issue #1342 y corrección #1351 de rojo-rbx/rojo. Requiere una versión del plugin con la corrección upstream; no se altera el Rojo 7.7.1 fijado por el proyecto.

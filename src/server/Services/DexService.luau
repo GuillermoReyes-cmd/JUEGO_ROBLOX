@@ -17,7 +17,7 @@ local function publish(player, data)
 	end
 	for _, page in Dex.Pages do
 		local completed = Dex.IsComplete(data.Dex, page)
-		player:SetAttribute("Saddle" .. page.Biome, completed)
+		player:SetAttribute(page.SaddleAttribute, completed)
 		if completed and not data.DexBiomes[page.Biome] then pending += 1 end
 	end
 	player:SetAttribute("DexPending", pending)
