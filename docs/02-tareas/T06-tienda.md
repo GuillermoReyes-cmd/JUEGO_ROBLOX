@@ -1,38 +1,52 @@
-# T06: Game passes, productos y ProcessReceipt
+---
+tarea: T06
+responsable: Claude
+rama: tarea/T06-tienda (desde integracion/v4)
+estado: En revisión (probada en modo prueba de Studio)
+actualizado: 2026-11-04
+---
 
-**Responsable:** Claude · **Rama:** `tarea/T06-tienda` · **Estado:** Pendiente
+# T06: Tienda con Robux
 
-## Objetivo
-El jugador puede comprar game passes (multiplicadores de Poder, 2x Victorias, VIP…) y productos consumibles (paquetes de Poder, boosts, saltar evolución) de forma segura.
+**Responsable:** Claude · **Rama:** `tarea/T06-tienda` · **Estado:** En revisión
 
-## Contexto
-- Implementa la sección 7 de `docs/00-vision/Diseno-juego-Dragon.md`.
-- Es una tarea crítica porque mueve dinero real. La hace Claude.
-- **Tú** creas los game passes y productos en el Creator Dashboard y anotas sus IDs en `Config/Shop.luau`.
+Diseño: [[Vision-v4]] §7 · Orden copiado de la referencia: [[Partida-Montar-un-dinosaurio]] §6 · Catálogo: `Config/Shop.luau`
 
-## Archivos permitidos
-- Crear:
-  - `src/server/Services/ShopService.luau`
-  - `src/client/ShopController.client.luau`
-  - `src/shared/Config/Shop.luau`
-- Editar:
-  - `src/shared/Config/init.luau`: solo para registrar `Config.Shop` y que `GetPowerPerClick` acepte un multiplicador extra.
-  - `src/server/Services/TrainService.luau`: aplicar el multiplicador de los passes.
-  - `docs/01-arquitectura/ARQUITECTURA.md`.
+## Qué hay
+| Sección | Producto | R$ | Qué da |
+|---|---|---|---|
+| ⭐ Destacado | Huevo Real ×1 / ×3 | 49 / 129 | Huevos de evento a tus incubadoras (si están llenas, esperan turno). **Botón «📊 Probabilidades» antes de comprar** |
+| ⭐ Destacado | Pack de inicio (una vez) | 29 | Huevo del Desierto + 2.000 💰. Es la «primera compra barata» de la referencia |
+| 🎟️ Pases | ×2 Oro para siempre | 199 | Multiplicador ×2 (`IncomeService.AddMultiplier`) |
+| 🎟️ Pases | Auto-cobrar | 99 | La placa pasa sola a la cartera cada 10 s |
+| 🧪 Ayudas | Suerte ×2 · 15 min | 45 | Atributo `Luck` (lo usa la eclosión) |
+| 🧪 Ayudas | Eclosionar todo ya | 25 | Termina todas tus incubadoras |
+| 🧪 Ayudas | Escudo 30 min / 2 h | 15 / 49 | `ShieldUntil`: nadie puede robar en tu guarida (T33) |
+| 💰 Oro | Saco / Cofre / Tesoro | 25 / 99 / 249 | 10 min / 1 h / 5 h de tu producción (con un mínimo), así vale en cualquier momento |
+| Bienvenida | Reclamar ×3 | 29 | Al volver, ventana «Ganancias sin conexión» con **¡Reclamar!** (gratis) o **Reclamar ×3** |
 
-## Requisitos
-1. Toda compra se procesa con `ProcessReceipt`, de forma **idempotente**: guarda los recibos ya entregados para no entregar dos veces.
-2. Los multiplicadores de Poder no se suman entre sí: se aplica el más alto que se tenga.
-3. Botón **«🛒 Tienda»** a la izquierda (y = 55%), con pestañas «Pases» y «Productos».
-4. Lista inicial: unos 6 game passes y unos 10 productos (lista exacta en el diseño, sección 7).
-5. Precios regionales (Managed Pricing) compatibles: el precio se muestra con `GetProductInfo`, nunca escrito en el código.
+- **Seguridad:**
+  - solo `ShopService` usa `ProcessReceipt` (regla 9 de [[AGENTS]]);
+  - recuerda las últimas 50 compras para no dar dos veces la misma;
+  - guarda los datos antes de confirmar la compra;
+  - si el jugador no está cargado, responde `NotProcessedYet`.
+- **Modo prueba:** con `ProductId` o `GamePassId` = 0, en Studio la compra se simula (no se cobra nada) y en el juego publicado dice «Próximamente».
 
-## Criterios de aceptación
-- [ ] Una compra de prueba en Studio entrega el producto **una sola vez**.
-- [ ] Tener el pase x8 multiplica el +X por clic.
-- [ ] Sintaxis correcta y `rojo build` funciona.
+## ⚠️ Lo que tiene que hacer Guillermo al publicar
+1. **Publicar el juego** en Roblox (Archivo → Publicar en Roblox).
+2. **Crear los productos:** en [create.roblox.com](https://create.roblox.com) → tu experiencia → **Monetización → Productos de desarrollador**. Crea uno por cada producto de la tabla, con su nombre y precio. Copia el **ID** de cada uno.
+3. **Crear los pases:** en **Monetización → Pases**, crea «×2 Oro» y «Auto-cobrar» y copia sus **ID**.
+4. **Pasarle los ID a Claude**, que los pondrá en `Config/Shop.luau` (`ProductId` y `GamePassId`).
 
-## Bloqueos
-Necesita los IDs de los pases y productos creados en Roblox. Tú los creas.
+## Probado en Studio (modo prueba, 2026-11-04)
+- [x] Saco de oro: 50 → 1.250 💰 (se aplicó el mínimo de 1.000 + 200).
+- [x] Pase ×2: oro/s de 2 a 4, y el botón pasa a «✅ Tuyo».
+- [x] Huevo Real ×1: aparece en la incubadora 1.
+- [x] Suerte ×2: `Luck` = 2. Escudo 30 min: `ShieldUntil` a 1.799 s.
+- [x] `/ausente 3600`: se abre la ventana de bienvenida con 7,2K y los dos botones.
+- [x] La tienda se ve por secciones, con iconos, precios y probabilidades.
 
-## Resultado
+## Pendiente
+- Los ID reales, cuando se publique el juego.
+- Botón de **regalo** 🎁 (comprar para otro jugador), como en la referencia: después del lanzamiento.
+- **Pase VIP:** decidir sus ventajas.
