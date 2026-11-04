@@ -241,3 +241,7 @@ Datos Dex (`SpeciesId|Mutation|true/false`), DexClaimed (especies cobradas) y De
 
 ## T13 · Rankings
 LeaderboardService requiere Config.Leaderboards directamente. Tag Leaderboard en Part/Model, Board o PrimaryPart como superficie y atributo opcional LeaderboardId (GoldPerSecond/EggsHatched). Sin remotes. OrderedDataStores V4_TopGoldPerSecond_v1 y V4_TopEggsHatched_v1.
+
+### Compatibilidad de atributos verificada en Studio
+Roblox rechaza SaddleVolcán. Se expone **SaddleVolcan** (ASCII); la página conserva el nombre Volcán. T32 debe consultar Config.Dex.Pages[].SaddleAttribute para obtener el atributo correcto de cada bioma.
+
