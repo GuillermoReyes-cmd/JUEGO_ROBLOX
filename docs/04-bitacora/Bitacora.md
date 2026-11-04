@@ -13,6 +13,14 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### T33: robo entre jugadores (Claude)
+- **Rama `tarea/T33-robo`,** fusionada en `integracion/v4`. Ficha: [[T33-robo]].
+- **Qué hace:**
+  - empujón con F: al empujado se le cae el huevo al suelo y cualquiera puede cogerlo;
+  - robar de las incubadoras de otro jugador;
+  - puerta de la guarida (60 s cerrada y 30 s de recarga).
+- **Probado:** huevo al suelo y recogerlo, y la puerta. Falta la prueba con 2 jugadores.
+
 ### T32: montar dragones (Claude)
 - **Rama `tarea/T32-montar`,** fusionada en `integracion/v4`. Ficha: [[T32-montar]].
 - **Cómo funciona:**

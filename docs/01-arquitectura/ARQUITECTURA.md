@@ -123,6 +123,8 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `CarryingEgg`, `ChasedBy` | Player | NestService (T31) | Huevo que lleva a la espalda · una madre le persigue |
 | `Sleep`, `State`, `Sleeping`, `EggId` | Modelo de madre (etiqueta `Mother`) | NestService (T31) | Barra de sueño 0–100 · Sleeping/Chase/Return |
 | `Mounted`, `MountSpeed`, `MountId` | Player | MountService (T32) | Va montado · velocidad de la montura · montura elegida |
+| `LockedUntil`, `DoorReadyAt` | Modelo de la guarida | RaidService (T33) | Puerta cerrada hasta (hora del servidor) · se podrá cerrar desde |
+| `ShieldUntil` | Player | Tienda (T06) | Escudo comprado: nadie puede robarle hasta esa hora |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -184,6 +186,9 @@ Los módulos nuevos son independientes del compañero v3 y no modifican su model
 | Knockback | servidor → un jugador | `Vector3`: velocidad del empujón al ser atrapado | NestService (T31) |
 | MountToggle | cliente → servidor | ninguno: subir o bajar (antispam de 0,6 s) | MountService (T32) |
 | MountSelect | cliente → servidor | `dragonId` de su establo | MountService (T32) |
+| Push | cliente → servidor | ninguno: empujar (recarga de 3 s) | RaidService (T33) |
+| RaidIncubator | cliente → servidor | `plotIndex`, `slot`: robar de una guarida ajena | RaidService (T33) |
+| DoorToggle | cliente → servidor | ninguno: cerrar mi guarida | RaidService (T33) |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
 ### Remotes históricos de v3 (retirados; referencia de T34)
@@ -217,7 +222,9 @@ Así varias tareas pueden crear botones sin taparse:
 |---|---|
 | Arriba centro | HUD (oro y oro/s) |
 | Arriba centro, debajo del HUD (y = 64 px) | Avisos `Notify` (hasta 3, 4 s cada uno) |
+| Derecha (y = 52 %, 170 × 48 px) | Cerrar guarida (T33) |
 | Derecha (y = 62 %, 170 × 48 px) | Montar / Bajar (T32) |
+| Derecha (y = 72 %, 170 × 48 px) | Empujar (T33) |
 | Izquierda, botón 1 (y = 35 %, 200 × 48 px) | Establo (T30) |
 | Izquierda, botón 2 (y = 45 %) | Mejoras (T35) |
 | Izquierda, botón 3 (y = 55 %) | Tienda (T06) |

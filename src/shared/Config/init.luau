@@ -1,7 +1,7 @@
 -- Configuración del juego. Cada sistema tiene su propio archivo en esta carpeta,
 -- para que dos tareas distintas no editen el mismo archivo.
 -- Uso: local Config = require(ReplicatedStorage.Shared.Config)
---      Config.Base, Config.Dragons, Config.Eggs, Config.Rebirth, Config.Species, Config.Upgrades, Config.Dex, Config.Mount, Config.Nests, Config.Tutorial
+--      Config.Base, Config.Dragons, Config.Eggs, Config.Rebirth, Config.Species, Config.Upgrades, Config.Dex, Config.Mount, Config.Nests, Config.Raid, Config.Tutorial
 
 
 local Config = {}
@@ -15,6 +15,7 @@ Config.Upgrades = require(script.Upgrades)
 Config.Dex = require(script.Dex)
 Config.Mount = require(script.Mount)
 Config.Nests = require(script.Nests)
+Config.Raid = require(script.Raid)
 Config.Tutorial = require(script.Tutorial)
 
 

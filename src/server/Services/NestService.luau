@@ -388,6 +388,63 @@ local function attachEgg(player: Player, eggId: string): BasePart?
 	return part
 end
 
+-- Da un huevo para llevar (robo de incubadora o huevo recogido del suelo, T33).
+-- originNest: nido al que vuelve si se pierde (nil = no vuelve a ningún nido).
+function NestService.GiveCarry(player: Player, eggId: string, originNest): boolean
+	if carrying[player] or not EggOdds.GetEgg(eggId) or not rootOf(player) then
+		return false
+	end
+	carrying[player] = { EggId = eggId, Nest = originNest, Visual = attachEgg(player, eggId) }
+	player:SetAttribute("CarryingEgg", eggId)
+	setCarrySpeed(player, eggId)
+	return true
+end
+
+-- El huevo cae al suelo junto al jugador; cualquiera puede recogerlo (T33).
+-- Si nadie lo coge en GroundEggSeconds, vuelve a su nido (o desaparece).
+function NestService.DropToGround(player: Player): boolean
+	local root = rootOf(player)
+	local carry = clearCarry(player)
+	if not carry then
+		return false
+	end
+	if not root then
+		returnToNest(carry)
+		return true
+	end
+	local part = eggPart(carry.EggId)
+	local ground = groundY(root.Position) or (root.Position.Y - 3)
+	part.CFrame = CFrame.new(root.Position.X, ground + EGG_SIZE * EGG_STRETCH.Y / 2, root.Position.Z)
+	local light = Instance.new("PointLight")
+	light.Color = part.Color
+	light.Range = 12
+	light.Parent = part
+	local egg = EggOdds.GetEgg(carry.EggId)
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Coger huevo"
+	prompt.ObjectText = egg and egg.Name or ""
+	prompt.HoldDuration = Config.Raid.PickupHoldSeconds
+	prompt.MaxActivationDistance = NESTS.StealDistance
+	prompt.RequiresLineOfSight = false
+	local taken = false
+	prompt.Triggered:Connect(function(picker)
+		if not taken and NestService.GiveCarry(picker, carry.EggId, carry.Nest) then
+			taken = true
+			part:Destroy()
+		end
+	end)
+	prompt.Parent = part
+	part.Parent = folder
+	task.delay(Config.Raid.GroundEggSeconds, function()
+		if not taken and part.Parent then
+			taken = true
+			part:Destroy()
+			returnToNest(carry)
+		end
+	end)
+	return true
+end
+
 local function noiseFactor(player: Player): number
 	local stealth = player:GetAttribute("Stealth") or 0
 	local factor = math.max(NESTS.MinNoiseFactor, 1 - stealth * NESTS.StealthPerLevel)
