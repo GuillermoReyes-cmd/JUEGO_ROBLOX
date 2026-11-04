@@ -16,6 +16,8 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 > **Rama base de todas las tareas v4:** `integracion/lanzamiento`. Cada tarea crea su rama desde `origin/integracion/lanzamiento`.
 >
 > **Lanzamiento:** domingo 30 de noviembre.
+>
+> **Estado 2026-11-04:** `integracion/v4` tiene el bucle completo jugable: tutorial, nidos y madres, robar, incubar, oro, establo, montar, robo entre jugadores, tienda, Dragona Reina, mejoras, renacer, Dragonario, rankings y novedades. Orden de trabajo en [[PLAN-LANZAMIENTO]].
 
 ## Hecho
 | ID | Tarea | Responsable | Estado |
@@ -34,16 +36,16 @@ Volver a [[INICIO]] · Visión en [[Vision-v4]] · Plan anterior: v3 (ver histor
 | [T39](T39-primeros-pasos.md) ✅ En revisión (probada en vivo) | **Primeros pasos:** objetivo guiado, flechas en el suelo, «!» y botón que brilla; huevo de regalo | Claude | 1 | T30, T34 | `Services/TutorialService`, `client/TutorialController`, `Config/Tutorial` |
 | [T30](T30-guaridas.md) En integración (probada en vivo) | **Guaridas:** asignar una por jugador, incubadoras, corrales, oro por segundo, placa de cobro | Claude | 1 | T34 (usa `EggRoller`) | `Services/BaseService`, `IncomeService`, `StableService`, `IncubatorService`, `Config/Base` |
 
-| T31 | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |
-| T32 | **Montar:** silla, jinete, riendas, ciclo de patas, polvo, velocidad por especie | Claude | 2 | T30 | `DragonBuilder`, `DragonController`, `Services/MountService` |
-| T33 | **Robo entre jugadores:** empujón, huevo en el suelo, puerta y escudo | Claude | 2 | T30, T31 | `Services/RaidService`, `client/RaidController` |
+| [T31](T31-nidos.md) ✅ En revisión (probada) | **Nidos y dragonas madre:** sueño, robar con E, persecución, llevar el huevo | Claude | 1–2 | T30 | `Services/NestService`, `client/NestController`, `Config/Nests` |
+| [T32](T32-montar.md) ✅ En revisión (probada) | **Montar:** silla, jinete, riendas, ciclo de patas, polvo, velocidad por especie | Claude | 2 | T30 | `DragonBuilder`, `DragonController`, `Services/MountService` |
+| [T33](T33-robo.md) ✅ En revisión (falta prueba con 2 jugadores) | **Robo entre jugadores:** empujón, huevo en el suelo, puerta y escudo | Claude | 2 | T30, T31 | `Services/RaidService`, `client/RaidController` |
 | [T35](T35-mejoras.md) En revisión | **Mejoras con oro** (incubadora, corral, botas, sigilo, silla, radar) | Codex | 2 | T30 | `Services/UpgradeService`, `client/UpgradeController`, `Config/Upgrades` |
 | [T13](T13-rankings.md) En revisión | **Rankings** (oro/s, huevos eclosionados) en tablones 3D | Codex | 2 | T30 | `Services/LeaderboardService` |
-| T06 | **Tienda Robux:** pases, productos, `ProcessReceipt` | Claude | 3 | T30–T35 | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
-| T36 | **Evento Dragona Reina** cada 10 min | Claude | 3 | T31 | `Services/BossService` (se adapta) |
+| [T06](T06-tienda.md) ✅ En revisión (faltan IDs al publicar) | **Tienda Robux:** pases, productos, `ProcessReceipt` | Claude | 3 | T30–T35 | `Services/ShopService`, `client/ShopController`, `Config/Shop` |
+| [T36](T36-reina.md) ✅ En revisión (probada) | **Evento Dragona Reina** cada 10 min | Claude | 3 | T31 | `Services/BossService` (se adapta) |
 | [T37](T37-renacer.md) En revisión | **Renacer** (conserva dragones, multiplicador de oro) | Codex | 3 | T30, T35 | `Services/RebirthService`, `client/RebirthController`, `Config/Rebirth` |
 | [T38](T38-dragonario.md) En revisión | **Dragonario** (álbum de especies × mutaciones) | Codex | 3 | T34 | `Services/DexService`, `client/DexController` |
-| T20 | **Modelos con IA:** especies, madres, huevos, guarida | Claude (vía MCP) · tú guardas | 2–3 | — | `ReplicatedStorage.Assets` |
+| [T20](T20-modelos-blender.md) 🔨 Draco hecho con Blender | **Modelos con IA:** especies, madres, huevos, guarida | Claude (vía MCP) · tú guardas | 2–3 | — | `ReplicatedStorage.Assets` |
 | T08 | **Mapa:** 8 guaridas, plaza, 6 biomas, cráter | **Tú** (Studio) | 2–3 | — | Workspace |
 | [T16a](T16-novedades.md) En revisión | Novedades e indicadores; resto del pulido: sonidos, luz, interfaz | Codex | 4 | todo | `client/…` |
 | T17 | Miniatura, icono, descripción, publicar | **Tú** | 4 | todo | — |
