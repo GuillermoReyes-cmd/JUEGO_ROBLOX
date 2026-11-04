@@ -243,3 +243,6 @@ Renacer v4 con oro, reinicio de mejoras y capacidades, conservación de inventar
 
 ## 2026-11-04 · T38
 Implementado Dragonario actualizado según investigación de la partida: fichas, diez variantes, premios por especie/bioma, silla, multiplicador y aviso rojo. Sintaxis y build correctos.
+
+## 2026-11-04 · T13
+Tablones globales de oro/s y eclosionados, actualización de 60 s, soportes etiquetados o provisionales y fallback Sin datos. Sintaxis y build correctos.

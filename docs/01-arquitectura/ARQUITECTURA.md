@@ -238,3 +238,6 @@ Remote `Rebirth`: cliente→servidor con número de renacimientos mostrado. Rech
 
 ## T38 · Dragonario
 Datos Dex (`SpeciesId|Mutation|true/false`), DexClaimed (especies cobradas) y DexBiomes (premios de bioma cobrados). Remotes DexRequest (sin argumentos), DexData (snapshot al dueño), DexClaim (Id o All). Atributos DexPending y Saddle<Bioma>; multiplicador Dex. ActiveModal Dex.
+
+## T13 · Rankings
+LeaderboardService requiere Config.Leaderboards directamente. Tag Leaderboard en Part/Model, Board o PrimaryPart como superficie y atributo opcional LeaderboardId (GoldPerSecond/EggsHatched). Sin remotes. OrderedDataStores V4_TopGoldPerSecond_v1 y V4_TopEggsHatched_v1.

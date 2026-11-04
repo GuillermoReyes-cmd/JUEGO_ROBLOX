@@ -183,3 +183,6 @@ Se conservan huevos incluso en incubadoras ahora bloqueadas; su reloj sigue y pu
 
 ## T38 · Completar biomas y variantes (2026-11-04)
 Completar un bioma requiere descubrir cada especie, no todas las mutaciones raras. Las diez variantes son un reto adicional. Silla y multiplicador se desbloquean al descubrir; oro del bioma mediante Reclamar todo. DexBiomes impide cobrarlo otra vez y no se reinicia al renacer.
+
+## T13 · Métricas globales (2026-11-04)
+Oro/s usa última muestra, no máximo histórico, para reflejar renacimientos y cambios de corrales. Eclosionados usa máximo mediante UpdateAsync. Ambos se redondean a enteros; no se guardan saldos de oro en el ranking.
