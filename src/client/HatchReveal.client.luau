@@ -137,22 +137,7 @@ local function eggModel(egg)
 	local body = asset and asset:FindFirstChild("Body")
 	local model = Instance.new("Model")
 	if body and (body:IsA("Model") or body:IsA("BasePart")) then
-		local clone = body:Clone()
-		-- El recurso legado no es compatible; limpiar solo el clon del visor.
-		for _, item in clone:GetDescendants() do
-			if item:IsA("SpecialMesh") then
-				if string.find(item.MeshId, "203785492", 1, true) then
-					item.MeshId = ""
-					item.MeshType = Enum.MeshType.Sphere
-				end
-				if string.find(item.TextureId, "203785492", 1, true) then item.TextureId = "" end
-			elseif item:IsA("Decal") and string.find(item.Texture, "203785492", 1, true) then
-				item:Destroy()
-			elseif item:IsA("Sound") then
-				item:Destroy()
-			end
-		end
-		clone.Parent = model
+		body:Clone().Parent = model
 	end
 	if not model:FindFirstChildWhichIsA("BasePart", true) then
 		local sphere = Instance.new("Part")

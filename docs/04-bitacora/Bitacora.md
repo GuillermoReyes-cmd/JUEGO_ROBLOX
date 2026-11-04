@@ -232,7 +232,7 @@ Volver a [[INICIO]].
 
 ## 2026-11-03 · Integración base v4 (Codex)
 - Merge de T34 en origin/T30, conservando documentación de ambas ramas y los cinco módulos Config vigentes.
-- T30 y T34 en integración. Limpieza del recurso legado 203785492 en el clon de HatchReveal; el modelo original de Studio no se modifica.
+- T30 y T34 en integración. La limpieza provisional del clon de HatchReveal se retiró el 4 de noviembre al confirmar que el aviso viene del plugin Rojo.
 - Verificación: sintaxis de todos los Luau y Rojo. Validación visual del asset pendiente en Studio.
 
 ## 2026-11-03 · T35
@@ -240,3 +240,8 @@ Seis mejoras con oro, ventana adaptable, validación de Id, límites y antispam.
 
 ## 2026-11-04 · T37
 Renacer v4 con oro, reinicio de mejoras y capacidades, conservación de inventarios y multiplicador permanente. Sintaxis y build correctos; prueba en vivo pendiente.
+
+## 2026-11-04 · Diagnóstico del aviso 203785492
+El aviso se reproduce en el build sin Assets y antes de eclosionar. Corresponde al sonido Notification del plugin Rojo 7.7.1: https://github.com/rojo-rbx/rojo/issues/1342 . Corrección upstream https://github.com/rojo-rbx/rojo/pull/1351 (changelog Unreleased). HatchReveal no usa ese recurso; retirada la limpieza especulativa. No se cambia la versión fijada de Rojo ni se parchea su plugin fuera del proyecto.
+
+
