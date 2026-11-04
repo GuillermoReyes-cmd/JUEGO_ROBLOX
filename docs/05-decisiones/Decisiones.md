@@ -186,3 +186,17 @@ Completar un bioma requiere descubrir cada especie, no todas las mutaciones rara
 
 ## T13 · Métricas globales (2026-11-04)
 Oro/s usa última muestra, no máximo histórico, para reflejar renacimientos y cambios de corrales. Eclosionados usa máximo mediante UpdateAsync. Ambos se redondean a enteros; no se guardan saldos de oro en el ranking.
+
+## D-022 Dragones por script en Blender
+- **Fecha:** 2026-11-04
+- **Decisión:** los dragones se modelan con un script de Python para Blender (`tools/blender/`), en estilo de bloques con tachuelas y con las partes separadas. Entran en Roblox por Importar 3D y se montan como «Rig» en `Assets.Dragons.<Id>`. Ver [[T20-modelos-blender]].
+- **Por qué:**
+  - Guillermo eligió el estilo de bloques con tachuelas («Montar un dinosaurio»).
+  - La IA de Studio da modelos de una pieza, difíciles de animar y de estilo desigual.
+  - Con un script, todas las especies salen coherentes y animables.
+- **Consecuencia:** cada especie nueva necesita que Guillermo pulse Importar 3D y guarde el lugar.
+
+## D-023 Trabajo autónomo con plan ordenado
+- **Fecha:** 2026-11-04
+- **Decisión:** Claude y Codex siguen la cola de [[PLAN-LANZAMIENTO]] sin preguntar en cada paso. Claude integra y revisa. Guillermo opina al final de cada tanda.
+- **Por qué:** lo pidió Guillermo, porque las preguntas continuas frenaban el avance.

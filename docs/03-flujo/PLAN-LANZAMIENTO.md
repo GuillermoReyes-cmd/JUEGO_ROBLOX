@@ -32,7 +32,7 @@ Volver a [[INICIO]] · Tareas: [[TABLERO]] · Cómo trabajamos: [[FLUJO-CON-CODE
 | # | Tarea | Qué entrega | Estado |
 |---|---|---|---|
 | C1 | Integración | `integracion/v4` = base + T35 + T37 + T38 + T13 (Codex) + T39 + notas de investigación. Revisión de Codex y prueba en Studio | ✅ 2026-11-04 |
-| C2 | Draco en el juego (T20) | `DragonBuilder` acepta modelos de varias piezas («Rig»); el Draco de Blender aparece animado en los corrales | ⏳ |
+| C2 | Draco en el juego (T20) | `DragonBuilder` acepta modelos de varias piezas («Rig»); el Draco de Blender aparece animado en los corrales | ✅ 2026-11-04 |
 | C3 | **T31 Nidos y dragonas madre** | Nidos en los biomas, madre dormida con barra de sueño, robar con E, persecución, llevar el huevo y entregarlo en la incubadora | ⏳ |
 | C4 | **T32 Montar** | Montar el mejor dragón (o el elegido), silla, jinete, galope, polvo, velocidad por especie | ⏳ |
 | C5 | **T33 Robo entre jugadores** | Empujón (F), huevo en el suelo, robar de incubadoras ajenas, puerta y escudo | ⏳ |

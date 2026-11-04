@@ -13,6 +13,13 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### Integración v4 y Draco en el juego (Claude)
+- **`integracion/v4`** reúne la base (T30 + T34), T35, T37, T38, T13 de Codex, T39 y las notas de investigación.
+  - Revisión de Codex: aprobada.
+  - Se borraron en el Studio de Guillermo 5 scripts duplicados que había dejado una sincronización antigua.
+- **Plan de trabajo ordenado:** [[PLAN-LANZAMIENTO]] (D-023).
+- **T20:** `DragonBuilder` acepta modelos de varias piezas («Rig»). El Draco de Blender ya sale animado en los corrales. Proceso en [[T20-modelos-blender]] (D-022).
+
 ### T39: primeros pasos (tutorial guiado) (Claude)
 - Rama `tarea/T39-tutorial`. Ficha: [[T39-primeros-pasos]].
 - Copia el sistema de «Montar un dinosaurio» ([[Partida-Montar-un-dinosaurio]]):

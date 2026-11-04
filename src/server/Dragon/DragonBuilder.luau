@@ -527,6 +527,84 @@ local function buildFromTemplate(b, folder: Instance, species): number?
 	return height / 2
 end
 
+-- MODELO DE VARIAS PIEZAS («Rig», hecho en Blender) ----------------------------------
+-- Assets.Dragons.<Id>.Rig es un Model con MeshParts llamadas «<Articulación>__<Color>»
+-- y el atributo Joint. El propio Rig guarda, en su espacio (frente = -Z, suelo = Y 0):
+--   <Articulación>_Parent (string) · <Articulación>_Pivot (Vector3, punto de giro)
+--   MouthPivot · SaddlePivot · BodyLength (largo de referencia para escalar)
+-- Proceso: tools/blender/draco_bloques.py → Importar 3D → script de montaje (ver T20).
+
+local function buildFromRig(b, template: Model, species): number?
+	local bodyPivot = template:GetAttribute("Body_Pivot")
+	if typeof(bodyPivot) ~= "Vector3" then
+		return nil
+	end
+	local _, size = template:GetBoundingBox()
+	local scale = species.Size / (template:GetAttribute("BodyLength") or math.max(size.X, size.Z))
+
+	local rig = template:Clone()
+	rig:ScaleTo(rig:GetScale() * scale)
+	rig:PivotTo(b.Root.CFrame * CFrame.new(-bodyPivot * scale))
+	local base = rig:GetPivot()
+
+	-- Cada articulación: una pieza principal y las demás soldadas a ella
+	local groups = {}
+	for _, part in rig:GetChildren() do
+		local joint = part:IsA("BasePart") and part:GetAttribute("Joint")
+		if joint then
+			setPhysics(part)
+			groups[joint] = groups[joint] or {}
+			table.insert(groups[joint], part)
+		end
+	end
+	local mains = {}
+	for joint, parts in groups do
+		table.sort(parts, function(p, q)
+			return p.Size.X * p.Size.Y * p.Size.Z > q.Size.X * q.Size.Y * q.Size.Z
+		end)
+		local main = rig:FindFirstChild(joint .. "__Body") or parts[1]
+		mains[joint] = main
+		for _, part in parts do
+			if part ~= main then
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0 = main
+				weld.Part1 = part
+				weld.Parent = part
+			end
+		end
+	end
+	for joint, main in mains do
+		local parentName = template:GetAttribute(joint .. "_Parent")
+		local pivot = template:GetAttribute(joint .. "_Pivot")
+		local parent = if parentName == "Root" then b.Root else mains[parentName]
+		if parent and typeof(pivot) == "Vector3" then
+			motorBetween(joint, parent, main, base * CFrame.new(pivot * scale))
+		end
+	end
+
+	local head, body = mains.Head or mains.Body, mains.Body
+	local mouthPivot = template:GetAttribute("MouthPivot")
+	local saddlePivot = template:GetAttribute("SaddlePivot")
+	if head and typeof(mouthPivot) == "Vector3" then
+		local mouth = Instance.new("Attachment")
+		mouth.Name = "Mouth"
+		mouth.Parent = head
+		mouth.WorldCFrame = base * CFrame.new(mouthPivot * scale) * MOUTH_ROTATION
+	end
+	if body and typeof(saddlePivot) == "Vector3" then
+		local saddle = Instance.new("Attachment")
+		saddle.Name = "Saddle"
+		saddle.Parent = body
+		saddle.WorldCFrame = base * CFrame.new(saddlePivot * scale)
+	end
+
+	for _, part in rig:GetChildren() do
+		part.Parent = b.Model
+	end
+	rig:Destroy()
+	return bodyPivot.Y * scale
+end
+
 -- API -----------------------------------------------------------------------------
 
 -- Crea el modelo (sin padre) en la posición indicada.
@@ -577,7 +655,8 @@ function DragonBuilder.Build(species, at: CFrame): Model
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	local dragons = assets and assets:FindFirstChild("Dragons")
 	local folder = dragons and dragons:FindFirstChild(species.Id)
-	local rootHeight = if folder then buildFromTemplate(b, folder, species) else nil
+	local rig = folder and folder:FindFirstChild("Rig")
+	local rootHeight = if rig then buildFromRig(b, rig, species) elseif folder then buildFromTemplate(b, folder, species) else nil
 	if rootHeight then
 		-- Escala de referencia para la amplitud de las animaciones (6 studs = 1).
 		model:SetAttribute("Scale", species.Size / 6)
