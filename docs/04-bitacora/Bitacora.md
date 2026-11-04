@@ -13,6 +13,15 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### T32: montar dragones (Claude)
+- **Rama `tarea/T32-montar`,** fusionada en `integracion/v4`. Ficha: [[T32-montar]].
+- **Cómo funciona:**
+  - R o el botón «🐉 Montar» para subir y bajar;
+  - el dragón va soldado bajo el jinete, que va sentado en una silla;
+  - galope animado, polvo y cámara que se abre con la velocidad.
+- **Velocidad:** según la rareza, la Silla de Mejoras y las sillas de bioma del Dragonario.
+- **Probado en vivo:** montado en el Draco de Blender.
+
 ### T31: nidos y dragonas madre (Claude)
 - **Rama `tarea/T31-nidos`,** fusionada en `integracion/v4`. Ficha: [[T31-nidos]].
 - **El bucle central ya se juega:**

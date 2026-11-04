@@ -294,6 +294,11 @@ end
 -- LLEVAR EL HUEVO ------------------------------------------------------------------
 
 local function baseWalkSpeed(player: Player): number
+	-- Montado (T32), la velocidad base es la de la montura
+	local mountSpeed = player:GetAttribute("MountSpeed")
+	if type(mountSpeed) == "number" then
+		return mountSpeed
+	end
 	local upgrades = Config.Upgrades
 	if not upgrades then
 		return 16
@@ -346,6 +351,12 @@ function NestService.DropEgg(player: Player)
 		returnToNest(carry)
 	end
 	return carry and carry.EggId
+end
+
+-- Vuelve a aplicar la velocidad (con el peso del huevo si lleva uno); la usa T32 al montar
+function NestService.RefreshSpeed(player: Player)
+	local carry = carrying[player]
+	setCarrySpeed(player, carry and carry.EggId)
 end
 
 function NestService.GetCarry(player: Player): string?

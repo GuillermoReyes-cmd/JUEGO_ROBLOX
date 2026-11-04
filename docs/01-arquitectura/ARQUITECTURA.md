@@ -122,6 +122,7 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `TutorialStep`, `TutorialTotal`, `TutorialText`, `TutorialTarget`, `TutorialButton` | Player | TutorialService (T39) | Paso actual del tutorial y adónde apuntan las flechas o qué botón brilla |
 | `CarryingEgg`, `ChasedBy` | Player | NestService (T31) | Huevo que lleva a la espalda · una madre le persigue |
 | `Sleep`, `State`, `Sleeping`, `EggId` | Modelo de madre (etiqueta `Mother`) | NestService (T31) | Barra de sueño 0–100 · Sleeping/Chase/Return |
+| `Mounted`, `MountSpeed`, `MountId` | Player | MountService (T32) | Va montado · velocidad de la montura · montura elegida |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -181,6 +182,8 @@ Los módulos nuevos son independientes del compañero v3 y no modifican su model
 | GoldCollected | servidor → dueño | cantidad cobrada | IncomeService |
 | TutorialAction | cliente → servidor | `"OpenedStable"`: lo que solo ve el cliente; cada paso paga una vez | TutorialService (T39) |
 | Knockback | servidor → un jugador | `Vector3`: velocidad del empujón al ser atrapado | NestService (T31) |
+| MountToggle | cliente → servidor | ninguno: subir o bajar (antispam de 0,6 s) | MountService (T32) |
+| MountSelect | cliente → servidor | `dragonId` de su establo | MountService (T32) |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
 ### Remotes históricos de v3 (retirados; referencia de T34)
@@ -214,6 +217,7 @@ Así varias tareas pueden crear botones sin taparse:
 |---|---|
 | Arriba centro | HUD (oro y oro/s) |
 | Arriba centro, debajo del HUD (y = 64 px) | Avisos `Notify` (hasta 3, 4 s cada uno) |
+| Derecha (y = 62 %, 170 × 48 px) | Montar / Bajar (T32) |
 | Izquierda, botón 1 (y = 35 %, 200 × 48 px) | Establo (T30) |
 | Izquierda, botón 2 (y = 45 %) | Mejoras (T35) |
 | Izquierda, botón 3 (y = 55 %) | Tienda (T06) |

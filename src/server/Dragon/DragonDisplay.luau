@@ -120,6 +120,11 @@ local function nameTag(model: Model, record, species, goldPerSecond: number)
 	billboard.Parent = body
 end
 
+-- Aplica el aspecto de la mutación a un dragón ya construido (lo usa también la montura, T32)
+function DragonDisplay.Decorate(model: Model, record)
+	applyMutation(model, record)
+end
+
 -- Crea el modelo quieto (anclado) con los pies en `ground` mirando hacia su LookVector.
 -- Devuelve nil si la especie no existe.
 function DragonDisplay.Build(record, ground: CFrame, goldPerSecond: number): Model?

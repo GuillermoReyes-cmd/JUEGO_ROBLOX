@@ -152,6 +152,14 @@ local function card(dragon, inPen: boolean, order: number)
 	label(frame, extra, UDim2.new(1, -12, 0, 18), UDim2.fromOffset(6, 80), Color3.fromRGB(210, 210, 210))
 	label(frame, "💰 " .. Format.Number(perSecond) .. "/s", UDim2.new(1, -12, 0, 22), UDim2.fromOffset(6, 100), Color3.fromRGB(255, 220, 110))
 
+	-- Elegir montura (T32): dorado si es la montura actual
+	local isMount = player:GetAttribute("MountId") == dragon.Id
+	local mountButton = button(frame, "🏇", if isMount then Color3.fromRGB(230, 170, 40) else Color3.fromRGB(90, 70, 50),
+		UDim2.fromOffset(34, 34), UDim2.new(1, -44, 0, 13))
+	mountButton.Activated:Connect(function()
+		Remotes.Get("MountSelect"):FireServer(dragon.Id)
+	end)
+
 	local penFull = #state.Pens >= state.PenCount
 	local toggle = button(frame, if inPen then "Quitar" else "Al corral",
 		if inPen then Color3.fromRGB(120, 90, 50) elseif penFull then Color3.fromRGB(80, 80, 80) else Color3.fromRGB(60, 150, 70),
@@ -234,6 +242,12 @@ open.Activated:Connect(function()
 end)
 close.Activated:Connect(function()
 	setOpen(false)
+end)
+
+player:GetAttributeChangedSignal("MountId"):Connect(function()
+	if panel.Visible then
+		render()
+	end
 end)
 
 Remotes.Get("StableData").OnClientEvent:Connect(function(data)
