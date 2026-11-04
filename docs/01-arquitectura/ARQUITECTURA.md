@@ -235,3 +235,6 @@ Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` 
 
 ## T37 · Renacer
 Remote `Rebirth`: cliente→servidor con número de renacimientos mostrado. Rechaza confirmaciones antiguas y aplica antispam. Multiplicador IncomeService `Rebirth`. ActiveModal `Rebirth`, botón y=75 %.
+
+## T38 · Dragonario
+Datos Dex (`SpeciesId|Mutation|true/false`), DexClaimed (especies cobradas) y DexBiomes (premios de bioma cobrados). Remotes DexRequest (sin argumentos), DexData (snapshot al dueño), DexClaim (Id o All). Atributos DexPending y Saddle<Bioma>; multiplicador Dex. ActiveModal Dex.

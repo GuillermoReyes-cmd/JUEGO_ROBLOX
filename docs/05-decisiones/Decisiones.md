@@ -180,3 +180,6 @@ Upgrades usa claves Incubator, Pen, Boots, Stealth, Saddle y Radar. Costes geom�
 
 ## T37 · Inventarios tras renacer (2026-11-04)
 Se conservan huevos incluso en incubadoras ahora bloqueadas; su reloj sigue y pueden eclosionar cuando se recompre la plaza. Los dragones de corrales sobrantes quedan en el establo. Confirmar incluye Rebirths esperado para evitar peticiones repetidas sobre el siguiente renacimiento.
+
+## T38 · Completar biomas y variantes (2026-11-04)
+Completar un bioma requiere descubrir cada especie, no todas las mutaciones raras. Las diez variantes son un reto adicional. Silla y multiplicador se desbloquean al descubrir; oro del bioma mediante Reclamar todo. DexBiomes impide cobrarlo otra vez y no se reinicia al renacer.

@@ -12,6 +12,7 @@ Config.Eggs = require(script.Eggs)
 Config.Rebirth = require(script.Rebirth)
 Config.Species = require(script.Species)
 Config.Upgrades = require(script.Upgrades)
+Config.Dex = require(script.Dex)
 
 
 return Config
