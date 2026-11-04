@@ -120,6 +120,8 @@ Crea `src/shared/Config/MiSistema.luau`. Añadirlo a `Config/init.luau` es la **
 | `OwnerUserId` | Modelo de la guarida | BaseService | Dueño actual (nil = libre) |
 | `Luck` | Player | Tienda / pociones (T06) | Suerte de las eclosiones (por defecto 1) |
 | `TutorialStep`, `TutorialTotal`, `TutorialText`, `TutorialTarget`, `TutorialButton` | Player | TutorialService (T39) | Paso actual del tutorial y adónde apuntan las flechas o qué botón brilla |
+| `CarryingEgg`, `ChasedBy` | Player | NestService (T31) | Huevo que lleva a la espalda · una madre le persigue |
+| `Sleep`, `State`, `Sleeping`, `EggId` | Modelo de madre (etiqueta `Mother`) | NestService (T31) | Barra de sueño 0–100 · Sleeping/Chase/Return |
 | `DebugLuck` | Player | EggDebugService (solo Studio) | Suerte de prueba |
 | `Locked`, `EggId`, `ReadyAt` | Pieza `IncubatorN` | IncubatorService | Estado de la incubadora; `ReadyAt` en `os.time` (el cliente lo compara con `workspace:GetServerTimeNow()`) |
 | `DragonId`, `Mutation`, `Rainbow`, `PenOwnerId` | Modelo de dragón en corral | DragonDisplay / StableService | `Rainbow = true` → el cliente le va cambiando el color |
@@ -178,6 +180,7 @@ Los módulos nuevos son independientes del compañero v3 y no modifican su model
 | StableData | servidor → dueño | `{ Dragons, Pens, PenCount, MaxDragons }` | StableService |
 | GoldCollected | servidor → dueño | cantidad cobrada | IncomeService |
 | TutorialAction | cliente → servidor | `"OpenedStable"`: lo que solo ve el cliente; cada paso paga una vez | TutorialService (T39) |
+| Knockback | servidor → un jugador | `Vector3`: velocidad del empujón al ser atrapado | NestService (T31) |
 | Notify | servidor → un jugador | `{ Text, Color? }`: avisos genéricos que muestra el HUD | Cualquiera |
 
 ### Remotes históricos de v3 (retirados; referencia de T34)
@@ -229,6 +232,8 @@ Los controllers coordinan sus ventanas mediante el atributo local `ActiveModal` 
 
 | Tag | Dónde | Contenido | Lo usa |
 |---|---|---|---|
+| `NestSpawn` | Pieza invisible de cada nido (T43 o provisional) | Atributo `Biome` = Id del huevo | NestService (T31) |
+| `Nest`, `Mother` | Modelos que crea NestService | — | NestController, TutorialService |
 | `Base` | `Model` de cada guarida (8) | Hijos `Incubator1..8`, `Pen1..12`, `CollectPlate`, `Spawn`, `Sign`, `Door` (todos BasePart). La entrada mira al eje Z+ local del pivote. Si no hay ninguna, BaseService construye 8 provisionales | BaseService, BaseController |
 
 ## T35 · Mejoras

@@ -13,6 +13,16 @@ Volver a [[INICIO]].
 
 ## 2026-11-04
 
+### T31: nidos y dragonas madre (Claude)
+- **Rama `tarea/T31-nidos`,** fusionada en `integracion/v4`. Ficha: [[T31-nidos]].
+- **El bucle central ya se juega:**
+  - robar un huevo con E;
+  - la madre dormida tiene una barra de sueño y, si la llenas, te persigue;
+  - si te alcanza, recupera el huevo;
+  - si llegas a tu guarida, el huevo va solo a la incubadora.
+- **Sin mapa aún:** 12 nidos provisionales hasta que Codex haga T43.
+- **Probado en vivo en Studio:** robar, despertar, persecución, captura y entrega.
+
 ### Integración v4 y Draco en el juego (Claude)
 - **`integracion/v4`** reúne la base (T30 + T34), T35, T37, T38, T13 de Codex, T39 y las notas de investigación.
   - Revisión de Codex: aprobada.

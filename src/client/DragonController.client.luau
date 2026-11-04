@@ -134,13 +134,21 @@ local function animate(rig, t: number, dt: number)
 			* CFrame.Angles(-0.3 * mv + math.sin(t * 1.8 + p) * 0.05, 0, math.sin(t * 0.9 + p) * 0.08)
 	end
 	body *= CFrame.new(0, 0, -attack * 0.5 * s) * CFrame.Angles(-attack * 0.12, 0, 0)
+	-- Dormida (dragonas madre de T31): tumbada, respirando despacio y con la cabeza baja
+	rig.SleepT = (rig.SleepT or 0) + (((if rig.Model:GetAttribute("Sleeping") then 1 else 0) - (rig.SleepT or 0)) * math.min(dt * 3, 1))
+	local sleepT = rig.SleepT
+	if sleepT > 0.01 then
+		local breath = math.sin(t * 1.2 + p) * 0.05
+		body = body:Lerp(CFrame.new(0, (-0.35 + breath) * s, 0) * CFrame.Angles(0.06, 0, 0), sleepT)
+	end
 	if rig.Joints.Body then
 		rig.Joints.Body.Transform = body
 	end
 
-	-- Cabeza: mira alrededor cuando está quieto; mordisco al atacar
+	-- Cabeza: mira alrededor cuando está quieto; mordisco al atacar; apoyada si duerme
 	if rig.Joints.Head then
-		rig.Joints.Head.Transform = CFrame.Angles(math.sin(t * 0.7 + p) * 0.08 - attack * 0.35, math.sin(t * 0.45 + p) * 0.35 * (1 - mv), 0)
+		local head = CFrame.Angles(math.sin(t * 0.7 + p) * 0.08 - attack * 0.35, math.sin(t * 0.45 + p) * 0.35 * (1 - mv), 0)
+		rig.Joints.Head.Transform = head:Lerp(CFrame.Angles(0.45, 0.25, 0), sleepT)
 	end
 
 	-- Alas
@@ -158,6 +166,7 @@ local function animate(rig, t: number, dt: number)
 			frequency, amplitude, base = 2, 0.12, -0.5 -- plegadas
 		end
 		local flap = base + math.sin(t * frequency + p) * amplitude + math.max(attack, 0) * 0.5
+		flap += (-0.6 - flap) * sleepT -- dormida: alas plegadas
 		wingL.Transform = CFrame.Angles(0, 0, -flap)
 		wingR.Transform = CFrame.Angles(0, 0, flap)
 	end

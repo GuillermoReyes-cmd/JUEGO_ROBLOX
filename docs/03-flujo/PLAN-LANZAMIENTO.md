@@ -17,6 +17,19 @@ Volver a [[INICIO]] · Tareas: [[TABLERO]] · Cómo trabajamos: [[FLUJO-CON-CODE
 >   - aprobar la fusión en `main`;
 >   - cualquier cosa con dinero o Robux.
 
+## ⏯️ Cómo reanudar si se acaban los créditos
+Todo el progreso queda guardado en GitHub y en esta nota. Nada se pierde: el trabajo a medias está en la rama de su tarea.
+
+**Para Claude** (pegar al volver):
+```text
+Reanuda el PLAN-LANZAMIENTO (docs/03-flujo/PLAN-LANZAMIENTO.md): mira la cola de Claude, la primera tarea que no esté ✅ es la siguiente. Revisa también las ramas nuevas de Codex e intégralas en integracion/v4. Trabaja sin preguntar y al final enséñame todo.
+```
+
+**Para Codex** (pegar al volver):
+```text
+Codex: reanuda tu cola en docs/03-flujo/PLAN-LANZAMIENTO.md (rama integracion/v4, git fetch primero). Si tenías una tarea a medias, termina esa (su rama y su ficha dicen dónde te quedaste); si no, empieza la primera de la «Cola de Codex» que no tenga rama en origin. Sigue las reglas comunes del plan.
+```
+
 ## Cómo se integra el trabajo
 1. **Cada tarea tiene su rama** (`tarea/TXX-…`). Codex encadena sus ramas: cada una sale de la anterior.
 2. **Claude es el integrador.** Revisa cada rama de Codex con la lista de [[CLAUDE]]:
@@ -33,7 +46,7 @@ Volver a [[INICIO]] · Tareas: [[TABLERO]] · Cómo trabajamos: [[FLUJO-CON-CODE
 |---|---|---|---|
 | C1 | Integración | `integracion/v4` = base + T35 + T37 + T38 + T13 (Codex) + T39 + notas de investigación. Revisión de Codex y prueba en Studio | ✅ 2026-11-04 |
 | C2 | Draco en el juego (T20) | `DragonBuilder` acepta modelos de varias piezas («Rig»); el Draco de Blender aparece animado en los corrales | ✅ 2026-11-04 |
-| C3 | **T31 Nidos y dragonas madre** | Nidos en los biomas, madre dormida con barra de sueño, robar con E, persecución, llevar el huevo y entregarlo en la incubadora | ⏳ |
+| C3 | **T31 Nidos y dragonas madre** | Nidos en los biomas, madre dormida con barra de sueño, robar con E, persecución, llevar el huevo y entregarlo en la incubadora | ✅ 2026-11-04 |
 | C4 | **T32 Montar** | Montar el mejor dragón (o el elegido), silla, jinete, galope, polvo, velocidad por especie | ⏳ |
 | C5 | **T33 Robo entre jugadores** | Empujón (F), huevo en el suelo, robar de incubadoras ajenas, puerta y escudo | ⏳ |
 | C6 | **T06 Tienda Robux** | Pases y productos; recompensa sin conexión ×3, primera compra barata, regalos, probabilidades visibles | ⏳ |
