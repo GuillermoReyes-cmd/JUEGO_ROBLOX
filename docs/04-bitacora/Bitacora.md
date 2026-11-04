@@ -62,6 +62,15 @@ Volver a [[INICIO]].
 - Pendiente: aspecto e interacción en Studio, móvil y replicación real. T30 integrará concesión, guardado e incubadoras. Resultado y pasos completos en [[T34-huevos-eclosion]].
 - Estado: **En revisión**; sin merge a main.
 
+### Investigación: referencia de Montar un dinosaurio (Codex)
+- **Petición de Guillermo:** investigación documental, sin programar, sin cuenta y sin compras.
+- **Rama:** `investigacion/montar-dino`, creada desde `origin/integracion/lanzamiento`.
+- **Nota:** [[Referencia-Montar-un-dinosaurio]], con las diez secciones solicitadas, fuentes enlazadas, límites de verificación y propuestas para T30–T38, T06, T16, T20, T26 y tareas nuevas sugeridas.
+- **Fuentes:** API pública de los tres juegos, catálogos paginados completos, fragmentos públicos de YouTube y guías. No se jugó una partida propia; el recorrido de diez minutos es una reconstrucción orientativa.
+- **Hallazgos:** 125 productos y un pase activo en Ride a Dino; 216 productos en Ride a Dragon; 225 en Steal A Pet And Ride It! Se documentan los 125 productos de Dino y los 19 pases devueltos entre los tres universos, incluidos los retirados.
+- **Corrección relevante:** `Egg Guard` de Ride a Dragon prolonga la duración del huevo transportado; no es un escudo de guarida. Las propuestas no modifican la visión ni constituyen decisiones aprobadas.
+- **Alcance:** solo esta nota, el enlace de [[INICIO]] y esta bitácora. Sin cambios en `src/`, sin merge y sin cambios de estado de tareas de implementación.
+- **Verificación:** diez secciones y enlaces internos comprobados, 125 IDs únicos de productos en el anexo, `git diff --check` correcto y `rojo build` correcto. No se modificó Luau; `build.rbxlx` está ignorado y no se incluye en el commit.
 
 ### v4 aprobada, tablero nuevo y ficha T34 para Codex (Claude)
 - **Guillermo aprobó la v4** tal cual: [[Vision-v4]] y D-021.

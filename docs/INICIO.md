@@ -16,6 +16,7 @@ Juego de Roblox del género «+1». Cada clic hace más fuerte a **tu dragón co
 |---|---|---|
 | Visión | [[Vision-v4]] | **Concepto actual:** «Roba un Huevo de Dragón» (robar, incubar, montar) |
 | Investigación | [[Partida-Montar-un-dinosaurio]] | **Partida real** de «Montar un dinosaurio»: tienda, índice, tutorial y qué copiar |
+| Investigación | [[Referencia-Montar-un-dinosaurio]] | Bucle, tutorial, monturas, catálogo Robux y propuestas priorizadas para la v4 |
 | Visión | [[Vision-v3]] | Concepto anterior: entrenador + dragón con combate |
 | Visión | [[Dragones]] | Las 10 especies, de huevo a Níðhöggr, y los elementos |
 | Visión | [[Combate]] | Monstruos en el mundo, jefe mundial y duelos |
